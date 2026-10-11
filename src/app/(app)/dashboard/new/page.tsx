@@ -3,7 +3,7 @@
 import Link from "next/link";
 import MzansiLogo from "@/components/MzansiLogo";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,7 +16,7 @@ import {
   Loader2,
   MapPin,
   MessageCircle,
-  
+    Phone,
 } from "lucide-react";
 import { useAuth } from "@/lib/firebase/AuthProvider";
 import { apiFetch } from "@/lib/api-fetch";
@@ -39,6 +39,7 @@ export default function NewSiteWizard() {
   const [tagline, setTagline] = useState("");
   const [area, setArea] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [phone, setPhone] = useState("");
   const [hours, setHours] = useState("");
   const [email, setEmail] = useState("");
   const [instagram, setInstagram] = useState("");
@@ -53,18 +54,41 @@ export default function NewSiteWizard() {
 
   const template = industry ? TEMPLATES.find((t) => t.id === INDUSTRY_LIST.find((i) => i.key === industry)?.templateId) : null;
 
-  if (!loading && !user) {
-    router.replace("/auth");
-    return null;
-  }
+  /*
+   * Signed-out visitors get bounced to /auth — but as an effect and a guard
+   * rendered *after every hook*, not as an early return up here. The early
+   * return used to sit above `useRef(footerRef)` below, so the first render
+   * (loading, no user) called one fewer hook than the next one: React threw
+   * "Rendered fewer hooks than expected" (errors #300/#310) and blanked the
+   * page for anyone who landed here while signed out, or who signed out while
+   * the wizard was open.
+   */
+  const needsAuth = !loading && !user;
+
+  useEffect(() => {
+    if (needsAuth) router.replace("/auth");
+  }, [needsAuth, router]);
+
 
   const validateStep = (): boolean => {
     setError(null);
     if (step === 0 && !industry) return fail("Pick the industry closest to your business.");
     if (step === 1) {
+      /*
+       * The business name and a WhatsApp number. Everything else — tagline,
+       * area, hours, email, and the landline — is optional and falls back to
+       * the industry's demo content until it is filled in.
+       *
+       * WhatsApp is required because every template turns its booking buttons
+       * into wa.me links: with no number of your own, the site would fall back
+       * to the demo number and send visitors to a stranger. A landline cannot
+       * stand in, since it is not on WhatsApp.
+       */
       if (businessName.trim().length < 2) return fail("What's your business called?");
-      if (area.trim().length < 2) return fail("Where are you based? e.g. Soweto, Johannesburg");
-      if (whatsapp.replace(/\D/g, "").length < 9) return fail("Enter a valid WhatsApp number — it's your booking button.");
+      if (whatsapp.replace(/\D/g, "").length < 9)
+        return fail("Add your WhatsApp number — it is the button customers tap.");
+      if (phone && phone.replace(/\D/g, "").length < 9)
+        return fail("That phone number looks too short — or leave it blank.");
     }
     return true;
   };
@@ -104,7 +128,7 @@ export default function NewSiteWizard() {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({
-            businessName, tagline, industry, area, whatsapp, hours, email,
+            businessName, tagline, industry, area, whatsapp, phone, hours, email,
             logoUrl: logo.find((l) => !l.isLocal)?.url,
             galleryUrls: gallery.filter((g) => !g.isLocal).map((g) => g.url),
             heroImageUrl: gallery.find((g) => !g.isLocal)?.url,
@@ -119,6 +143,14 @@ export default function NewSiteWizard() {
       setCreating(false);
     }
   };
+
+  /*
+   * Every field below carries an id + htmlFor pair. Without them the visible
+   * label is decoration: a screen reader reads "edit text" with no name, and
+   * tapping the label on a phone does not focus the field.
+   */
+  // Last hook in this component has run — safe to bail out now.
+  if (needsAuth) return null;
 
   const inputCls =
     "w-full rounded-xl border-2 border-ink/12 bg-white px-4 py-3 text-sm font-medium outline-none transition-colors placeholder:text-ink/30 focus:border-ink";
@@ -212,44 +244,51 @@ export default function NewSiteWizard() {
               )}
               <div className="mt-8 space-y-5">
                 <div>
-                  <label className={labelCls}>Business name *</label>
+                  <label className={labelCls} htmlFor="wiz-business-name">Business name *</label>
                   <div className="relative">
                     <Building2 className="absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink/30" />
-                    <input value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="Naledi's Braids" className={`${inputCls} pl-11`} maxLength={60} />
+                    <input id="wiz-business-name" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="Naledi's Braids" className={`${inputCls} pl-11`} maxLength={60} />
                   </div>
                 </div>
                 <div>
-                  <label className={labelCls}>Tagline <span className="text-ink/30">(optional — we&apos;ll write one)</span></label>
-                  <input value={tagline} onChange={(e) => setTagline(e.target.value)} placeholder="Where Soweto gets beautiful." className={inputCls} maxLength={140} />
+                  <label className={labelCls} htmlFor="wiz-tagline">Tagline <span className="text-ink/30">(optional — we&apos;ll write one)</span></label>
+                  <input id="wiz-tagline" value={tagline} onChange={(e) => setTagline(e.target.value)} placeholder="Where Soweto gets beautiful." className={inputCls} maxLength={140} />
                 </div>
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div>
-                    <label className={labelCls}>Area & city *</label>
+                    <label className={labelCls} htmlFor="wiz-area">Area &amp; city</label>
                     <div className="relative">
                       <MapPin className="absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink/30" />
-                      <input value={area} onChange={(e) => setArea(e.target.value)} placeholder="Soweto, Johannesburg" className={`${inputCls} pl-11`} maxLength={80} />
+                      <input id="wiz-area" value={area} onChange={(e) => setArea(e.target.value)} placeholder="Soweto, Johannesburg" className={`${inputCls} pl-11`} maxLength={80} />
                     </div>
                   </div>
                   <div>
-                    <label className={labelCls}>WhatsApp number *</label>
+                    <label className={labelCls} htmlFor="wiz-hours">Trading hours <span className="text-ink/30">(optional)</span></label>
                     <div className="relative">
-                      <MessageCircle className="absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink/30" />
-                      <input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="082 123 4567" className={`${inputCls} pl-11`} maxLength={20} inputMode="tel" />
+                      <Clock className="absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink/30" />
+                      <input id="wiz-hours" value={hours} onChange={(e) => setHours(e.target.value)} placeholder="Mon – Sat · 08:00 – 17:00" className={`${inputCls} pl-11`} maxLength={60} />
                     </div>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div>
-                    <label className={labelCls}>Trading hours <span className="text-ink/30">(optional)</span></label>
+                    <label className={labelCls} htmlFor="wiz-whatsapp">WhatsApp number</label>
                     <div className="relative">
-                      <Clock className="absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink/30" />
-                      <input value={hours} onChange={(e) => setHours(e.target.value)} placeholder="Mon – Sat · 08:00 – 17:00" className={`${inputCls} pl-11`} maxLength={60} />
+                      <MessageCircle className="absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink/30" />
+                      <input id="wiz-whatsapp" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="082 123 4567" className={`${inputCls} pl-11`} maxLength={20} inputMode="tel" />
                     </div>
                   </div>
                   <div>
-                    <label className={labelCls}>Email <span className="text-ink/30">(optional)</span></label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="hello@business.co.za" className={inputCls} maxLength={120} />
+                    <label className={labelCls} htmlFor="wiz-phone">Phone number <span className="text-ink/30">(optional)</span></label>
+                    <div className="relative">
+                      <Phone className="absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink/30" />
+                      <input id="wiz-phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="011 123 4567" className={`${inputCls} pl-11`} maxLength={20} inputMode="tel" />
+                    </div>
                   </div>
+                </div>
+                <div>
+                  <label className={labelCls} htmlFor="wiz-email">Email <span className="text-ink/30">(optional)</span></label>
+                  <input type="email" id="wiz-email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="hello@business.co.za" className={inputCls} maxLength={120} />
                 </div>
               </div>
             </div>
@@ -324,8 +363,9 @@ export default function NewSiteWizard() {
                   ["Website", website, setWebsite, "https://yourcurrentsite.co.za"],
                 ].map(([label, value, set, placeholder]) => (
                   <div key={label as string}>
-                    <label className={labelCls}>{label as string}</label>
+                    <label className={labelCls} htmlFor={`wiz-${String(label).toLowerCase()}`}>{label as string}</label>
                     <input
+                      id={`wiz-${String(label).toLowerCase()}`}
                       value={value as string}
                       onChange={(e) => (set as (v: string) => void)(e.target.value)}
                       placeholder={placeholder as string}
@@ -348,6 +388,7 @@ export default function NewSiteWizard() {
                     ["Template", template ? `${template.name} · ${template.family}` : "—"],
                     ["Based in", area],
                     ["WhatsApp", whatsapp],
+                    ["Phone", phone],
                     ["Logo", logo.length ? "Uploaded ✓" : "None — letter mark used"],
                     ["Photos", gallery.length ? `${gallery.length} uploaded` : "Design photos for now — upload later"],
                     ["Starter content", "Services & prices prefilled — edit anytime"],

@@ -1,4 +1,4 @@
-import { MessageCircle, Globe } from "lucide-react";
+import { Globe, MessageCircle, Phone } from "lucide-react";
 import type { SVGProps } from "react";
 import type { SiteData } from "./types";
 import { waLink } from "./types";
@@ -30,19 +30,41 @@ export function TikTokIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-/** Floating WhatsApp button every published site carries. */
+/**
+ * Floating contact buttons every published site carries.
+ *
+ * The call button only appears when the owner gave a phone number that differs
+ * from their WhatsApp number — otherwise it would be two buttons to the same
+ * place. Sites with a single number look exactly as they did before.
+ */
 export function WhatsAppFab({ site, accent = "#1fbf5f" }: { site: SiteData; accent?: string }) {
+  const digits = (n?: string) => (n ?? "").replace(/\D/g, "");
+  const waDigits = digits(site.whatsapp);
+  const telDigits = digits(site.phone);
+  const showCall = telDigits.length >= 9 && telDigits !== waDigits;
+
   return (
-    <a
-      href={waLink(site.whatsapp, `Hi ${site.businessName}! I found your website and I'd like to enquire.`)}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Chat on WhatsApp"
-      className="fixed bottom-5 right-5 z-50 grid h-14 w-14 place-items-center rounded-full text-white shadow-[0_14px_30px_-8px_rgba(18,140,75,0.7)] transition-transform duration-300 hover:scale-110"
-      style={{ backgroundColor: accent }}
-    >
-      <MessageCircle className="h-6 w-6 fill-white" style={{ color: accent }} />
-    </a>
+    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-center gap-3">
+      {showCall && (
+        <a
+          href={`tel:+${telDigits.replace(/^0/, "27")}`}
+          aria-label={`Call ${site.businessName}`}
+          className="grid h-14 w-14 place-items-center rounded-full bg-ink text-bone shadow-[0_14px_30px_-8px_rgba(17,19,12,0.6)] transition-transform duration-300 hover:scale-110"
+        >
+          <Phone className="h-6 w-6" />
+        </a>
+      )}
+      <a
+        href={waLink(site.whatsapp, `Hi ${site.businessName}! I found your website and I'd like to enquire.`)}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat on WhatsApp"
+        className="grid h-14 w-14 place-items-center rounded-full text-white shadow-[0_14px_30px_-8px_rgba(18,140,75,0.7)] transition-transform duration-300 hover:scale-110"
+        style={{ backgroundColor: accent }}
+      >
+        <MessageCircle className="h-6 w-6 fill-white" style={{ color: accent }} />
+      </a>
+    </div>
   );
 }
 

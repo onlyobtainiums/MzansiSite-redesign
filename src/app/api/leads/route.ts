@@ -26,12 +26,13 @@ export async function POST(request: Request) {
     if (businessName.length < 2) {
       return NextResponse.json({ ok: false, error: "Tell us your business name." }, { status: 400 });
     }
-    if (location.length < 2) {
-      return NextResponse.json({ ok: false, error: "Where are you based?" }, { status: 400 });
-    }
-    if (whatsapp.replace(/\D/g, "").length < 9) {
-      return NextResponse.json({ ok: false, error: "Enter a valid WhatsApp number." }, { status: 400 });
-    }
+    /*
+     * Only the business name is required — the public builder deliberately asks
+     * for as little as possible so people reach their preview fast. `location`
+     * and `whatsapp` are NOT NULL columns and an empty string satisfies NOT
+     * NULL, so a sparse lead still records (and still counts towards the
+     * "N businesses" figure) instead of being thrown away.
+     */
 
     await db.insert(leads).values({ businessName, trade, location, whatsapp });
     const [{ value: total }] = await db.select({ value: count() }).from(leads);

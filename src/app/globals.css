@@ -34,13 +34,23 @@
 
 html {
   scroll-behavior: auto;
+  /*
+    Decorative marquee tracks are far wider than the viewport. `overflow-x:
+    hidden` on body propagates to the viewport, which then remains a *scroll
+    container* — so on a narrow phone a sideways touch-drag could still shift
+    the whole page by ~50px while the user was scrolling. `clip` forbids
+    scrolling in that axis outright, and unlike `hidden` it does not create a
+    scroll container, so `position: sticky` still works.
+  */
+  overflow-x: clip;
 }
 
 body {
   background-color: var(--color-bone);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  overflow-x: hidden;
+  overflow-x: hidden; /* fallback where `clip` is unsupported */
+  overflow-x: clip;
 }
 
 ::selection {

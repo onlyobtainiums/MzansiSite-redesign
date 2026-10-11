@@ -16,6 +16,8 @@ import {
   TriangleAlert,
   UserRound,
 } from "lucide-react";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { getFirebaseAuth } from "@/lib/firebase/client";
 import { useAuth } from "@/lib/firebase/AuthProvider";
 
 function GoogleMark() {
@@ -49,6 +51,8 @@ export default function AuthPage() {
   const [localError, setLocalError] = useState<string | null>(null);
   const [busy, setBusy] = useState<"email" | "google" | null>(null);
   const [redirecting, setRedirecting] = useState(false);
+  const [resetBusy, setResetBusy] = useState(false);
+  const [resetMsg, setResetMsg] = useState<string | null>(null);
   const redirectedRef = useRef(false);
 
   /* Redirect to dashboard when a user session is detected — handles BOTH
@@ -61,10 +65,49 @@ export default function AuthPage() {
     }
   }, [loading, user, router]);
 
+  /* A stale "link sent" line would be misleading once the details change. */
+  useEffect(() => { setResetMsg(null); }, [mode, email]);
+
   /* Bubble auth-provider errors into local state */
   useEffect(() => {
     if (authError) setLocalError(authError);
   }, [authError]);
+
+  /* ——— Forgot password ———
+     Sends Firebase's own reset email. Says the same thing whether or not the
+     address has an account: replying "no such user" would turn this box into a
+     way for a stranger to check who has an account here. */
+  const forgotPassword = async () => {
+    if (resetBusy) return;
+    setLocalError(null);
+    setResetMsg(null);
+
+    const address = email.trim();
+    if (!address) {
+      setLocalError("Type your email address above first, then tap \u201cForgot password?\u201d.");
+      return;
+    }
+
+    setResetBusy(true);
+    const neutral = `If ${address} has an account, a reset link is on its way. Check your inbox and your spam folder.`;
+    try {
+      await sendPasswordResetEmail(getFirebaseAuth(), address);
+      setResetMsg(neutral);
+    } catch (err) {
+      const code = (err as { code?: string })?.code ?? "";
+      if (code === "auth/user-not-found" || code === "auth/invalid-credential") {
+        setResetMsg(neutral);
+      } else if (code === "auth/invalid-email") {
+        setLocalError("That email address doesn\u2019t look right \u2014 check it and try again.");
+      } else if (code === "auth/too-many-requests") {
+        setLocalError("Too many attempts just now. Wait a minute, then try again.");
+      } else {
+        setLocalError("Couldn\u2019t send the reset email. Try again in a moment.");
+      }
+    } finally {
+      setResetBusy(false);
+    }
+  };
 
   /* ——— Email / Google submit ——— */
   const submit = async (kind: "email" | "google") => {
@@ -293,8 +336,20 @@ export default function AuthPage() {
 
                 {/* Password */}
                 <label className="block">
-                  <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-ink/50">
-                    Password
+                  <span className="mb-1.5 flex items-center justify-between gap-3">
+                    <span className="block text-[11px] font-bold uppercase tracking-[0.16em] text-ink/50">
+                      Password
+                    </span>
+                    {mode === "signin" && (
+                      <button
+                        type="button"
+                        onClick={() => void forgotPassword()}
+                        disabled={resetBusy}
+                        className="text-[11px] font-bold uppercase tracking-[0.12em] text-flame underline underline-offset-4 transition-opacity hover:opacity-70 disabled:opacity-40"
+                      >
+                        {resetBusy ? "Sending…" : "Forgot password?"}
+                      </button>
+                    )}
                   </span>
                   <div className="flex items-center gap-3 rounded-xl border-2 border-ink/12 bg-white px-4 py-3 transition-colors focus-within:border-ink">
                     <KeyRound className="h-4.5 w-4.5 shrink-0 text-ink/35" />
@@ -331,6 +386,16 @@ export default function AuthPage() {
                   )}
                 </Presence>
 
+                {/* Reset link sent */}
+                <Presence show={!!resetMsg} duration={250} className="mz-presence">
+                  {resetMsg && (
+                    <div className="flex items-start gap-3 rounded-xl border border-wa/40 bg-wa/10 px-4 py-3">
+                      <Mail className="mt-0.5 h-4 w-4 shrink-0 text-wa-deep" />
+                      <p className="text-sm font-medium text-wa-deep leading-snug">{resetMsg}</p>
+                    </div>
+                  )}
+                </Presence>
+
                 {/* Submit */}
                 <button
                   type="submit"
@@ -362,15 +427,6 @@ export default function AuthPage() {
                 )}
                 Continue with Google
               </button>
-
-              {/* Domain notice — shown only when using the preview environment */}
-              <div className="mt-5 rounded-xl bg-ink/5 px-4 py-3">
-                <p className="text-[10px] leading-relaxed text-ink/45">
-                  <span className="font-bold">Google sign-in not working?</span> Make sure this domain is listed under{" "}
-                  <span className="font-semibold">Firebase Console → Authentication → Settings → Authorised domains</span>.
-                  Email + password always works without domain authorisation.
-                </p>
-              </div>
 
               <p className="mt-5 text-center text-xs leading-relaxed text-ink/40">
                 By continuing you agree to fair use. Drafts are always free.

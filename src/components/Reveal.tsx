@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 
 /**
  * Scroll-reveal wrapper — replaces the framer-motion version.
@@ -174,19 +174,28 @@ export function RiseWords({
   return (
     <span ref={ref} className={className} aria-label={text}>
       {words.map((word, i) => (
-        <span key={i} className="inline-flex overflow-hidden pb-[0.08em] align-bottom">
-          <span
-            className="inline-block will-change-transform"
-            aria-hidden
-            style={{
-              transform: shown ? "none" : "translateY(110%)",
-              transition: `transform 0.85s ${ease} ${delay + i * 0.055}s`,
-            }}
-          >
-            {word}
-            {i < words.length - 1 ? " " : ""}
+        <Fragment key={i}>
+          <span className="inline-flex overflow-hidden pb-[0.08em] align-bottom">
+            <span
+              className="inline-block will-change-transform"
+              aria-hidden
+              style={{
+                transform: shown ? "none" : "translateY(110%)",
+                transition: `transform 0.85s ${ease} ${delay + i * 0.055}s`,
+              }}
+            >
+              {word}
+            </span>
           </span>
-        </span>
+          {/*
+            The space must sit OUTSIDE the overflow-hidden box. Inside it, the
+            flex container collapses the trailing whitespace, so multi-word
+            lines ran together: "IS A" rendered as "ISA" and "GIVE IT A" as
+            "GIVEITA". Out here it is ordinary inline whitespace again, and it
+            gives the line somewhere to wrap on a narrow screen.
+          */}
+          {i < words.length - 1 ? " " : ""}
+        </Fragment>
       ))}
     </span>
   );

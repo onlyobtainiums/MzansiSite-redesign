@@ -8,6 +8,7 @@ import {
   ChevronRight,
   MapPin,
   MessageCircle,
+  Phone,
   RotateCcw,
   ShieldCheck,
   Sparkles,
@@ -34,6 +35,7 @@ export default function Builder() {
   const [name, setName] = useState("");
   const [area, setArea] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [phone, setPhone] = useState("");
   const [industryKey, setIndustryKey] = useState<string>("hairSalon");
   const [showAllIndustries, setShowAllIndustries] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,9 +71,12 @@ export default function Builder() {
 
   const generate = async () => {
     setError(null);
+    /*
+     * Only the business name is required. Everything else is optional and falls
+     * back to the industry's demo content, so somebody can see their own site
+     * without filling in a form first — which is the point of a free preview.
+     */
     if (name.trim().length < 2) return setError("Tell us your business name.");
-    if (area.trim().length < 2) return setError("Where are you based? e.g. Soweto, Johannesburg");
-    if (whatsapp.replace(/\D/g, "").length < 9) return setError("Enter a valid WhatsApp number.");
 
     // Instantly show the designs, bypassing the fake loader
     setTemplateIndex(0);
@@ -86,6 +91,7 @@ export default function Builder() {
           trade: industryKey,
           location: area,
           whatsapp,
+          phone,
         }),
       });
       
@@ -157,11 +163,11 @@ export default function Builder() {
               {stage === "form" && (
                 <div
                   key="form"
-                  className="mz-in-up space-y-8"
+                  className="mz-in-up grid grid-cols-1 gap-6 sm:grid-cols-2"
                   style={{ ["--mz-dur" as string]: "0.5s" }}
                 >
                   {/* ——— Industry picker ——— */}
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="mb-3 block text-xs font-bold uppercase tracking-[0.18em] text-bone/50">
                       1 · Your industry
                     </label>
@@ -243,9 +249,20 @@ export default function Builder() {
                       set: setWhatsapp,
                       placeholder: "e.g. 082 123 4567",
                       type: "tel",
+                      pair: true,
+                    },
+                    {
+                      n: 5,
+                      label: "Phone number",
+                      icon: Phone,
+                      value: phone,
+                      set: setPhone,
+                      placeholder: "e.g. 011 123 4567",
+                      type: "tel",
+                      pair: true,
                     },
                   ].map((f) => (
-                    <div key={f.label}>
+                    <div key={f.label} className={f.pair ? "sm:col-span-1" : "sm:col-span-2"}>
                       <label className="mb-3 block text-xs font-bold uppercase tracking-[0.18em] text-bone/50">
                         {f.n} · {f.label}
                       </label>
@@ -264,14 +281,12 @@ export default function Builder() {
                   ))}
 
                   {error && (
-                    <p
-                      className="mz-in-up rounded-xl border border-flame/40 bg-flame/10 px-4 py-3 text-sm font-medium text-flame"
-                    >
+                    <p className="mz-in-up rounded-xl border border-flame/40 bg-flame/10 px-4 py-3 text-sm font-medium text-flame sm:col-span-2">
                       {error}
                     </p>
                   )}
 
-                  <div className="flex flex-wrap items-center gap-5 pt-2">
+                  <div className="flex flex-wrap items-center gap-5 pt-2 sm:col-span-2">
                     <button
                       onClick={generate}
                       className="group flex items-center gap-3 rounded-full bg-flame px-8 py-4 font-display text-sm font-bold uppercase tracking-[0.14em] text-bone transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_-10px_rgba(255,77,0,0.6)]"

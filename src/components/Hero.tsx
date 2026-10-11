@@ -87,7 +87,16 @@ export default function Hero() {
             </span>
           </div>
 
-          <h1 className="font-display text-[15vw] font-extrabold uppercase leading-[0.88] tracking-tight sm:text-[11vw] lg:text-[6.6vw] xl:text-[6.2rem]">
+          {/*
+              Sizes are dictated by the longest unbreakable word, not by taste.
+              "WHATSAPP" renders 9.6em wide in this face, and a phone leaves
+              100vw - 40px of room, so anything above ~9.5vw pushes it past the
+              edge — where the section's overflow-hidden cut it in half (at
+              15vw on a 390px screen "WHATSAPP" was 562px wide in a 350px
+              space). The desktop sizes are unchanged because there the layout
+              is two columns and the headline is not clipped.
+            */}
+            <h1 className="font-display text-[9.4vw] font-extrabold uppercase leading-[0.88] tracking-tight sm:text-[9.6vw] lg:text-[6.6vw] xl:text-[6.2rem]">
             <RiseWords text="Your WhatsApp" delay={0.45} />
             <br />
             <RiseWords text="is a business." delay={0.62} />
@@ -142,9 +151,12 @@ export default function Hero() {
               ["R0", "until you publish"],
               ["R149/m", "all-in, cancel anytime"],
             ].map(([big, small]) => (
-              <div key={big} className="px-4 first:pl-0">
-                <p className="font-display text-2xl font-extrabold md:text-3xl">{big}</p>
-                <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.12em] text-ink/50 md:text-xs">{small}</p>
+              <div key={big} className="px-2 first:pl-0 sm:px-4">
+                {/* Sized to fit three columns across a 350px phone: at
+                    text-2xl "R149/m" was cut off by the viewport edge and
+                    "60 sec" wrapped onto two lines. */}
+                <p className="font-display text-lg font-extrabold sm:text-2xl md:text-3xl">{big}</p>
+                <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.1em] text-ink/50 sm:text-[11px] md:text-xs">{small}</p>
               </div>
             ))}
           </div>

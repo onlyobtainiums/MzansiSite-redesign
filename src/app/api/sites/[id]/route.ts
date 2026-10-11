@@ -47,6 +47,7 @@ export async function PATCH(request: Request, ctx: Ctx) {
       area: string;
       hours: string;
       whatsapp: string;
+      phone: string | null;
       email: string | null;
       logoUrl: string | null;
       heroImageUrl: string;
@@ -61,10 +62,17 @@ export async function PATCH(request: Request, ctx: Ctx) {
     if (body.email !== undefined) updates.email = sanitise(body.email, 120) || null;
     if (body.whatsapp !== undefined) {
       const wa = sanitise(body.whatsapp, 20).replace(/[^+\d]/g, "");
-      if (wa.replace(/\D/g, "").length < 9) {
-        return NextResponse.json({ ok: false, error: "Enter a valid WhatsApp number." }, { status: 400 });
+      if (wa && wa.replace(/\D/g, "").length < 9) {
+        return NextResponse.json({ ok: false, error: "That WhatsApp number looks too short." }, { status: 400 });
       }
       updates.whatsapp = wa;
+    }
+    if (body.phone !== undefined) {
+      const tel = sanitise(body.phone, 20).replace(/[^+\d]/g, "");
+      if (tel && tel.replace(/\D/g, "").length < 9) {
+        return NextResponse.json({ ok: false, error: "That phone number looks too short." }, { status: 400 });
+      }
+      updates.phone = tel || null;
     }
     if (updates.businessName !== undefined && updates.businessName.length < 2) {
       return NextResponse.json({ ok: false, error: "Business name is required." }, { status: 400 });

@@ -57,13 +57,27 @@ export async function POST(request: Request) {
         ? body.industry
         : null;
     const whatsapp = sanitise(body.whatsapp, 20).replace(/[^+\d]/g, "");
+    const phone = sanitise(body.phone, 20).replace(/[^+\d]/g, "");
     const area = sanitise(body.area, 80);
 
+    /*
+     * Business name, industry, and a WhatsApp number. Tagline, area, hours and
+     * email are optional and fall back to the industry's demo content until the
+     * owner fills them in.
+     *
+     * WhatsApp stays required, and deliberately so: every template renders its
+     * booking buttons as wa.me links, so a site without a real WhatsApp number
+     * falls back to the DEMO number baked into the template data — verified by
+     * creating one. A visitor tapping "WhatsApp us" would then be messaging a
+     * stranger. A landline cannot stand in for it either, since that number
+     * would not be on WhatsApp.
+     */
     if (businessName.length < 2) return jsonError("Business name is required.", 400);
     if (!industry) return jsonError("Pick your industry.", 400);
-    if (area.length < 2) return jsonError("Where are you based?", 400);
     if (whatsapp.replace(/\D/g, "").length < 9)
-      return jsonError("Enter a valid WhatsApp number.", 400);
+      return jsonError("A WhatsApp number is required — it is the booking button your site is built around.", 400);
+    if (phone && phone.replace(/\D/g, "").length < 9)
+      return jsonError("That phone number looks too short.", 400);
 
     const templateId = INDUSTRIES[industry].templateId;
     const starter = getDemoSiteData({ industry });
@@ -101,10 +115,12 @@ export async function POST(request: Request) {
             businessName,
             tagline: sanitise(body.tagline, 140) || starter.tagline,
             industry,
-            area,
+            area: area || null,
             hours: sanitise(body.hours, 60) || starter.hours,
-            whatsapp,
-            phone: whatsapp,
+            whatsapp: whatsapp || null,
+            // Stored only when it differs from WhatsApp; otherwise NULL, and the
+            // templates fall back to the WhatsApp number.
+            phone: phone || null,
             email: sanitise(body.email, 120) || undefined,
             logoUrl,
             heroImageUrl,
