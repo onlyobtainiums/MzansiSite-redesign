@@ -213,18 +213,53 @@ export async function GET() {
     };
   }
 
+  /* ─── Check 4: can the dashboard's own server-auth module LOAD? ───
+   * This is the decisive check. /api/sites imports @/server/auth, which pulls
+   * in @/db and @/lib/firebase/server (firebase-admin). If THAT import chain
+   * fails at load time, Next returns its own non-JSON 500 page before any
+   * try/catch in the route can run — which is exactly the failure being
+   * investigated. Importing it here, inside a try/catch, turns that invisible
+   * crash into a readable reason.
+   */
+  let serverAuth: Record<string, unknown>;
+  try {
+    const mod = await import("@/server/auth");
+    serverAuth = {
+      moduleLoaded: true,
+      exports: typeof mod.getAuthedUser === "function" ? ["getAuthedUser"] : [],
+    };
+  } catch (error) {
+    const { combined, code } = unwrapError(error);
+    serverAuth = {
+      moduleLoaded: false,
+      code,
+      reason: combined.slice(0, 600),
+      hint:
+        "The module the dashboard's API routes import FAILED TO LOAD. This is the cause of " +
+        "the non-JSON 500: the route dies before its own error handling runs. The reason " +
+        "above is the actual error.",
+    };
+  }
+
   const ok =
     missingRequired.length === 0 &&
     database.ok === true &&
     tables.ok === true &&
-    firebaseAdmin.initialised === true;
+    firebaseAdmin.initialised === true &&
+    serverAuth.moduleLoaded === true;
 
   return Response.json(
     {
       ok,
+      runtime: {
+        node: process.version,
+        vercelEnv: process.env.VERCEL_ENV ?? null,
+        region: process.env.VERCEL_REGION ?? null,
+      },
       database,
       tables,
       firebaseAdmin,
+      serverAuth,
       env: { set: env, missingRequired, missingOptional },
       note:
         "This endpoint reports only whether each variable is SET, never its value. " +
