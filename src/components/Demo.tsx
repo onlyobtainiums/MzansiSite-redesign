@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { Globe } from "lucide-react";
 import { useState } from "react";
 import Reveal, { RiseWords } from "./Reveal";
@@ -91,15 +90,16 @@ export default function Demo() {
 
         {/* Preview */}
         <div className="relative mx-auto flex min-h-[600px] items-start justify-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`${template.id}-${industry}`}
-              initial={{ opacity: 0, y: 40, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.97 }}
-              transition={{ duration: 0.5, ease: EASE }}
-              className="relative z-10 mx-auto w-full max-w-[320px]"
-            >
+          {/*
+            Keyed on the selection so React mounts a fresh node for each
+            template/industry pair, which replays the CSS entrance animation.
+            An exit animation is not needed here — the new preview takes over.
+          */}
+          <div
+            key={`${template.id}-${industry}`}
+            className="mz-in-up relative z-10 mx-auto w-full max-w-[320px]"
+            style={{ ["--mz-from" as string]: "40px", ["--mz-dur" as string]: "0.5s" }}
+          >
               <TemplatePhonePreview
                 templateId={template.id}
                 industry={industry}
@@ -114,8 +114,7 @@ export default function Demo() {
                   Showing: {industryLabel(industry)}
                 </p>
               </div>
-            </motion.div>
-          </AnimatePresence>
+          </div>
         </div>
 
         {/* Caption */}

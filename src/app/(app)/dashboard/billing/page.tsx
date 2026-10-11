@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import MzansiLogo from "@/components/MzansiLogo";
-import { motion } from "framer-motion";
 import { ArrowLeft, Check, CreditCard, ShieldCheck, XCircle } from "lucide-react";
 import { formatRand, PLAN } from "@/lib/billing";
 
@@ -21,7 +20,7 @@ export default function BillingPage() {
       </header>
 
       <main className="mx-auto max-w-3xl px-5 py-14 md:py-20">
-        <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE }}>
+        <div className="mz-in-up" style={{ ["--mz-dur" as string]: "0.8s" }}>
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.24em] text-flame">
             <CreditCard className="h-4 w-4" /> Billing & publishing
           </p>
@@ -69,7 +68,7 @@ export default function BillingPage() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </main>
     </div>
   );

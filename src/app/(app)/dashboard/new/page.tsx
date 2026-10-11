@@ -4,7 +4,6 @@ import Link from "next/link";
 import MzansiLogo from "@/components/MzansiLogo";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
@@ -24,8 +23,6 @@ import { apiFetch } from "@/lib/api-fetch";
 import { INDUSTRY_LIST } from "@/templates/industries";
 import { TEMPLATES } from "@/templates/registry";
 import AccountImageUploader, { type LocalImage } from "@/components/AccountImageUploader";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 const STEPS = ["Industry", "Business info", "Photos", "Socials & review"] as const;
 const GALLERY_MAX = 6;
@@ -145,10 +142,9 @@ export default function NewSiteWizard() {
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
           {/* ——— STEP 1: Industry ——— */}
           {step === 0 && (
-            <motion.div key="s0" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.5, ease: EASE }}>
+            <div key="s0" className="mz-in-right">
               <h1 className="font-display text-3xl font-extrabold tracking-tight md:text-4xl">What kind of business?</h1>
               <p className="mt-2 text-sm text-ink/55">
                 We match you to a purpose-built template.{" "}
@@ -180,12 +176,12 @@ export default function NewSiteWizard() {
                   );
                 })}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* ——— STEP 2: Business info ——— */}
           {step === 1 && (
-            <motion.div key="s1" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.5, ease: EASE }}>
+            <div key="s1" className="mz-in-right">
               <h1 className="font-display text-3xl font-extrabold tracking-tight md:text-4xl">
                 Tell us about <span className="serif-i normal-case text-flame">{businessName.trim() || "your business"}</span>
               </h1>
@@ -236,12 +232,12 @@ export default function NewSiteWizard() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* ——— STEP 3: Photos & logo ——— */}
           {step === 2 && (
-            <motion.div key="s2" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.5, ease: EASE }}>
+            <div key="s2" className="mz-in-right">
               <h1 className="font-display text-3xl font-extrabold tracking-tight md:text-4xl">
                 Show off your <span className="serif-i normal-case text-flame">work.</span>
               </h1>
@@ -250,13 +246,12 @@ export default function NewSiteWizard() {
               </p>
 
               {activity && (
-                <motion.p
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-5 flex items-center gap-2 rounded-xl border border-wa/30 bg-wa/10 px-4 py-3 text-sm font-medium text-wa-deep"
+                <p
+                  className="mz-in-up mt-5 flex items-center gap-2 rounded-xl border border-wa/30 bg-wa/10 px-4 py-3 text-sm font-medium text-wa-deep"
+                  style={{ ["--mz-from" as string]: "-6px", ["--mz-dur" as string]: "0.4s" }}
                 >
                   <Loader2 className="h-4 w-4 animate-spin" /> {activity}
-                </motion.p>
+                </p>
               )}
 
               {/* Logo */}
@@ -291,12 +286,12 @@ export default function NewSiteWizard() {
                   onActivity={setActivity}
                 />
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* ——— STEP 4: Socials & review ——— */}
           {step === 3 && (
-            <motion.div key="s3" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.5, ease: EASE }}>
+            <div key="s3" className="mz-in-right">
               <h1 className="font-display text-3xl font-extrabold tracking-tight md:text-4xl">
                 Socials, then <span className="serif-i normal-case text-flame">shap shap.</span>
               </h1>
@@ -347,14 +342,13 @@ export default function NewSiteWizard() {
                   <Globe className="h-4 w-4 text-wa" /> Saved as a free draft · Publish anytime for R149.99/month
                 </p>
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
 
         {error && (
-          <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} className="mt-6 rounded-xl border border-flame/40 bg-flame/10 px-4 py-3 text-sm font-medium text-flame-deep">
+          <p className="mz-in-up mt-6 rounded-xl border border-flame/40 bg-flame/10 px-4 py-3 text-sm font-medium text-flame-deep" style={{ ["--mz-from" as string]: "-6px", ["--mz-dur" as string]: "0.4s" }}>
             {error}
-          </motion.p>
+          </p>
         )}
 
         {/* Footer controls */}

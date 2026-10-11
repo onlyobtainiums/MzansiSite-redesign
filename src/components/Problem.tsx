@@ -1,10 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { CheckCheck, MessageCircleQuestion, PhoneOff } from "lucide-react";
 import Reveal, { RiseWords } from "./Reveal";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 const DMS = [
   { text: "Hi 👋 how much is a wash & blow dry?", time: "08:12" },
@@ -97,19 +94,19 @@ export default function Problem() {
               </div>
               <div className="space-y-3">
                 {DMS.map((dm, i) => (
-                  <motion.div
+                  <Reveal
                     key={dm.text}
-                    initial={{ opacity: 0, y: 24, scale: 0.96 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-10% 0px" }}
-                    transition={{ duration: 0.6, delay: 0.25 + i * 0.28, ease: EASE }}
+                    delay={0.25 + i * 0.28}
+                    y={24}
+                    scale={0.96}
+                    duration={0.6}
                     className="max-w-[85%] rounded-2xl rounded-tl-sm bg-bone/8 px-4 py-3"
                   >
                     <p className="text-sm leading-snug text-bone/85">{dm.text}</p>
                     <p className="mt-1 flex items-center justify-end gap-1 text-[10px] text-bone/40">
                       {dm.time} <CheckCheck className="h-3 w-3 text-wa" />
                     </p>
-                  </motion.div>
+                  </Reveal>
                 ))}
               </div>
               <Reveal delay={1.8} y={10}>

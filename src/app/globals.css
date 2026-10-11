@@ -164,3 +164,81 @@ html.lenis, html.lenis body { height: auto; }
 @media (prefers-reduced-motion: reduce) {
   .mz-bob, .mz-bob-sm, .mz-tilt { animation: none !important; }
 }
+
+/* ——— Motion primitives (replacing framer-motion) ———
+   The marketing pages and the dashboard used framer-motion for three kinds of
+   motion, all of which CSS already does natively:
+
+     1. MOUNT animations — run once, on page load, after a delay (the hero).
+        Plain @keyframes with animation-delay. No JavaScript, no observers.
+     2. SCROLL reveals — fade/rise when an element enters the viewport.
+        Handled by components/Reveal.tsx with an IntersectionObserver + a
+        transition, so the compositor owns the animation.
+     3. AMBIENT loops — small, infinite movements (badges, floating cards).
+        Plain @keyframes.
+
+   Tailwind v4 animates `translate`/`rotate`/`scale` as separate properties, so
+   the `transform` used below composes with utility classes instead of fighting
+   them. */
+@keyframes mz-in-up   { from { opacity: 0; transform: translateY(var(--mz-from, 24px)); } to { opacity: 1; transform: none; } }
+@keyframes mz-in-down { from { opacity: 0; transform: translateY(-80px); }        to { opacity: 1; transform: none; } }
+@keyframes mz-in-fade { from { opacity: 0; }                                      to { opacity: 1; } }
+@keyframes mz-in-pop  { from { opacity: 0; transform: rotate(-6deg) scale(0.8); } to { opacity: 1; transform: rotate(-2deg) scale(1); } }
+@keyframes mz-in-scale{ from { opacity: 0; transform: scale(0); }                 to { opacity: 1; transform: scale(1); } }
+@keyframes mz-spin    { to { transform: rotate(360deg); } }
+/* The hero phone settles at a 3deg tilt, so its end state is not `none`. */
+@keyframes mz-in-phone { from { opacity: 0; transform: translateY(80px) rotate(8deg); } to { opacity: 1; transform: rotate(3deg); } }
+@keyframes mz-float-a { 0%, 100% { transform: translateY(0); }   50% { transform: translateY(-12px); } }
+@keyframes mz-float-b { 0%, 100% { transform: translateY(0); }   50% { transform: translateY(10px); } }
+@keyframes mz-breathe { 0%, 100% { transform: scale(1); }        50% { transform: scale(1.025); } }
+
+.mz-in-up    { animation: mz-in-up   var(--mz-dur, 0.8s) cubic-bezier(0.22, 1, 0.36, 1) var(--mz-delay, 0s) both; }
+.mz-in-down  { animation: mz-in-down var(--mz-dur, 0.8s) cubic-bezier(0.22, 1, 0.36, 1) var(--mz-delay, 0s) both; }
+.mz-in-fade  { animation: mz-in-fade var(--mz-dur, 1s)   cubic-bezier(0.22, 1, 0.36, 1) var(--mz-delay, 0s) both; }
+.mz-in-pop   { animation: mz-in-pop  var(--mz-dur, 0.9s) cubic-bezier(0.22, 1, 0.36, 1) var(--mz-delay, 0s) both; }
+.mz-in-scale { animation: mz-in-scale var(--mz-dur, 0.6s) cubic-bezier(0.22, 1, 0.36, 1) var(--mz-delay, 0s) both; }
+.mz-spin     { animation: mz-spin 16s linear infinite; }
+.mz-in-phone { animation: mz-in-phone 1.2s cubic-bezier(0.22, 1, 0.36, 1) var(--mz-delay, 0s) both; }
+.mz-float-a  { animation: mz-float-a 5s ease-in-out infinite; }
+.mz-float-b  { animation: mz-float-b 6s ease-in-out 1s infinite; }
+.mz-breathe  { animation: mz-breathe 2.4s ease-in-out infinite; }
+
+/* ——— Presence: mount/unmount with an exit transition ———
+   Replaces the AnimatePresence + exit pairs. The element stays mounted for the
+   duration of its exit transition, then is removed. */
+.mz-presence { transition: opacity var(--mz-dur, 0.3s) ease, transform var(--mz-dur, 0.3s) ease; }
+.mz-presence[data-state="in"]  { opacity: 1; transform: none; }
+.mz-presence[data-state="out"] { opacity: 0; transform: translateY(-20px) scale(0.97); pointer-events: none; }
+
+/* ——— Accordion ———
+   Animating to height:auto is not possible in CSS, but a grid row can go from
+   0fr to 1fr, which produces the same smooth open/close with no JavaScript and
+   keeps the content mounted (so it stays in the accessibility tree). */
+/* Give the collapsing row a plain wrapper with NO padding: Tailwind's
+   border-box sizing means a padded element cannot shrink below its own padding,
+   so padding directly on the grid child leaves a gap when collapsed. */
+.mz-accordion       { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+.mz-accordion[data-open="true"] { grid-template-rows: 1fr; }
+.mz-accordion > *   { overflow: hidden; min-height: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="mz-in-"], .mz-spin, .mz-float-a, .mz-float-b, .mz-breathe { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .mz-presence { transition: none !important; }
+  .mz-accordion { transition: none !important; }
+}
+
+@keyframes mz-in-right { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+.mz-in-right { animation: mz-in-right var(--mz-dur, 0.5s) cubic-bezier(0.22, 1, 0.36, 1) var(--mz-delay, 0s) both; }
+
+/* ——— Modal ———
+   The overlay and the panel animate separately, so the Presence wrapper itself
+   must not carry a transform. Children read the wrapper's data-state. */
+.mz-modal .mz-modal-overlay { transition: opacity var(--mz-dur, 0.55s) ease; opacity: 0; }
+.mz-modal .mz-modal-sheet   { transition: transform var(--mz-dur, 0.55s) cubic-bezier(0.22, 1, 0.36, 1); transform: translateY(100%); }
+.mz-modal[data-state="in"] .mz-modal-overlay { opacity: 1; }
+.mz-modal[data-state="in"] .mz-modal-sheet   { transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="mz-in-"], .mz-spin, .mz-float-a, .mz-float-b, .mz-breathe { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .mz-modal .mz-modal-overlay, .mz-modal .mz-modal-sheet { transition: none !important; }
+}

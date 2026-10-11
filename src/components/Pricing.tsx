@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { BadgePercent, Check, Lock, XCircle } from "lucide-react";
 import Reveal, { RiseWords } from "./Reveal";
 import { scrollToId } from "./SmoothScroll";
@@ -71,11 +70,9 @@ export default function Pricing() {
           </Reveal>
 
           {/* Paid card */}
-          <motion.div
-            initial={{ opacity: 0, y: 48 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-8% 0px" }}
-            transition={{ duration: 0.85, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          <Reveal
+            delay={0.2}
+            y={48}
             className="relative overflow-hidden rounded-3xl border-2 border-ink bg-ink p-8 text-bone shadow-[12px_12px_0_#ff4d00] md:p-12"
           >
             <span className="absolute right-6 top-6 rotate-3 rounded-full bg-gold px-3.5 py-1.5 font-display text-[10px] font-bold uppercase tracking-[0.14em] text-ink">
@@ -113,7 +110,7 @@ export default function Pricing() {
                 <XCircle className="h-3.5 w-3.5" /> Cancel anytime
               </span>
             </div>
-          </motion.div>
+          </Reveal>
         </div>
 
         <Reveal delay={0.2}>

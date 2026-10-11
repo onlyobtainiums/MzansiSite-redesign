@@ -4,12 +4,9 @@ import Link from "next/link";
 import MzansiLogo from "@/components/MzansiLogo";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { useAuth } from "@/lib/firebase/AuthProvider";
 import ShareLink from "@/components/ShareLink";
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, ShieldCheck, TriangleAlert } from "lucide-react";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 type State = "verifying" | "success" | "failed";
 
@@ -116,11 +113,9 @@ function CallbackContent() {
           }}
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EASE }}
-          className="relative w-full max-w-md rounded-3xl border-2 border-bone/15 bg-ink-soft/80 p-10 text-center backdrop-blur-xl"
+        <div
+          className="mz-in-up relative w-full max-w-md rounded-3xl border-2 border-bone/15 bg-ink-soft/80 p-10 text-center backdrop-blur-xl"
+          style={{ ["--mz-from" as string]: "32px" }}
         >
           {state === "verifying" && (
             <>
@@ -134,14 +129,9 @@ function CallbackContent() {
 
           {state === "success" && (
             <>
-              <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 260, damping: 18 }}
-                className="mx-auto grid h-16 w-16 place-items-center rounded-full border-2 border-wa/40 bg-wa/15"
-              >
+              <span className="mz-in-scale mx-auto grid h-16 w-16 place-items-center rounded-full border-2 border-wa/40 bg-wa/15">
                 <CheckCircle2 className="h-8 w-8 text-wa" />
-              </motion.span>
+              </span>
               <h1 className="mt-6 font-display text-2xl font-extrabold uppercase tracking-tight">
                 {siteName ? `Welcome to the web,` : "You're live"}
               </h1>
@@ -175,7 +165,7 @@ function CallbackContent() {
               </Link>
             </>
           )}
-        </motion.div>
+        </div>
       </main>
     </div>
   );

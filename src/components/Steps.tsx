@@ -1,10 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Eye, Hammer, Rocket } from "lucide-react";
 import Reveal, { RiseWords } from "./Reveal";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 const STEPS = [
   {
@@ -52,17 +49,14 @@ export default function Steps() {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {STEPS.map((step, i) => (
-            <motion.div
-              key={step.n}
-              initial={{ opacity: 0, y: 48 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-8% 0px" }}
-              transition={{ duration: 0.75, delay: i * 0.14, ease: EASE }}
-              whileHover={{ y: -8, rotate: i === 1 ? 0 : i === 0 ? -1 : 1 }}
-              className={`group relative flex min-h-[340px] flex-col justify-between overflow-hidden rounded-3xl border-2 border-ink p-8 transition-shadow duration-300 hover:shadow-[10px_10px_0_#11130c] ${
-                i === 1 ? "bg-ink text-bone" : "bg-white/60"
-              }`}
-            >
+            /* Reveal wraps the card so its inline fade-in transition cannot
+               override the hover lift/skew, which is plain CSS here. */
+            <Reveal key={step.n} delay={i * 0.14} y={48} duration={0.75}>
+              <div
+                className={`group relative flex h-full min-h-[340px] flex-col justify-between overflow-hidden rounded-3xl border-2 border-ink p-8 transition-[translate,box-shadow] duration-300 hover:-translate-y-2 hover:shadow-[10px_10px_0_#11130c] ${
+                  i === 1 ? "bg-ink text-bone" : "bg-white/60"
+                } ${i === 0 ? "hover:-rotate-1" : i === 2 ? "hover:rotate-1" : ""}`}
+              >
               <div className="flex items-start justify-between">
                 <span
                   className={`font-display text-6xl font-extrabold tracking-tight ${
@@ -86,7 +80,8 @@ export default function Steps() {
                 <h3 className="font-display text-3xl font-extrabold tracking-tight">{step.title}</h3>
                 <p className={`mt-3 text-sm leading-relaxed ${i === 1 ? "text-bone/60" : "text-ink/60"}`}>{step.copy}</p>
               </div>
-            </motion.div>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>

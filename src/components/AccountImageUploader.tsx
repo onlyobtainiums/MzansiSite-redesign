@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { Clock3, ImagePlus, Loader2, Trash2, UploadCloud } from "lucide-react";
 import { uploadToCloudinary, type UploadKind } from "@/lib/cloudinary-upload";
 
@@ -129,9 +128,9 @@ export default function AccountImageUploader({
       </div>
 
       {err && (
-        <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="mt-2 text-xs font-medium text-flame-deep">
+        <p className="mz-in-up mt-2 text-xs font-medium text-flame-deep" style={{ ["--mz-dur" as string]: "0.4s", ["--mz-from" as string]: "-4px" }}>
           {err}
-        </motion.p>
+        </p>
       )}
 
       {/* Slots */}

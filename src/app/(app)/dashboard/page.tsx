@@ -4,7 +4,7 @@ import Link from "next/link";
 import MzansiLogo from "@/components/MzansiLogo";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import Presence from "@/components/Presence";
 import {
   ArrowUpRight,
   ExternalLink,
@@ -287,7 +287,7 @@ export default function DashboardPage() {
   /* ——— Dashboard ——— */
   return shell(
     <main className="mx-auto max-w-6xl px-5 py-10 md:px-8 md:py-14">
-      <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: EASE }}>
+      <div className="mz-in-up" style={{ ["--mz-dur" as string]: "0.7s", ["--mz-from" as string]: "24px" }}>
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div>
             <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.24em] text-flame">
@@ -333,11 +333,9 @@ export default function DashboardPage() {
             <Loader2 className="h-8 w-8 animate-spin text-ink/30" />
           </div>
         ) : sites.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-            className="mt-10 grid place-items-center rounded-3xl border-2 border-dashed border-ink/20 bg-white/40 px-8 py-20 text-center"
+          <div
+            className="mz-in-up mt-10 grid place-items-center rounded-3xl border-2 border-dashed border-ink/20 bg-white/40 px-8 py-20 text-center"
+            style={{ ["--mz-dur" as string]: "0.7s", ["--mz-delay" as string]: "0.1s" }}
           >
             <span className="grid h-16 w-16 place-items-center rounded-2xl bg-ink/5">
               <Globe className="h-8 w-8 text-ink/25" />
@@ -353,7 +351,7 @@ export default function DashboardPage() {
             >
               <Plus className="h-4.5 w-4.5" /> Build my first site
             </Link>
-          </motion.div>
+          </div>
         ) : (
           <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {sites.map((site, i) => {
@@ -361,12 +359,10 @@ export default function DashboardPage() {
               const isConfirming = confirmId === site.id;
               const isDeleting = deletingId === site.id;
               return (
-                <motion.article
+                <article
                   key={site.id}
-                  initial={{ opacity: 0, y: 28 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: i * 0.07, ease: EASE }}
-                  className="group relative overflow-hidden rounded-3xl border-2 border-ink/10 bg-white/70 transition-all duration-300 hover:border-ink hover:shadow-[8px_8px_0_#11130c]"
+                  className="mz-in-up group relative overflow-hidden rounded-3xl border-2 border-ink/10 bg-white/70 transition-all duration-300 hover:border-ink hover:shadow-[8px_8px_0_#11130c]"
+                  style={{ ["--mz-dur" as string]: "0.6s", ["--mz-from" as string]: "28px", ["--mz-delay" as string]: `${i * 0.07}s` }}
                 >
                   {/* Hero strip */}
                   <div className="relative h-36 overflow-hidden">
@@ -453,10 +449,9 @@ export default function DashboardPage() {
 
                     {/* Cancel auto-renew confirm */}
                     {confirmCancelId === site.id && site.status === "active" && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        className="overflow-hidden"
+                      <div
+                        className="mz-in-up overflow-hidden"
+                        style={{ ["--mz-dur" as string]: "0.3s", ["--mz-from" as string]: "-8px" }}
                       >
                         <div className="mt-4 rounded-xl border border-wa/40 bg-wa/10 p-4">
                           <p className="text-xs font-semibold text-ink/75">
@@ -480,15 +475,14 @@ export default function DashboardPage() {
                             </button>
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     )}
 
                     {/* Delete confirm */}
                     {isConfirming && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        className="overflow-hidden"
+                      <div
+                        className="mz-in-up overflow-hidden"
+                        style={{ ["--mz-dur" as string]: "0.3s", ["--mz-from" as string]: "-8px" }}
                       >
                         <div className="mt-4 rounded-xl border border-flame/40 bg-flame/10 p-4">
                           <p className="text-xs font-semibold text-ink/75">
@@ -511,18 +505,17 @@ export default function DashboardPage() {
                             </button>
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     )}
                   </div>
-                </motion.article>
+                </article>
               );
             })}
 
             {/* Add-new tile */}
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: sites.length * 0.07, ease: EASE }}
+            <div
+              className="mz-in-up"
+              style={{ ["--mz-dur" as string]: "0.6s", ["--mz-from" as string]: "28px", ["--mz-delay" as string]: `${sites.length * 0.07}s` }}
             >
               <Link
                 href="/dashboard/new"
@@ -536,28 +529,21 @@ export default function DashboardPage() {
                 </span>
                 <span className="text-xs text-ink/35">R149.99/m per published site</span>
               </Link>
-            </motion.div>
+            </div>
           </div>
         )}
-      </motion.div>
+      </div>
 
       {/* ——— Photo manager bottom sheet ——— */}
-      <AnimatePresence>
+      <Presence show={managingId !== null && !!managingSite} duration={550} className="mz-modal">
         {managingId !== null && managingSite && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[70] bg-ink/60 backdrop-blur-sm"
+          <div
+            className="mz-modal-overlay fixed inset-0 z-[70] bg-ink/60 backdrop-blur-sm"
             onClick={() => setManagingId(null)}
           >
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ duration: 0.55, ease: EASE }}
+            <div
               onClick={(e) => e.stopPropagation()}
-              className="absolute inset-x-0 bottom-0 max-h-[88vh] overflow-y-auto rounded-t-[2rem] border-t-2 border-ink bg-bone p-6 pb-10 md:left-auto md:right-6 md:w-[min(560px,100vw-2rem)]"
+              className="mz-modal-sheet absolute inset-x-0 bottom-0 max-h-[88vh] overflow-y-auto rounded-t-[2rem] border-t-2 border-ink bg-bone p-6 pb-10 md:left-auto md:right-6 md:w-[min(560px,100vw-2rem)]"
             >
               <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-ink/15" />
               <div className="flex items-start justify-between gap-4">
@@ -575,15 +561,13 @@ export default function DashboardPage() {
               </div>
 
               {saveMsg && (
-                <motion.p
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`mt-4 rounded-xl px-4 py-3 text-sm font-medium ${
+                <p
+                  className={`mz-in-up mt-4 rounded-xl px-4 py-3 text-sm font-medium ${
                     saveMsg.includes("Photos saved") ? "border border-wa/30 bg-wa/10 text-wa-deep" : "border border-flame/40 bg-flame/10 text-flame-deep"
                   }`}
                 >
                   {saveMsg}
-                </motion.p>
+                </p>
               )}
 
               {/* Logo */}
@@ -631,10 +615,10 @@ export default function DashboardPage() {
                   Close
                 </button>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
+      </Presence>
     </main>,
   );
 }

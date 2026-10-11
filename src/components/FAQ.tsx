@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import Reveal, { RiseWords } from "./Reveal";
@@ -76,30 +75,30 @@ export default function FAQ() {
                       </span>
                       <span className="font-display text-lg font-bold tracking-tight md:text-xl">{faq.q}</span>
                     </span>
-                    <motion.span
-                      animate={{ rotate: isOpen ? 45 : 0 }}
-                      transition={{ duration: 0.4, ease: EASE }}
-                      className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 ${
-                        isOpen ? "border-flame bg-flame text-bone" : "border-ink/15"
+                    <span
+                      className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 transition-[rotate,background-color,border-color] duration-300 ${
+                        isOpen ? "rotate-45 border-flame bg-flame text-bone" : "border-ink/15"
                       }`}
                     >
                       <Plus className="h-4.5 w-4.5" />
-                    </motion.span>
+                    </span>
                   </button>
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.5, ease: EASE }}
-                      >
-                        <p className="max-w-3xl px-6 pb-7 pl-[4.4rem] text-sm leading-relaxed text-bone/70 md:px-8 md:pl-[5.2rem] md:text-base">
-                          {faq.a}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {/*
+                    Grid-rows 0fr -> 1fr animates an open/close without needing
+                    a measured height, and the answer stays mounted, so it is
+                    still read by screen readers and found by Ctrl-F.
+                  */}
+                  <div className="mz-accordion" data-open={isOpen}>
+                    {/* The padding lives on an inner element: the collapsing grid
+                        row is the outer one, and with border-box sizing an
+                        element with padding cannot shrink below that padding —
+                        which left 28px of the answer visible when "closed". */}
+                    <div>
+                      <p className="max-w-3xl px-6 pb-7 pl-[4.4rem] text-sm leading-relaxed text-bone/70 md:px-8 md:pl-[5.2rem] md:text-base">
+                        {faq.a}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </Reveal>
             );

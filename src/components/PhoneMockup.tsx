@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { BadgeCheck, Clock, MapPin, MessageCircle, Share2, Star } from "lucide-react";
 import type { Trade } from "@/data/trades";
 
@@ -117,14 +116,10 @@ export default function PhoneMockup({ trade, businessName, area, className = "" 
 
           {/* Sticky WhatsApp CTA */}
           <div className="absolute inset-x-0 bottom-0 z-10 border-t border-ink/10 bg-white/95 px-3 py-2.5 backdrop-blur">
-            <motion.div
-              animate={{ scale: [1, 1.025, 1] }}
-              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-              className="flex items-center justify-center gap-2 rounded-full bg-wa py-2.5 text-[11px] font-bold text-white shadow-[0_8px_20px_-6px_rgba(31,191,95,0.6)]"
-            >
+            <div className="mz-breathe flex items-center justify-center gap-2 rounded-full bg-wa py-2.5 text-[11px] font-bold text-white shadow-[0_8px_20px_-6px_rgba(31,191,95,0.6)]">
               <MessageCircle className="h-3.5 w-3.5 fill-white" />
               WhatsApp us to book
-            </motion.div>
+            </div>
           </div>
         </div>
 

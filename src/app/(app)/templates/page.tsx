@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, Check, Clock3, Layers } from "lucide-react";
 import { TEMPLATES } from "@/templates/registry";
 import { INDUSTRY_LIST } from "@/templates/industries";
@@ -71,12 +70,12 @@ export default function TemplatesGalleryPage() {
                   (ind) => ind.label,
                 );
                 return (
-                  <motion.article
+                  <Reveal
+                    as="article"
                     key={template.id}
-                    initial={{ opacity: 0, y: 56 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-6% 0px" }}
-                    transition={{ duration: 0.9, delay: 0.08 * i, ease: EASE }}
+                    delay={0.08 * i}
+                    y={56}
+                    duration={0.9}
                     className={`grid grid-cols-1 gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-12 ${i % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""}`}
                   >
                     {/* Preview frame */}
@@ -212,7 +211,7 @@ export default function TemplatesGalleryPage() {
                         )}
                       </div>
                     </div>
-                  </motion.article>
+                  </Reveal>
                 );
               })}
             </div>

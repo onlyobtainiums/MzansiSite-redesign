@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MzansiLogo from "@/components/MzansiLogo";
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import Presence from "@/components/Presence";
 import {
   ArrowLeft,
   ArrowRight,
@@ -17,8 +17,6 @@ import {
   UserRound,
 } from "lucide-react";
 import { useAuth } from "@/lib/firebase/AuthProvider";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 function GoogleMark() {
   return (
@@ -176,11 +174,9 @@ export default function AuthPage() {
           <ArrowLeft className="h-4 w-4" /> Home
         </Link>
 
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EASE }}
-          className="w-full max-w-md"
+        <div
+          className="mz-in-up w-full max-w-md"
+          style={{ ["--mz-from" as string]: "32px" }}
         >
           {/* ——— Firebase not configured ——— */}
           {!configured ? (
@@ -255,14 +251,11 @@ export default function AuthPage() {
                 }}
               >
                 {/* Name (sign-up only) */}
-                <AnimatePresence>
-                  {mode === "signup" && (
-                    <motion.label
+                {mode === "signup" && (
+                    <label
                       key="name"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="block overflow-hidden"
+                      className="mz-in-up block"
+                      style={{ ["--mz-from" as string]: "-8px", ["--mz-dur" as string]: "0.4s" }}
                     >
                       <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-ink/50">
                         Your name
@@ -277,9 +270,8 @@ export default function AuthPage() {
                           autoComplete="name"
                         />
                       </div>
-                    </motion.label>
-                  )}
-                </AnimatePresence>
+                    </label>
+                )}
 
                 {/* Email */}
                 <label className="block">
@@ -330,20 +322,14 @@ export default function AuthPage() {
                 </label>
 
                 {/* Error */}
-                <AnimatePresence>
+                <Presence show={!!localError} duration={250} className="mz-presence">
                   {localError && (
-                    <motion.div
-                      key="error"
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="flex items-start gap-3 rounded-xl border border-flame/40 bg-flame/10 px-4 py-3"
-                    >
+                    <div className="flex items-start gap-3 rounded-xl border border-flame/40 bg-flame/10 px-4 py-3">
                       <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0 text-flame" />
                       <p className="text-sm font-medium text-flame-deep leading-snug">{localError}</p>
-                    </motion.div>
+                    </div>
                   )}
-                </AnimatePresence>
+                </Presence>
 
                 {/* Submit */}
                 <button
@@ -391,7 +377,7 @@ export default function AuthPage() {
               </p>
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );

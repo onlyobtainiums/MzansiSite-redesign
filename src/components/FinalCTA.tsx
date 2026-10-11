@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Marquee from "./Marquee";
 import Reveal, { RiseWords } from "./Reveal";
@@ -38,15 +37,10 @@ export default function FinalCTA() {
               <RiseWords text="before" delay={0.15} />
             </span>{" "}
             <RiseWords text="you pay" delay={0.22} />
-            <motion.span
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.5 }}
-              className="inline-block text-gold"
-            >
+            {/* Decorative full stop — scale-in via CSS, no library. */}
+            <span className="mz-in-scale inline-block text-gold" style={{ ["--mz-delay" as string]: "0.5s" }}>
               .
-            </motion.span>
+            </span>
           </h2>
           <Reveal delay={0.3}>
             <p className="mx-auto mt-8 max-w-xl text-base font-medium leading-relaxed text-bone/80 md:text-lg">

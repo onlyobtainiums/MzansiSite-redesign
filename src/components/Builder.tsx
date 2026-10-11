@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   CheckCircle2,
@@ -154,16 +153,12 @@ export default function Builder() {
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_auto] lg:gap-20">
           {/* ——— Left: form / steps / done ——— */}
           <div className="w-full max-w-xl">
-            <AnimatePresence mode="wait">
               {/* FORM */}
               {stage === "form" && (
-                <motion.div
+                <div
                   key="form"
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -16 }}
-                  transition={{ duration: 0.5, ease: EASE }}
-                  className="space-y-8"
+                  className="mz-in-up space-y-8"
+                  style={{ ["--mz-dur" as string]: "0.5s" }}
                 >
                   {/* ——— Industry picker ——— */}
                   <div>
@@ -269,13 +264,11 @@ export default function Builder() {
                   ))}
 
                   {error && (
-                    <motion.p
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="rounded-xl border border-flame/40 bg-flame/10 px-4 py-3 text-sm font-medium text-flame"
+                    <p
+                      className="mz-in-up rounded-xl border border-flame/40 bg-flame/10 px-4 py-3 text-sm font-medium text-flame"
                     >
                       {error}
-                    </motion.p>
+                    </p>
                   )}
 
                   <div className="flex flex-wrap items-center gap-5 pt-2">
@@ -290,18 +283,15 @@ export default function Builder() {
                       <ShieldCheck className="h-4 w-4 text-wa" /> Free · No card · No strings
                     </p>
                   </div>
-                </motion.div>
+                </div>
               )}
 
               {/* DONE */}
               {stage === "done" && (
-                <motion.div
+                <div
                   key="done"
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -16 }}
-                  transition={{ duration: 0.5, ease: EASE }}
-                  className="space-y-6"
+                  className="mz-in-up space-y-6"
+                  style={{ ["--mz-dur" as string]: "0.5s" }}
                 >
                   {/* Success headline */}
                   <div className="rounded-3xl border border-wa/30 bg-wa/10 p-6 md:p-8">
@@ -360,22 +350,16 @@ export default function Builder() {
                   <p className="text-xs font-medium text-bone/40">
                     Hosting, SSL, unlimited edits and WhatsApp enquiries. Cancel anytime.
                   </p>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
           </div>
 
           {/* ——— Right: live template preview ——— */}
           <div className="relative mx-auto w-full max-w-[360px] lg:sticky lg:top-28 lg:max-w-none lg:w-[420px]">
-            <AnimatePresence mode="wait">
               {stage === "done" ? (
-                <motion.div
+                <div
                   key={`preview-${activeTemplate.id}-${templateIndex}`}
-                  initial={{ opacity: 0, y: 40, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.97 }}
-                  transition={{ duration: 0.55, ease: EASE }}
-                  className="relative"
+                  className="mz-in-up relative" style={{ ["--mz-from" as string]: "40px", ["--mz-dur" as string]: "0.55s" }}
                 >
                   {/* Browser chrome */}
                   <div className="overflow-hidden rounded-2xl border-2 border-bone/20 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.7)]">
@@ -397,14 +381,12 @@ export default function Builder() {
                   </div>
 
                   {/* Template name badge */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3, type: "spring", stiffness: 200, damping: 14 }}
-                    className="absolute -right-3 -top-3 rotate-3 rounded-xl border-2 border-bone/20 bg-ink px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-gold shadow-lg"
+                  <div
+                    className="mz-in-scale absolute -right-3 -top-3 rotate-3 rounded-xl border-2 border-bone/20 bg-ink px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-gold shadow-lg"
+                    style={{ ["--mz-delay" as string]: "0.3s" }}
                   >
                     {activeTemplate.name} design
-                  </motion.div>
+                  </div>
 
                   {/* Prev / Next arrows */}
                   <div className="mt-4 flex items-center justify-between">
@@ -432,15 +414,12 @@ export default function Builder() {
                       See the next design
                     </button>
                   </p>
-                </motion.div>
+                </div>
               ) : (
                 /* Placeholder while form is open */
-                <motion.div
+                <div
                   key="placeholder"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="overflow-hidden rounded-2xl border-2 border-dashed border-bone/15 bg-bone/[0.03]"
+                  className="mz-in-fade overflow-hidden rounded-2xl border-2 border-dashed border-bone/15 bg-bone/[0.03]"
                 >
                   <div className="relative">
                     <div className="pointer-events-none opacity-30 blur-[1px]">
@@ -459,9 +438,8 @@ export default function Builder() {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
           </div>
         </div>
       </div>

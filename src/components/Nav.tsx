@@ -1,26 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+
 import { ArrowUpRight, LayoutDashboard, UserRound } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/firebase/AuthProvider";
 import MzansiLogo from "./MzansiLogo";
 import { scrollToId } from "./SmoothScroll";
 
 export default function Nav() {
-  const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const { user } = useAuth();
 
-  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 40));
+  /*
+   * A passive scroll listener replaces framer-motion's scroll value. Passive
+   * means the browser never has to wait for this handler before scrolling, and
+   * it only ever flips a boolean, so it does no work per frame.
+   */
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <motion.header
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+    <header
+      style={{ ["--mz-delay" as string]: "0.2s" }}
+      className={`mz-in-down fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
         scrolled ? "bg-bone/85 shadow-[0_1px_0_rgba(17,19,12,0.1)] backdrop-blur-xl" : "bg-transparent"
       }`}
     >
@@ -76,6 +83,6 @@ export default function Nav() {
           </button>
         </div>
       </nav>
-    </motion.header>
+    </header>
   );
 }

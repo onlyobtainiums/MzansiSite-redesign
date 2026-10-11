@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   BadgeCheck,
   Banknote,
@@ -11,8 +10,6 @@ import {
   Info,
 } from "lucide-react";
 import Reveal, { RiseWords } from "./Reveal";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 const CELLS = [
   {
@@ -83,17 +80,11 @@ export default function Includes() {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {CELLS.map((cell, i) => (
-            <motion.div
-              key={cell.title}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-8% 0px" }}
-              transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
-              whileHover={{ y: -6 }}
-              className={`group relative overflow-hidden rounded-3xl border-2 border-ink/10 bg-white/60 p-7 transition-colors duration-300 hover:border-ink ${
-                cell.big ? "sm:col-span-2" : ""
-              }`}
-            >
+            /* The reveal and the hover lift live on separate elements: Reveal sets
+               an inline `transition` for the fade-in, which would otherwise
+               override the utility that transitions the hover. */
+            <Reveal key={cell.title} delay={i * 0.08} y={40} className={cell.big ? "sm:col-span-2" : ""}>
+              <div className="group relative h-full overflow-hidden rounded-3xl border-2 border-ink/10 bg-white/60 p-7 transition-[translate,border-color] duration-300 hover:-translate-y-1.5 hover:border-ink">
               <div
                 className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-flame/0 blur-2xl transition-all duration-500 group-hover:bg-flame/15"
                 aria-hidden
@@ -104,7 +95,8 @@ export default function Includes() {
               <h3 className="font-display text-xl font-extrabold tracking-tight md:text-2xl">{cell.title}</h3>
               <p className="mt-2.5 max-w-sm text-sm leading-relaxed text-ink/60">{cell.copy}</p>
               <BadgeCheck className="absolute bottom-6 right-6 h-5 w-5 text-ink/10 transition-colors duration-300 group-hover:text-wa" />
-            </motion.div>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>
