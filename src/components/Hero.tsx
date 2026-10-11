@@ -96,7 +96,17 @@ export default function Hero() {
               space). The desktop sizes are unchanged because there the layout
               is two columns and the headline is not clipped.
             */}
-            <h1 className="font-display text-[9.4vw] font-extrabold uppercase leading-[0.88] tracking-tight sm:text-[9.6vw] lg:text-[6.6vw] xl:text-[6.2rem]">
+                        {/*
+              Sized from the box it has to fit, not from a fixed vw. "WHATSAPP"
+              is one unbreakable word measuring 9.6em in the display face, and
+              the container is 100vw minus 40px of padding below md and 80px
+              above it. A flat 9.4vw/9.6vw therefore outgrew its own column:
+              measured 9px over at 320px and 19px over at 768px, so the headline
+              pushed into the right padding instead of lining up with the rest
+              of the page. Dividing the available width by 9.8 (a shade more
+              than the real 9.6em) keeps it inside at every width.
+            */}
+            <h1 className="font-display text-[calc((100vw_-_40px)/9.8)] font-extrabold uppercase leading-[0.88] tracking-tight sm:text-[9.6vw] md:text-[calc((100vw_-_80px)/9.8)] lg:text-[6.6vw] xl:text-[6.2rem]">
             <RiseWords text="Your WhatsApp" delay={0.45} />
             <br />
             <RiseWords text="is a business." delay={0.62} />
