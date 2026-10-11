@@ -5,6 +5,7 @@ import MzansiLogo from "@/components/MzansiLogo";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/lib/firebase/AuthProvider";
 import { ArrowLeft, CheckCircle2, Loader2, ShieldCheck, TriangleAlert } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -14,6 +15,7 @@ type State = "verifying" | "success" | "failed";
 function CallbackContent() {
   const router = useRouter();
   const params = useSearchParams();
+  const { getToken } = useAuth();
   const reference = params.get("reference") ?? params.get("trxref");
   const siteId = params.get("siteId") ? Number(params.get("siteId")) : undefined;
 
@@ -34,10 +36,37 @@ function CallbackContent() {
 
     void (async () => {
       try {
-        // Verify server-side — the token lives in the browser session via cookies
+        /*
+         * This app authenticates with a Firebase ID token in the Authorization
+         * header — there is no cookie-based session. Sending the request without
+         * it made the server answer 401 "Sign in to continue." to a customer who
+         * was already signed in, right after they had paid.
+         *
+         * The token can also be briefly unavailable: returning from Paystack is
+         * a full page load, and Firebase restores the session asynchronously. So
+         * retry a few times before concluding anything.
+         */
+        let token: string | null = null;
+        for (let attempt = 0; attempt < 6 && !token; attempt++) {
+          token = await getToken();
+          if (!token) await new Promise((r) => setTimeout(r, 300 * (attempt + 1)));
+        }
+
+        if (!token) {
+          setState("failed");
+          setMessage(
+            "We couldn't confirm your session, so your payment hasn't been applied yet. " +
+              "Your money is safe — refresh this page to finish, or sign in and open your dashboard.",
+          );
+          return;
+        }
+
         const res = await fetch("/api/paystack/verify", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ reference, siteId }),
         });
         const ct = res.headers.get("content-type") || "";
@@ -56,7 +85,7 @@ function CallbackContent() {
         setMessage(e instanceof Error ? e.message : "Payment could not be verified — contact support if you were charged.");
       }
     })();
-  }, [reference, siteId, router]);
+  }, [reference, siteId, router, getToken]);
 
   return (
     <div className="grain relative min-h-screen bg-ink text-bone">

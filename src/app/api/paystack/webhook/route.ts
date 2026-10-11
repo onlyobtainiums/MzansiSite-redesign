@@ -3,6 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { payments, sites, subscriptions } from "@/db/schema";
 import { verifyWebhookSignature, type PaystackWebhookEvent } from "@/lib/paystack";
+import { PLAN } from "@/lib/billing";
 
 /**
  * Paystack sends this on every subscription event — most importantly the
@@ -29,42 +30,86 @@ export async function POST(request: Request) {
     switch (event.event) {
       /* ——— Successful monthly invoice ——— */
       case "charge.success": {
-        // Persist the recurring payment
+        const paidAt = event.data.paid_at ? new Date(event.data.paid_at) : new Date();
+
+        /*
+         * The site this charge belongs to. /paystack/initialize puts siteId in
+         * the transaction metadata, so the webhook can identify the customer
+         * even when the browser never comes back to our callback page.
+         */
+        const meta = (event.data.metadata ?? {}) as Record<string, unknown>;
+        const metaSiteId = typeof meta.siteId === "number" ? meta.siteId : null;
+
+        // Record the payment. An initial charge usually already has a 'pending'
+        // row created by /paystack/initialize, so the insert alone (which
+        // conflicts and does nothing) would leave it pending forever.
         await db
           .insert(payments)
           .values({
             paystackReference: event.data.reference,
+            siteId: metaSiteId,
             amountCents: event.data.amount,
             currency: "ZAR",
             status: "success",
-            paidAt: event.data.paid_at ? new Date(event.data.paid_at) : new Date(),
+            paidAt,
           })
           .onConflictDoNothing();
 
-        // Keep subscription current + publish the linked site
+        await db
+          .update(payments)
+          .set({ status: "success", paidAt })
+          .where(eq(payments.paystackReference, event.data.reference));
+
+        let siteIdToActivate: number | null = metaSiteId;
+
+        // Keep the subscription current + publish the linked site
         if (sub?.subscription_code) {
           const nextPayment = sub.next_payment_date ? new Date(sub.next_payment_date) : undefined;
-          await db
-            .update(subscriptions)
-            .set({
-              status: "active",
-              nextPaymentDate: nextPayment,
-              updatedAt: new Date(),
-            })
-            .where(eq(subscriptions.paystackSubscriptionCode, sub.subscription_code));
 
-          const [subRow] = await db
+          const [existing] = await db
             .select()
             .from(subscriptions)
             .where(eq(subscriptions.paystackSubscriptionCode, sub.subscription_code))
             .limit(1);
 
-          if (subRow?.siteId) {
+          if (existing) {
             await db
-              .update(sites)
-              .set({ status: "active", updatedAt: new Date() })
-              .where(eq(sites.id, subRow.siteId));
+              .update(subscriptions)
+              .set({
+                status: "active",
+                nextPaymentDate: nextPayment,
+                updatedAt: new Date(),
+              })
+              .where(eq(subscriptions.id, existing.id));
+            siteIdToActivate = siteIdToActivate ?? existing.siteId;
+          } else if (metaSiteId) {
+            /*
+             * No subscription row yet. That normally means the browser never
+             * completed the redirect back to /dashboard/billing/callback (tab
+             * closed, session expired, verification failed) — so the customer
+             * paid but nothing was recorded. Build the row from webhook data so
+             * a paying customer is never left with an inactive site.
+             */
+            await db
+              .insert(subscriptions)
+              .values({
+                siteId: metaSiteId,
+                planCode: PLAN.code,
+                status: "active",
+                paystackCustomerCode: event.data.customer.customer_code,
+                paystackSubscriptionCode: sub.subscription_code,
+                paystackEmailToken: sub.email_token,
+                nextPaymentDate: nextPayment,
+              })
+              .onConflictDoNothing();
           }
+        }
+
+        if (siteIdToActivate) {
+          await db
+            .update(sites)
+            .set({ status: "active", updatedAt: new Date() })
+            .where(eq(sites.id, siteIdToActivate));
         }
         break;
       }

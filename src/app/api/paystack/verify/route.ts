@@ -5,6 +5,7 @@ import { payments, sites, subscriptions, users } from "@/db/schema";
 import { verifyTransaction } from "@/lib/paystack";
 import { PLAN } from "@/lib/billing";
 import { AuthError } from "@/lib/firebase/server";
+import { getAuthedUser } from "@/server/auth";
 
 interface VerifyBody {
   reference?: string;
@@ -17,10 +18,12 @@ interface VerifyBody {
  */
 export async function POST(request: Request) {
   try {
-    const header = request.headers.get("authorization") ?? "";
-    if (!header.startsWith("Bearer ")) {
-      return NextResponse.json({ ok: false, error: "Sign in to continue." }, { status: 401 });
-    }
+    /*
+     * Verify the Firebase ID token properly — not merely that a Bearer-shaped
+     * header was sent. The previous check only tested `startsWith("Bearer ")`,
+     * so any made-up string passed and could activate someone else's site.
+     */
+    const user = await getAuthedUser(request);
 
     const body = (await request.json().catch(() => null)) as VerifyBody | null;
     const reference = body?.reference?.trim();
@@ -44,7 +47,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "Payment was not successful — try again." }, { status: 402 });
     }
 
-    // Resolve the site from payment metadata
+    // Resolve the site from payment metadata — and confirm it belongs to the
+    // caller, so a valid token cannot be used to activate another user's site.
     const siteId =
       body?.siteId ??
       (tx.data.metadata && typeof tx.data.metadata.siteId === "number" ? tx.data.metadata.siteId : null);
@@ -52,7 +56,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "Could not match the payment to a site." }, { status: 400 });
     }
 
-    const [site] = await db.select().from(sites).where(eq(sites.id, siteId)).limit(1);
+    const [site] = await db
+      .select()
+      .from(sites)
+      .where(and(eq(sites.id, siteId), eq(sites.userId, user.id)))
+      .limit(1);
     if (!site) return NextResponse.json({ ok: false, error: "Site not found." }, { status: 404 });
 
     // Claim the payment record
@@ -75,9 +83,33 @@ export async function POST(request: Request) {
 
     if (subscriptionCode) {
       const emailToken = tx.data.subscription!.email_token;
-      await db
-        .insert(subscriptions)
-        .values({
+
+      /*
+       * Idempotent on purpose. The Paystack webhook can arrive before this
+       * callback completes and create the same subscription row, so check for
+       * an existing one instead of inserting blindly — the previous
+       * onConflictDoNothing({ target: subscriptions.id }) could never fire,
+       * because `id` is a serial that never collides.
+       */
+      const [already] = await db
+        .select()
+        .from(subscriptions)
+        .where(eq(subscriptions.paystackSubscriptionCode, subscriptionCode))
+        .limit(1);
+
+      if (already) {
+        await db
+          .update(subscriptions)
+          .set({
+            status: "active",
+            paystackCustomerCode: customerCode,
+            paystackEmailToken: emailToken,
+            nextPaymentDate: nextPayment,
+            updatedAt: new Date(),
+          })
+          .where(eq(subscriptions.id, already.id));
+      } else {
+        await db.insert(subscriptions).values({
           siteId,
           planCode: PLAN.code,
           status: "active",
@@ -86,8 +118,8 @@ export async function POST(request: Request) {
           paystackEmailToken: emailToken,
           nextPaymentDate: nextPayment,
           createdAt: new Date(),
-        })
-        .onConflictDoNothing({ target: subscriptions.id });
+        });
+      }
     }
 
     // Go live
