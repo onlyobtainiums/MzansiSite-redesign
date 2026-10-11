@@ -21,12 +21,20 @@ export async function apiFetch<T = Record<string, unknown>>(
       console.error(`[apiFetch] Response body (first 300 chars): ${text.slice(0, 300)}`);
     }
 
+    /*
+     * The status code matters for diagnosis:
+     *   504 = the platform killed the function (usually a timeout or a hang)
+     *   500 = the function itself crashed before it could answer
+     * Keeping the code in the message means the user can tell us which one.
+     */
     throw new Error(
       res.status === 500
-        ? "Server error — check Vercel Function Logs for details."
-        : res.status === 404
-          ? `API route not found: ${url}`
-          : `Server returned HTTP ${res.status} (not JSON). Check server logs.`,
+        ? "Server error (HTTP 500) — check Vercel Function Logs for details."
+        : res.status === 504
+          ? "Request timed out (HTTP 504) — the server took too long. Check Vercel Function Logs."
+          : res.status === 404
+            ? `API route not found: ${url}`
+            : `Server returned HTTP ${res.status} (not JSON). Check server logs.`,
     );
   }
 

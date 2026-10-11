@@ -31,10 +31,13 @@ function getPool(): Pool {
   const pool = new Pool({
     connectionString: databaseUrl,
     max: 5, // Vercel serverless: keep pool small
-    // Don't hang forever if the database is unreachable — without this,
-    // connect_timeout defaults to 0 (infinite) and the request hangs until the
-    // serverless function itself times out.
-    connectionTimeoutMillis: 10_000,
+    // Fail fast if the database is unreachable. `pg` defaults this to 0
+    // (infinite), so a request would hang until the platform kills the
+    // function — and a platform kill returns a non-JSON error page, which the
+    // UI reports as the unhelpful "Server error — check Vercel Function Logs".
+    // 5s leaves room for cold start + auth on Vercel's shorter timeout tiers,
+    // so the route's own catch block wins and the user gets a real message.
+    connectionTimeoutMillis: 5_000,
     // Drop idle sockets ourselves before the database, Vercel, or an upstream
     // NAT kills them from under us. Keeps the pool from holding dead clients.
     idleTimeoutMillis: 30_000,

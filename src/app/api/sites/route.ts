@@ -7,6 +7,7 @@ import { AuthError } from "@/lib/firebase/server";
 import { INDUSTRIES } from "@/templates/industries";
 import { getDemoSiteData } from "@/templates/demo-data";
 import { makeSlug } from "@/lib/slug";
+import { describeError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,9 @@ export async function GET(request: Request) {
       const status = error.code === "not-configured" ? 503 : 401;
       return jsonError(error.message, status);
     }
-    const msg = error instanceof Error ? error.message : "Unknown error";
+    // describeError() unwraps Drizzle's "Failed query:" wrapper to the real
+    // cause, so a database problem is obvious in the UI instead of generic.
+    const msg = describeError(error);
     console.error("List sites failed:", msg, error);
     return jsonError(`Could not load your sites: ${msg}`, 500);
   }
@@ -121,7 +124,7 @@ export async function POST(request: Request) {
       const status = error.code === "not-configured" ? 503 : 401;
       return jsonError(error.message, status);
     }
-    const msg = error instanceof Error ? error.message : "Unknown error";
+    const msg = describeError(error);
     console.error("Create site failed:", msg, error);
     return jsonError(`Could not create your site: ${msg}`, 500);
   }
