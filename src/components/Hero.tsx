@@ -74,38 +74,17 @@ export default function Hero() {
       <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 items-center gap-10 px-5 pb-16 pt-6 md:px-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-4 lg:pb-20">
         {/* ——— Copy ——— */}
         <div className="relative z-10 pt-6 lg:pt-10">
-          <div
-            className="mz-in-up mb-7 inline-flex items-center gap-2.5 rounded-full border-2 border-ink bg-bone px-4 py-2 shadow-[4px_4px_0_#11130c]"
-            style={{ ["--mz-delay" as string]: "0.35s", ["--mz-from" as string]: "18px" }}
-          >
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-wa opacity-70" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-wa" />
-            </span>
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] md:text-xs">
-              The website builder for SA small business
-            </span>
-          </div>
-
           {/*
-              Sizes are dictated by the longest unbreakable word, not by taste.
-              "WHATSAPP" renders 9.6em wide in this face, and a phone leaves
-              100vw - 40px of room, so anything above ~9.5vw pushes it past the
-              edge — where the section's overflow-hidden cut it in half (at
-              15vw on a 390px screen "WHATSAPP" was 562px wide in a 350px
-              space). The desktop sizes are unchanged because there the layout
-              is two columns and the headline is not clipped.
-            */}
-                        {/*
-              Sized from the box it has to fit, not from a fixed vw. "WHATSAPP"
-              is one unbreakable word measuring 9.6em in the display face, and
-              the container is 100vw minus 40px of padding below md and 80px
-              above it. A flat 9.4vw/9.6vw therefore outgrew its own column:
-              measured 9px over at 320px and 19px over at 768px, so the headline
-              pushed into the right padding instead of lining up with the rest
-              of the page. Dividing the available width by 9.8 (a shade more
-              than the real 9.6em) keeps it inside at every width.
-            */}
+            Sizes are dictated by the longest unbreakable word, not by taste.
+            "WHATSAPP" renders 9.6em wide in the display face and cannot break,
+            and the container is 100vw minus 40px of padding below md and 80px
+            above it — so a flat vw outgrows its own column: 9.4vw measured 9px
+            over at 320px and 19px over at 768px, pushing the word into the
+            right padding instead of lining it up with the rest of the page.
+            Dividing the available width by 9.8 (a shade more than the real
+            9.6em) keeps it inside at every width from 320px to 1920px. Desktop
+            keeps its fixed sizes because there the layout is two columns.
+          */}
             <h1 className="font-display text-[calc((100vw_-_40px)/9.8)] font-extrabold uppercase leading-[0.88] tracking-tight sm:text-[9.6vw] md:text-[calc((100vw_-_80px)/9.8)] lg:text-[6.6vw] xl:text-[6.2rem]">
             <RiseWords text="Your WhatsApp" delay={0.45} />
             <br />
