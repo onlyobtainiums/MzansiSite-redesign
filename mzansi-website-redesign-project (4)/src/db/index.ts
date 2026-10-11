@@ -31,6 +31,39 @@ function getPool(): Pool {
   const pool = new Pool({
     connectionString: databaseUrl,
     max: 5, // Vercel serverless: keep pool small
+    // Don't hang forever if the database is unreachable — without this,
+    // connect_timeout defaults to 0 (infinite) and the request hangs until the
+    // serverless function itself times out.
+    connectionTimeoutMillis: 10_000,
+    // Drop idle sockets ourselves before the database, Vercel, or an upstream
+    // NAT kills them from under us. Keeps the pool from holding dead clients.
+    idleTimeoutMillis: 30_000,
+    allowExitOnIdle: true,
+  });
+
+  /**
+   * CRITICAL — this listener is what stops the serverless function from being
+   * killed, and its absence was the cause of the
+   * "Server error — check Vercel Function Logs for details." screen.
+   *
+   * `pg` emits an `error` event on the Pool when a client that is sitting
+   * IDLE loses its connection. That happens routinely in production: the
+   * database restarts or hits its idle timeout, and on Vercel the platform
+   * freezes/suspends the function instance between requests, so the pooled TCP
+   * connection is already dead the next time the instance is woken up.
+   *
+   * Node treats an `'error'` event with no registered listener as an uncaught
+   * exception and TERMINATES the process. The crash happens asynchronously,
+   * outside any request handler, so no `try/catch` in a route can ever catch
+   * it — the platform just returns its non-JSON 500 crash page, which
+   * `apiFetch()` renders as "Server error — check Vercel Function Logs".
+   *
+   * Attaching a listener downgrades that crash to a logged warning. The dead
+   * client is evicted from the pool automatically and the next query simply
+   * opens a fresh connection.
+   */
+  pool.on("error", (err) => {
+    console.error("[db] Idle client error (pool recovered):", err.message);
   });
 
   // Cache in ALL environments (including production on Vercel)
