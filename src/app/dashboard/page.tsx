@@ -26,6 +26,7 @@ import type { Site } from "@/db/schema";
 import { TEMPLATES } from "@/templates/registry";
 import { industryLabel } from "@/templates/industries";
 import AccountImageUploader, { type LocalImage } from "@/components/AccountImageUploader";
+import ShareLink from "@/components/ShareLink";
 import { formatRand, PLAN } from "@/lib/billing";
 import { siteHost } from "@/lib/domain";
 
@@ -393,7 +394,17 @@ export default function DashboardPage() {
                     <p className="mt-0.5 truncate text-xs font-medium text-ink/50">
                       {industryLabel(site.industry)} · {site.area}
                     </p>
-                    <p className="mt-1 truncate font-mono text-[10px] text-ink/35">{siteHost(site.slug)}</p>
+                      {/*
+                       * A published site's whole point is the link — it gets
+                       * a full copy/share block. A draft has no public address
+                       * yet, so it keeps the quiet grey hint instead of offering
+                       * a link that would just 404.
+                       */}
+                      {site.status === "active" ? (
+                        <ShareLink slug={site.slug} className="mt-4" />
+                      ) : (
+                        <p className="mt-1 truncate font-mono text-[10px] text-ink/35">{siteHost(site.slug)}</p>
+                      )}
 
                     {/* Actions */}
                     <div className="mt-5 flex items-center gap-2">

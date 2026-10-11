@@ -2,19 +2,18 @@
 
 import Link from "next/link";
 import MzansiLogo from "@/components/MzansiLogo";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/firebase/AuthProvider";
-import { siteHost } from "@/lib/domain";
-import { ArrowLeft, CheckCircle2, Loader2, ShieldCheck, TriangleAlert } from "lucide-react";
+import ShareLink from "@/components/ShareLink";
+import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, ShieldCheck, TriangleAlert } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 type State = "verifying" | "success" | "failed";
 
 function CallbackContent() {
-  const router = useRouter();
   const params = useSearchParams();
   const { getToken } = useAuth();
   const reference = params.get("reference") ?? params.get("trxref");
@@ -23,6 +22,7 @@ function CallbackContent() {
   const [state, setState] = useState<State>("verifying");
   const [message, setMessage] = useState("Confirming your payment with Paystack…");
   const [siteName, setSiteName] = useState<string | null>(null);
+  const [slug, setSlug] = useState<string | null>(null);
   const ran = useRef(false);
 
   useEffect(() => {
@@ -78,15 +78,22 @@ function CallbackContent() {
         if (!res.ok || !data.ok) throw new Error(data.error ?? "Payment could not be verified.");
 
         setState("success");
-        setMessage(`${data.site.businessName} is now live at ${siteHost(data.site.slug)}`);
+        setMessage("Your site is live. Send the link to your customers.");
         setSiteName(data.site.businessName);
-        setTimeout(() => router.replace("/dashboard"), 2500);
+        setSlug(data.site.slug);
+        /*
+         * Deliberately no auto-redirect. This screen is the first place a
+         * customer sees their public link, and the next thing they do is paste
+         * it into WhatsApp — bouncing them to the dashboard after 2.5 seconds
+         * took the link away before they could copy it. They leave via the
+         * button instead.
+         */
       } catch (e) {
         setState("failed");
         setMessage(e instanceof Error ? e.message : "Payment could not be verified — contact support if you were charged.");
       }
     })();
-  }, [reference, siteId, router, getToken]);
+  }, [reference, siteId, getToken]);
 
   return (
     <div className="grain relative min-h-screen bg-ink text-bone">
@@ -140,9 +147,16 @@ function CallbackContent() {
               </h1>
               {siteName && <p className="mt-1 font-serif text-3xl italic text-flame">{siteName}</p>}
               <p className="mt-3 text-sm text-bone/60">{message}</p>
+              {slug && <ShareLink slug={slug} tone="dark" className="mt-6 text-left" />}
               <p className="mt-5 flex items-center justify-center gap-2 text-xs text-bone/40">
-                <ShieldCheck className="h-4 w-4 text-wa" /> Subscription active · R149.99/month · Redirecting you…
+                <ShieldCheck className="h-4 w-4 text-wa" /> Subscription active · R149.99/month
               </p>
+              <Link
+                href="/dashboard"
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-flame px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.14em] text-bone transition-all duration-300 hover:-translate-y-0.5"
+              >
+                Go to dashboard <ArrowRight className="h-4 w-4" />
+              </Link>
             </>
           )}
 

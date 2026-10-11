@@ -29,7 +29,7 @@ export const TRADES: Record<TradeKey, Trade> = {
     area: "Soweto, Johannesburg",
     blurb: "Knotless braids, installs and treatments — book your chair before it's gone.",
     image:
-      "https://images.pexels.com/photos/28383173/pexels-photo-28383173.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800",
+      "https://images.pexels.com/photos/28383173/pexels-photo-28383173.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
     accent: "#c96f3f",
     services: [
       { name: "Knotless braids", price: "R450" },
@@ -49,7 +49,7 @@ export const TRADES: Record<TradeKey, Trade> = {
     area: "Khayelitsha, Cape Town",
     blurb: "Sharp fades, clean shaves and beard sculpting. Walk out a new person.",
     image:
-      "https://images.pexels.com/photos/19140178/pexels-photo-19140178.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800",
+      "https://images.pexels.com/photos/19140178/pexels-photo-19140178.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
     accent: "#7a8b6f",
     services: [
       { name: "Skin fade", price: "R120" },
@@ -69,7 +69,7 @@ export const TRADES: Record<TradeKey, Trade> = {
     area: "Umhlanga, Durban",
     blurb: "Massage, facials and glow treatments in a space made for switching off.",
     image:
-      "https://images.pexels.com/photos/6186744/pexels-photo-6186744.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800",
+      "https://images.pexels.com/photos/6186744/pexels-photo-6186744.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
     accent: "#a3856a",
     services: [
       { name: "Full-body massage", price: "R550" },
@@ -89,7 +89,7 @@ export const TRADES: Record<TradeKey, Trade> = {
     area: "Centurion, Pretoria",
     blurb: "Geysers, leaks and blockages — sorted same-day, guaranteed for 6 months.",
     image:
-      "https://images.pexels.com/photos/5463580/pexels-photo-5463580.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800",
+      "https://images.pexels.com/photos/5463580/pexels-photo-5463580.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
     accent: "#4a6b8a",
     services: [
       { name: "Call-out fee", price: "R450" },

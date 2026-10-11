@@ -4,13 +4,13 @@ type DemoInput = Partial<SiteData> & { industry: string };
 
 /* ——— Pexels URL helpers ——— */
 const px = (id: number, w = 800, h = 1200) =>
-  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=${h}&w=${w}`;
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=${h}&w=${w}&fm=webp`;
 const pxWide = (id: number) =>
-  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200`;
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200&fm=webp`;
 const pxSq = (id: number) =>
-  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=900`;
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=900&fm=webp`;
 const pxT = (id: number) =>
-  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800`;
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp`;
 
 /* ——— Photo ID banks per category ——— */
 // Beauty
@@ -1425,6 +1425,27 @@ export function getDemoSiteData(input: DemoInput): SiteData {
   const key = FALLBACK[input.industry] ?? "hairSalon";
   const base = BASE[key] ?? BASE.hairSalon;
   const copy = COPY[key] ?? DEFAULT_COPY;
+
+  /*
+   * Drop the keys the caller left undefined before spreading.
+   *
+   * The caller maps nullable database columns like this:
+   *     whatsapp: site.whatsapp ?? undefined
+   * so a site with no WhatsApp number arrives as `{ whatsapp: undefined }`.
+   * A plain `...input` would then OVERWRITE the demo default from `base` with
+   * undefined — and templates legitimately assume these are strings, e.g.
+   *     site.whatsapp.replace(/\D/g, "")
+   * which threw "Cannot read properties of undefined (reading 'replace')" and
+   * returned a 500 on a customer's own live site. Only spread values that
+   * actually exist, so a missing field falls back to the industry default
+   * instead of blanking out or crashing the page.
+   *
+   * The three structured fields are still normalised explicitly below.
+   */
+  const provided = Object.fromEntries(
+    Object.entries(input).filter(([, value]) => value !== undefined),
+  ) as Partial<SiteData>;
+
   return {
     ...base,
     serviceNoun: copy.serviceNoun,
@@ -1433,7 +1454,7 @@ export function getDemoSiteData(input: DemoInput): SiteData {
     reviewHeading: copy.reviewHeading,
     reviewItems: copy.reviewItems,
     guarantee: copy.guarantee,
-    ...input,
+    ...provided,
     industry: input.industry,
     galleryUrls: (input.galleryUrls ?? base.galleryUrls).slice(0, 6),
     services: input.services ?? base.services,
