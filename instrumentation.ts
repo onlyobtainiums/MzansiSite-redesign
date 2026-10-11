@@ -1,14 +1,23 @@
 /**
- * Next.js instrumentation hook — runs once per server start.
+ * Next.js instrumentation hook.
  *
- * `onRequestError` fires for EVERY unhandled server error, and logs the full
- * stack to the platform logs (Vercel → your project → Logs). Without this,
- * a crash can surface only as a generic error page with nothing useful in the
- * console, which is exactly the situation that made
- * "Server error — check Vercel Function Logs for details." impossible to debug.
- *
- * Errors we already handle and log ourselves (see the [db] prefixed lines in
- * src/db/index.ts) will not appear here — only genuinely unhandled ones.
+ * This file is compiled for BOTH the Node.js and Edge runtimes, so it must not
+ * reference Node-only APIs directly — those live in ./instrumentation-node and
+ * are imported only when actually running on Node.
+ */
+
+export async function register() {
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    const { installCrashLogging } = await import("./instrumentation-node");
+    installCrashLogging();
+  }
+}
+
+/**
+ * `onRequestError` fires for EVERY unhandled server error and logs the full
+ * stack to the platform logs (Vercel → your project → Logs). Errors we already
+ * handle and log ourselves (see the [db] prefixed lines in src/db/index.ts)
+ * will not appear here — only genuinely unhandled ones.
  */
 export async function onRequestError(
   error: unknown,
