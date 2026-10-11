@@ -103,6 +103,24 @@ html.lenis, html.lenis body { height: auto; }
 }
 .marquee-track.slow { animation: var(--animate-marquee-slow); }
 
+/* ——— Phone mockup screen ———
+   The mockup's screen is a nested scroller so the demo site can be scrolled
+   with a mouse. On a touch device it must not be: a thumb landing on the phone
+   scrolls the fake screen instead of the page, and `overscroll-behavior:
+   contain` then stops that scroll from chaining, so the page appears to jam
+   exactly where the phone sits. Touch devices scroll the page; only a precise
+   pointer gets to scroll the demo. */
+.phone-screen {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@media (pointer: coarse) {
+  .phone-screen {
+    overflow: hidden;
+    overscroll-behavior: auto;
+  }
+}
+
 /* ——— Phone mockup shadow ——— */
 .phone-shell {
   box-shadow:

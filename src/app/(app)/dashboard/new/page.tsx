@@ -3,7 +3,7 @@
 import Link from "next/link";
 import MzansiLogo from "@/components/MzansiLogo";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -71,6 +71,26 @@ export default function NewSiteWizard() {
   const fail = (msg: string) => { setError(msg); return false; };
 
   const next = () => { if (validateStep()) setStep((s) => Math.min(3, s + 1)); };
+
+  /*
+   * Step 1 is nothing but the industry grid, so once an industry is picked the
+   * only thing left to do on that step is press Continue — and Continue sits
+   * below the grid, well off-screen (measured: ~4,700px down on a 390px-wide
+   * phone). Choosing an industry now brings it into view, so the form moves
+   * forward on its own instead of leaving the user to hunt for the button.
+   */
+  const footerRef = useRef<HTMLDivElement>(null);
+
+  const pickIndustry = (key: string) => {
+    setIndustry(key);
+    // Wait for the selection state to paint before measuring where to land.
+    requestAnimationFrame(() => {
+      footerRef.current?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        block: "center",
+      });
+    });
+  };
 
   const create = async () => {
     const token = await getToken();
@@ -157,7 +177,7 @@ export default function NewSiteWizard() {
                   return (
                     <button
                       key={ind.key}
-                      onClick={() => setIndustry(ind.key)}
+                      onClick={() => pickIndustry(ind.key)}
                       className={`group flex items-center justify-between rounded-2xl border-2 px-4.5 py-3.5 text-left transition-all duration-300 ${
                         active ? "border-ink bg-ink text-bone shadow-[5px_5px_0_#ff4d00]" : "border-ink/12 bg-white/60 hover:border-ink"
                       }`}
@@ -352,7 +372,7 @@ export default function NewSiteWizard() {
         )}
 
         {/* Footer controls */}
-        <div className="mt-10 flex items-center justify-between">
+        <div ref={footerRef} className="mt-10 flex items-center justify-between">
           {step > 0 ? (
             <button onClick={() => setStep((s) => s - 1)} className="flex items-center gap-2 rounded-full border-2 border-ink/15 px-6 py-3.5 text-xs font-bold uppercase tracking-[0.14em] transition-all hover:border-ink">
               <ArrowLeft className="h-4 w-4" /> Back

@@ -43,7 +43,7 @@ export default function PhoneMockup({ trade, businessName, area, className = "" 
         </div>
 
         {/* Storefront */}
-        <div className="relative h-[calc(100%-3.4rem)] overflow-y-auto overscroll-contain pb-16" data-lenis-prevent>
+        <div className="phone-screen relative h-[calc(100%-3.4rem)] pb-16" data-lenis-prevent>
           {/* Hero image */}
           <div className="relative h-40 overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
