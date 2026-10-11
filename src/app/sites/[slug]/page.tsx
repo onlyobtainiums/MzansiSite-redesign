@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { eq, ne, and } from "drizzle-orm";
 import { ArrowLeft, CircleDot, PauseCircle } from "lucide-react";
@@ -7,17 +8,28 @@ import { sites } from "@/db/schema";
 import { getDemoSiteData } from "@/templates/demo-data";
 import { TemplateRenderer } from "@/templates";
 import { getTemplate } from "@/templates/registry";
+import { siteHost } from "@/lib/domain";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 /**
- * Public preview of a customer's saved site (draft or published).
- * Fetches live DB data and renders it through the site's template.
+ * Renders a customer's site in one of two modes:
+ *
+ *   LIVE     — reached through <slug>.mzansisite.co.za. The middleware sets the
+ *              `x-mzansi-live` header. This is the public view: no owner chrome,
+ *              and it only serves a site that has actually been published.
+ *
+ *   PREVIEW  — reached at /sites/<slug> on the main domain, which is what the
+ *              dashboard links to. Shows the status bar and a draft/web address
+ *              so the owner can review work in progress.
  */
 export default async function SitePreviewPage({ params }: PageProps) {
   const { slug } = await params;
+
+  const headerList = await headers();
+  const isLive = headerList.get("x-mzansi-live") === slug;
 
   const [site] = await db
     .select()
@@ -27,7 +39,7 @@ export default async function SitePreviewPage({ params }: PageProps) {
 
   if (!site) notFound();
 
-  /* ——— Publish gating: suspended sites show a due notice ——— */
+  /* ——— Publish gating ——— */
   if (site.status === "suspended") {
     return (
       <div className="relative grid min-h-screen place-items-center bg-ink px-8 text-bone">
@@ -60,6 +72,35 @@ export default async function SitePreviewPage({ params }: PageProps) {
     );
   }
 
+  /*
+   * A visitor on the customer's subdomain must never see an unfinished site.
+   * Drafts are only visible through the owner's preview route.
+   */
+  if (isLive && site.status !== "active") {
+    return (
+      <div className="relative grid min-h-screen place-items-center bg-bone px-8 text-ink">
+        <div className="max-w-md text-center">
+          <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-flame/10">
+            <CircleDot className="h-7 w-7 text-flame" />
+          </span>
+          <h1 className="mt-6 font-display text-3xl font-extrabold uppercase tracking-tight">Not live yet</h1>
+          <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-ink/60">
+            This website hasn&apos;t been published yet. Once its owner activates it, it will appear here.
+          </p>
+          <Link
+            href="/"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-xs font-bold uppercase tracking-[0.14em] text-bone transition-all duration-300 hover:-translate-y-0.5"
+          >
+            Build your own free
+          </Link>
+          <p className="mt-10 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/30">
+            Powered by MzansiSite
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const meta = getTemplate(site.templateId);
   const data = getDemoSiteData({
     industry: site.industry,
@@ -77,6 +118,12 @@ export default async function SitePreviewPage({ params }: PageProps) {
     socials: site.socials,
   });
 
+  /* ——— Live subdomain: the real, public website ——— */
+  if (isLive) {
+    return <TemplateRenderer templateId={site.templateId} site={data} />;
+  }
+
+  /* ——— Owner preview (main domain) ——— */
   return (
     <div className="relative">
       {/* Preview bar */}
@@ -108,7 +155,7 @@ export default async function SitePreviewPage({ params }: PageProps) {
               <CircleDot className="h-3 w-3" />
               {site.status === "active" ? "Published" : "Draft"}
             </span>
-            <span className="hidden font-mono text-xs text-bone/40 md:block">{site.slug}.mzansisite.co.za</span>
+            <span className="hidden font-mono text-xs text-bone/40 md:block">{siteHost(site.slug)}</span>
           </div>
         </div>
       </div>

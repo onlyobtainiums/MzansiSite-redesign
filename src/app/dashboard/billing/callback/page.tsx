@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/firebase/AuthProvider";
+import { siteHost } from "@/lib/domain";
 import { ArrowLeft, CheckCircle2, Loader2, ShieldCheck, TriangleAlert } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -77,7 +78,7 @@ function CallbackContent() {
         if (!res.ok || !data.ok) throw new Error(data.error ?? "Payment could not be verified.");
 
         setState("success");
-        setMessage(`${data.site.businessName} is now live at ${data.site.slug}.mzansisite.co.za`);
+        setMessage(`${data.site.businessName} is now live at ${siteHost(data.site.slug)}`);
         setSiteName(data.site.businessName);
         setTimeout(() => router.replace("/dashboard"), 2500);
       } catch (e) {
