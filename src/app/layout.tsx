@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Syne, Instrument_Serif, Space_Grotesk } from "next/font/google";
-import AuthProvider from "@/lib/firebase/AuthProvider";
 import "./globals.css";
 
 const syne = Syne({
@@ -34,7 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${syne.variable} ${instrument.variable} ${grotesk.variable}`}>
       <body className="bg-bone text-ink antialiased">
-        <AuthProvider>{children}</AuthProvider>
+        {children}
       </body>
     </html>
   );

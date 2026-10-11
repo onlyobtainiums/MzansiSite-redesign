@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -20,25 +19,10 @@ import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
 import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { Up } from "../Reveal";
 
 /* Market — product-led storefront for retail, wholesale & manufacturing.
    Palette: paper #fbf7ef · ink #191406 · red #e0402a · green #2f7d4f */
-
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-function Up({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 0.85, delay, ease: EASE }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 const PRODUCT_BADGES = ["New drop", "Best seller", "Low stock", "Back in", "", ""];
 
@@ -162,13 +146,11 @@ export default function MarketTemplate({ site }: { site: SiteData }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[4/5] w-full object-cover" />
               </div>
-              <motion.div
-                animate={{ rotate: [6, 10, 6] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -right-4 top-8 rounded-xl border-2 border-[#191406] bg-[#e0402a] px-4 py-2.5 font-display text-lg font-extrabold text-[#fbf7ef] shadow-[4px_4px_0_#191406]"
+              <div
+                className="mz-tilt absolute -right-4 top-8 rounded-xl border-2 border-[#191406] bg-[#e0402a] px-4 py-2.5 font-display text-lg font-extrabold text-[#fbf7ef] shadow-[4px_4px_0_#191406]"
               >
                 {site.services[2]?.price ?? site.services[0]?.price}
-              </motion.div>
+              </div>
               <div className="absolute -bottom-5 -left-4 rounded-xl border-2 border-[#191406] bg-[#fbf7ef] px-4 py-3 shadow-[4px_4px_0_#191406]">
                 <p className="text-[9px] font-bold tracking-[0.2em] text-[#2f7d4f] uppercase">This week</p>
                 <p className="font-display text-sm font-extrabold">{site.services[0]?.name}</p>

@@ -1,30 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowRight, Clock, MapPin, Menu, Phone, Star, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
 import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { Up } from "../Reveal";
 
 /* Velvet — editorial luxe for beauty & wellness.
    Palette: cream #f6efe6 · espresso #241a12 · gold #b98a2f · clay #c17857 */
-
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-function Up({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 0.85, delay, ease: EASE }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 export default function VelvetTemplate({ site }: { site: SiteData }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -151,14 +135,12 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[3/4] w-full object-cover" />
               </div>
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -right-8 bottom-10 rounded-2xl border border-[#241a12]/10 bg-[#f6efe6]/95 px-4 py-3 shadow-xl backdrop-blur"
+              <div
+                className="mz-bob absolute -right-8 bottom-10 rounded-2xl border border-[#241a12]/10 bg-[#f6efe6]/95 px-4 py-3 shadow-xl backdrop-blur"
               >
                 <p className="text-[10px] font-bold tracking-[0.2em] text-[#b98a2f] uppercase">Walk-ins welcome</p>
                 <p className="font-serif text-lg leading-tight">{site.yearsInBusiness} yrs of craft</p>
-              </motion.div>
+              </div>
             </div>
           </Up>
         </div>
@@ -275,10 +257,8 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
           {gallery.map((url, i) => (
             <Up key={`${url}-${i}`} delay={i * 0.06}>
-              <motion.div
-                whileHover={{ y: -6 }}
-                transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className={`overflow-hidden ${i % 3 === 0 ? "rounded-t-full rounded-b-2xl" : "rounded-2xl"}`}
+              <div
+                className={`overflow-hidden transition-transform duration-300 hover:-translate-y-1.5 ${i % 3 === 0 ? "rounded-t-full rounded-b-2xl" : "rounded-2xl"}`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -287,7 +267,7 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
                   className="aspect-[3/4] w-full object-cover transition-transform duration-700 hover:scale-105"
                   loading="lazy"
                 />
-              </motion.div>
+              </div>
             </Up>
           ))}
         </div>

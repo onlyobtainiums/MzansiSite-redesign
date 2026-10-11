@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -24,25 +23,10 @@ import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
 import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { Up } from "../Reveal";
 
 /* Vital — clean, versatile design for services, IT, transport & agri.
    Palette: mist #f2f6f3 · pine #0c1d18 · teal #0e7a5f · gold #d9a62e */
-
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-function Up({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 0.85, delay, ease: EASE }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 const SERVICE_ICONS = [Wrench, Wifi, Truck, Leaf, ShieldCheck, Zap];
 
@@ -178,10 +162,8 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[4/5] w-full object-cover" />
               </div>
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-6 left-6 right-6 flex items-center justify-between rounded-2xl bg-[#0c1d18] px-6 py-4 text-[#f2f6f3] shadow-2xl"
+              <div
+                className="mz-bob absolute -bottom-6 left-6 right-6 flex items-center justify-between rounded-2xl bg-[#0c1d18] px-6 py-4 text-[#f2f6f3] shadow-2xl"
               >
                 <div>
                   <p className="text-[9px] font-bold tracking-[0.22em] text-[#d9a62e] uppercase">Client rating</p>
@@ -191,7 +173,7 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
                   </p>
                 </div>
                 <BadgeCheck className="h-8 w-8 text-[#0e7a5f]" />
-              </motion.div>
+              </div>
             </div>
           </Up>
         </div>

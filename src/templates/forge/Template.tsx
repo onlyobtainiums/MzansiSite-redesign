@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   ArrowRight,
   BadgeCheck,
@@ -18,25 +17,10 @@ import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
 import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { Up } from "../Reveal";
 
 /* Forge — rugged, high-trust design for trades & construction.
    Palette: coal #16181a · safety yellow #ffc400 · concrete #eceae3 · steel #5b6570 */
-
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-function Up({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 0.8, delay, ease: EASE }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 /** Diagonal hazard stripe divider. */
 function HazardStripes({ flip = false }: { flip?: boolean }) {

@@ -136,3 +136,31 @@ html.lenis, html.lenis body { height: auto; }
 @media (prefers-reduced-motion: reduce) {
   .marquee-track, .grain::after { animation: none !important; }
 }
+
+/* ——— Template ambient motion ———
+   These replace framer-motion `animate` loops in the customer templates. As CSS
+   keyframes the browser runs them on the compositor, so they cost no JavaScript
+   and don't block the main thread while a phone is parsing the page.
+
+   Tailwind v4 positions elements with the `translate` property (not `transform`),
+   so animating `transform` here composes with utilities such as
+   -translate-x-1/2 instead of overriding them. */
+@keyframes mz-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes mz-bob-sm {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(8px); }
+}
+@keyframes mz-tilt {
+  0%, 100% { transform: rotate(6deg); }
+  50%      { transform: rotate(10deg); }
+}
+.mz-bob    { animation: mz-bob 5.5s ease-in-out infinite; }
+.mz-bob-sm { animation: mz-bob-sm 2s ease-in-out infinite; }
+.mz-tilt   { animation: mz-tilt 4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mz-bob, .mz-bob-sm, .mz-tilt { animation: none !important; }
+}

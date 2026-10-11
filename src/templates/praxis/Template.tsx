@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -21,25 +20,10 @@ import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
 import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { Up } from "../Reveal";
 
 /* Praxis — crisp, credibility-first design for professional services.
    Palette: paper #f4f2ec · ink #101c2c · royal #1f3a5f · bronze #a8895b */
-
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-function Up({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 26 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 0.85, delay, ease: EASE }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 export default function PraxisTemplate({ site }: { site: SiteData }) {
   const [menuOpen, setMenuOpen] = useState(false);

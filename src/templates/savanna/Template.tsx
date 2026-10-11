@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   ArrowDown,
   ArrowRight,
@@ -21,25 +20,10 @@ import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
 import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { Up } from "../Reveal";
 
 /* Savanna — warm, wanderlust design for hospitality & tourism.
    Palette: forest #1d241a · cream #f5ead8 · burnt orange #d97b2b · sage #8a9a6b */
-
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-function Up({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 0.9, delay, ease: EASE }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 const ROOM_ICONS = [BedDouble, BedDouble, Sunrise, UtensilsCrossed, MapPin];
 
@@ -150,13 +134,11 @@ export default function SavannaTemplate({ site }: { site: SiteData }) {
             </div>
           </Up>
         </div>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[#f5ead8]/50"
+        <div
+          className="mz-bob-sm absolute bottom-6 left-1/2 -translate-x-1/2 text-[#f5ead8]/50"
         >
           <ArrowDown className="h-5 w-5" />
-        </motion.div>
+        </div>
        </section>
 
       {/* ——— Welcome split ——— */}
