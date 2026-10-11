@@ -2,7 +2,7 @@
  * Shared hostname helpers.
  *
  * Customers' published sites are served from a subdomain of the root domain,
- * e.g. naledi-braids.mzansisite.co.za. Both the middleware (which routes those
+ * e.g. naledi-braids.mzansisite.co.za. Both the proxy (which routes those
  * requests) and the UI (which displays the address) need to agree on that
  * shape, so it lives here.
  *

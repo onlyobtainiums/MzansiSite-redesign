@@ -17,7 +17,7 @@ interface PageProps {
 /**
  * Renders a customer's site in one of two modes:
  *
- *   LIVE     — reached through <slug>.mzansisite.co.za. The middleware sets the
+ *   LIVE     — reached through <slug>.mzansisite.co.za. The proxy sets the
  *              `x-mzansi-live` header. This is the public view: no owner chrome,
  *              and it only serves a site that has actually been published.
  *

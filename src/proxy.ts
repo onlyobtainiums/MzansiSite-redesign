@@ -14,8 +14,12 @@ import { RESERVED_SUBDOMAINS, ROOT_DOMAIN } from "@/lib/domain";
  * Requests to the main domain, the vercel.app deployment, and any reserved
  * subdomain fall straight through untouched — so this change cannot break the
  * existing app.
+ *
+ * This file is `proxy.ts` (not `middleware.ts`) because Next.js 16 renamed the
+ * convention: middleware.ts is deprecated and is bundled as an Edge Function,
+ * whereas proxy runs on the Node.js runtime. The logic is identical.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const host = (request.headers.get("host") ?? "").toLowerCase().split(":")[0];
 
   // Only act on a direct child of the root domain.
@@ -65,7 +69,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   /*
    * Run on page requests only — not on Next's own static files or the API.
-   * (The middleware also re-checks these, because a hostname-based rewrite is
+   * (The proxy also re-checks these, because a hostname-based rewrite is
    * only ever valid for page loads.)
    */
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
