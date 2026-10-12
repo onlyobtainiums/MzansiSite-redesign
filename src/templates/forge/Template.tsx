@@ -115,14 +115,32 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
           aria-hidden
         />
         <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-5 pb-16 pt-14 md:grid-cols-[1.15fr_0.85fr] md:pt-20">
-          <div>
+          {/*
+            @container so the headline can be sized from the column it is
+            actually in. See the note on the h1 below.
+          */}
+          <div className="@container">
             <Up>
               <p className="mb-5 inline-flex items-center gap-2 border-2 border-[#ffc400] px-3 py-1.5 text-[11px] font-bold tracking-[0.22em] text-[#ffc400] uppercase">
                 <BadgeCheck className="h-4 w-4" /> Registered & insured · {site.area}
               </p>
             </Up>
             <Up delay={0.08}>
-              <h1 className="font-display text-5xl font-extrabold leading-[0.95] tracking-tight uppercase md:text-7xl">
+              {/*
+              The headline's first line is the first word of the customer's
+              first service, so its length is not ours to choose. "Emergency"
+              (the plumber demo) renders 10.7em wide: 512px at text-5xl in a
+              350px column, so it was cut off mid-word on a phone — and 768px at
+              text-7xl in a 639px column, so it spilled on a laptop too.
+
+              Sizing in cqw keeps the type as large as the column allows at
+              every width, forever, whatever word the owner types. A viewport
+              unit cannot do this: the template is also rendered inside fixed
+              width previews and browser mockups, where vw describes the visitor's
+              screen rather than the box the headline lives in, which is exactly
+              how a word ends up clipped inside a phone preview.
+            */}
+            <h1 className="font-display text-[min(3.5rem,8.8cqw)] font-extrabold leading-[0.95] tracking-tight uppercase">
                 {site.services[0]?.name.split(" ")[0] ?? "Fixed"}.
                 <br />
                 Sorted.{" "}

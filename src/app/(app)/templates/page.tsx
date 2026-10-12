@@ -55,8 +55,8 @@ export default function TemplatesGalleryPage() {
             </h1>
             <Reveal delay={0.25}>
               <p className="mt-7 max-w-xl text-base leading-relaxed text-ink/60 md:text-lg">
-                Each design is purpose-built per industry — real layouts, real copy, real prices. All six are live,
-                covering every trade in Mzansi. Preview everything with demo businesses.
+                Every design is built for a specific trade, not a blank page — your services, prices and booking
+                buttons arrive already in place. Try one on with the demo businesses below.
               </p>
             </Reveal>
           </div>

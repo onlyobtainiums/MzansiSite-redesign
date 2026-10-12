@@ -115,7 +115,8 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
           aria-hidden
         />
         <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-5 pb-16 pt-16 md:grid-cols-[1.05fr_0.95fr] md:pt-24">
-          <div>
+          {/* @container — see the h1 below. */}
+          <div className="@container">
             <Up>
               <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#0e7a5f]/30 bg-[#0e7a5f]/10 px-4 py-1.5 text-[10px] font-bold tracking-[0.24em] text-[#0e7a5f] uppercase">
                 <span className="relative flex h-2 w-2">
@@ -126,7 +127,13 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
               </p>
             </Up>
             <Up delay={0.1}>
-              <h1 className="font-display text-5xl font-extrabold leading-[1.02] tracking-tight md:text-7xl">
+              {/*
+              Also customer text: this line is the first sentence of the owner's
+              tagline. "Handled" measured 324px in a 280px column at 320px wide,
+              so it was clipped on the smallest phones. cqw sizes it from the
+              column instead, at every width and inside previews too.
+            */}
+            <h1 className="font-display text-[min(4.5rem,13.5cqw)] font-extrabold leading-[1.02] tracking-tight">
                 {site.tagline.split("—")[0].split(".")[0]}.
                 <br />
                 <span className="text-[#0e7a5f]">Handled properly.</span>

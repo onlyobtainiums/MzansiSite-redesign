@@ -41,12 +41,6 @@ export default function Demo() {
             </span>{" "}
             <RiseWords text="will open." delay={0.28} />
           </h2>
-          <Reveal delay={0.25}>
-            <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-ink/55 md:text-base">
-              6 pre-made designs × 55+ specific industries. Pick a design below, then switch between industries to see
-              how each one looks with real services and prices.
-            </p>
-          </Reveal>
         </div>
 
         {/* Template tabs */}
