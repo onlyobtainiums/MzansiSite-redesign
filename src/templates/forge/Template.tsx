@@ -202,8 +202,8 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
               ["6 mo", "workmanship guarantee"],
               ["60 min", "emergency response"],
             ].map(([big, small], i) => (
-              <Up key={small} delay={i * 0.08} className="px-5 py-6 text-center md:py-8">
-                <p className="font-display text-2xl font-extrabold text-[#ffc400] md:text-3xl">{big}</p>
+              <Up key={small} delay={i * 0.08} className="@container px-5 py-6 text-center md:py-8">
+                <p className="font-display text-[min(1.5rem,calc(100cqw/6.8))] font-extrabold text-[#ffc400] md:text-[min(1.875rem,calc(100cqw/6.8))]">{big}</p>
                 <p className="mt-1 text-[10px] font-bold tracking-[0.18em] text-[#eceae3]/50 uppercase">{small}</p>
               </Up>
             ))}
@@ -232,7 +232,7 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
                 href={waLink(site.whatsapp, `Hi ${site.businessName}! I need help with: ${service.name}`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-full flex-col justify-between border-2 border-[#16181a] bg-[#eceae3] p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-[#16181a] hover:text-[#eceae3] hover:shadow-[8px_8px_0_#ffc400]"
+                className="@container group flex h-full flex-col justify-between border-2 border-[#16181a] bg-[#eceae3] p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-[#16181a] hover:text-[#eceae3] hover:shadow-[8px_8px_0_#ffc400]"
               >
                 <div>
                   <div className="flex items-start justify-between">
@@ -243,7 +243,14 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
                       {service.price}
                     </span>
                   </div>
-                  <h3 className="mt-4 font-display text-xl font-extrabold tracking-tight uppercase">{service.name}</h3>
+                  {/*
+                    The service name is the owner's, and some are long: at
+                    text-xl "WATERPROOFING" measures 15.16em = 300px in a 298px
+                    card, so it clipped by a couple of pixels (and "pre-
+                    qualification" is longer still). Sizing from the card keeps
+                    every name of theirs inside it at every width.
+                  */}
+                  <h3 className="mt-4 font-display text-[min(1.25rem,calc(100cqw/16))] font-extrabold tracking-tight uppercase">{service.name}</h3>
                   {service.description && (
                     <p className="mt-2 text-sm leading-relaxed text-[#16181a]/55 transition-colors group-hover:text-[#eceae3]/60">
                       {service.description}

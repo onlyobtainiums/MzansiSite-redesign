@@ -195,8 +195,8 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
             ["< 2 hrs", "avg. response"],
             ["100%", "satisfaction focus"],
           ].map(([big, small], i) => (
-            <Up key={small} delay={i * 0.06} className="px-5 py-7 text-center">
-              <p className="font-display text-2xl font-extrabold text-[#0e7a5f] md:text-3xl">{big}</p>
+            <Up key={small} delay={i * 0.06} className="@container px-5 py-7 text-center">
+              <p className="font-display text-[min(1.5rem,calc(100cqw/6.8))] font-extrabold text-[#0e7a5f] md:text-[min(1.875rem,calc(100cqw/6.8))]">{big}</p>
               <p className="mt-1 text-[10px] font-bold tracking-[0.18em] text-[#0c1d18]/45 uppercase">{small}</p>
             </Up>
           ))}
@@ -225,7 +225,7 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
                   href={waLink(site.whatsapp, `Hi ${site.businessName}! I'm interested in: ${service.name}`)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex h-full flex-col justify-between rounded-3xl border border-[#0c1d18]/10 bg-white p-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-[#0e7a5f]/40 hover:shadow-[0_24px_40px_-20px_rgba(12,29,24,0.25)]"
+                  className="@container group flex h-full flex-col justify-between rounded-3xl border border-[#0c1d18]/10 bg-white p-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-[#0e7a5f]/40 hover:shadow-[0_24px_40px_-20px_rgba(12,29,24,0.25)]"
                 >
                   <div>
                     <div className="flex items-start justify-between">
@@ -236,7 +236,10 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
                         {service.price}
                       </span>
                     </div>
-                    <h3 className="mt-5 font-display text-xl font-extrabold tracking-tight">{service.name}</h3>
+                    {/* Service names are the owner's: "Waterproofing" is
+                        11.34em in this face and outgrew the card by 13px on a
+                        320px phone. Sized from the card instead. */}
+                    <h3 className="mt-5 font-display text-[min(1.25rem,calc(100cqw/12.5))] font-extrabold tracking-tight">{service.name}</h3>
                     {service.description && (
                       <p className="mt-2 text-sm leading-relaxed text-[#0c1d18]/55">{service.description}</p>
                     )}
@@ -345,7 +348,7 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
       {/* ——— Big CTA ——— */}
       <section id="contact" className="mx-auto max-w-6xl px-5 py-20 md:py-28">
         <Up>
-          <div className="relative overflow-hidden rounded-[2.5rem] bg-[#0e7a5f] px-8 py-16 text-center text-white md:py-24">
+          <div className="@container relative overflow-hidden rounded-[2.5rem] bg-[#0e7a5f] px-8 py-16 text-center text-white md:py-24">
             <div
               className="pointer-events-none absolute inset-0 opacity-[0.08]"
               style={{
@@ -357,7 +360,10 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
             />
             <div className="relative">
               <p className="text-[11px] font-bold tracking-[0.3em] text-[#d9a62e] uppercase">Ready when you are</p>
-              <h2 className="mx-auto mt-4 max-w-2xl font-display text-4xl font-extrabold tracking-tight md:text-6xl">
+              {/* "message." is 7.45em wide, which at text-4xl outgrew the
+                  padded CTA card on a 320px phone by 52px. Sized from the card:
+                  the cap keeps the original 60px on desktop. */}
+              <h2 className="mx-auto mt-4 max-w-2xl font-display text-[min(2.25rem,calc(100cqw/8.2))] font-extrabold tracking-tight md:text-[min(3.75rem,calc(100cqw/8.2))]">
                 One message. Sorted today.
               </h2>
               <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/75">

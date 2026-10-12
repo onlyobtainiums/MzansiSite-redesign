@@ -331,9 +331,24 @@ export default function MarketTemplate({ site }: { site: SiteData }) {
       {/* ——— Visit ——— */}
       <section id="visit" className="border-t-2 border-[#191406]">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 py-20 md:grid-cols-2 md:py-28">
-          <Up>
+          {/* @container so the location headline can be sized from its own
+              column — see the note on the h2. */}
+          <Up className="@container">
             <p className="mb-3 text-[11px] font-bold tracking-[0.3em] text-[#e0402a] uppercase">Visit the shop</p>
-            <h2 className="font-display text-4xl font-extrabold uppercase tracking-tight md:text-5xl">{site.area}</h2>
+            {/*
+              This headline is the owner's town, and South African place names
+              are long. In this face an uppercase character measures about 1.1em,
+              so "PIETERMARITZBURG," is 17.75em wide — 642px against a 350px
+              column, which clipped most of the word on a phone and 310px of it
+              on a laptop. A fixed text-4xl/text-5xl cannot know how long the
+              name will be.
+
+              Dividing the column by 19 keeps the worst name in the demo data
+              (Pietermaritzburg) inside it at every width, and every shorter town
+              is simply centred in the space it has. The 2.25rem cap keeps short
+              names from ballooning on very wide screens.
+            */}
+            <h2 className="font-display text-[min(2.25rem,calc(100cqw/19))] font-extrabold uppercase tracking-tight">{site.area}</h2>
             <div className="mt-8 space-y-5">
               <div className="flex items-center gap-4 border-b-2 border-[#191406]/10 pb-5">
                 <Clock className="h-5 w-5 text-[#e0402a]" />

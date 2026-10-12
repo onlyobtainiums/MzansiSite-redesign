@@ -84,14 +84,22 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
           style={{ background: "radial-gradient(circle, #c1785755, transparent 70%)" }}
         />
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-5 pb-20 pt-14 md:grid-cols-2 md:pt-20">
-          <div className="relative z-10">
+          {/* @container so the headline can be sized from its column. */}
+          <div className="@container relative z-10">
             <Up>
               <p className="mb-5 inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.28em] text-[#b98a2f] uppercase">
                 <span className="h-px w-8 bg-[#b98a2f]" /> {site.area}
               </p>
             </Up>
             <Up delay={0.08}>
-              <h1 className="font-serif text-5xl leading-[1.02] md:text-7xl">
+              {/*
+                The headline is the first sentence of the owner's tagline, so
+                its longest word is not ours to choose. At md:text-7xl a word
+                like "Compassionate" measured 395px against a 340px column and
+                was clipped. Sizing in cqw keeps the type as large as the column
+                allows at every width and inside previews too.
+              */}
+              <h1 className="font-serif text-[min(3rem,calc(100cqw/5.9))] leading-[1.02] md:text-[min(4.5rem,calc(100cqw/5.9))]">
                 {site.tagline.split("—")[0]}
               </h1>
             </Up>
@@ -178,17 +186,23 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
                 href={waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to book: ${service.name} (${service.price})`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-baseline gap-4 rounded-2xl px-4 py-4 transition-colors duration-300 hover:bg-[#241a12]/[0.04]"
+                className="group flex flex-col gap-1 rounded-2xl px-4 py-4 transition-colors duration-300 hover:bg-[#241a12]/[0.04] sm:flex-row sm:items-baseline sm:gap-4"
               >
                 <div className="min-w-0">
-                  <h3 className="truncate font-serif text-2xl transition-colors group-hover:text-[#8a5f1e]">
+                  {/*
+                    Was `truncate`. On a 320px phone the price and the dotted
+                    leader left the name about 90px, so it rendered as
+                    "Extra-mu…" — the owner's own service, cut with an ellipsis.
+                    The row stacks below sm so the name gets the full width.
+                  */}
+                  <h3 className="font-serif text-2xl break-words transition-colors group-hover:text-[#8a5f1e]">
                     {service.name}
                   </h3>
                   {service.description && (
                     <p className="mt-0.5 text-xs font-medium tracking-wide text-[#241a12]/45">{service.description}</p>
                   )}
                 </div>
-                <span className="mx-2 flex-1 border-b border-dotted border-[#241a12]/30" aria-hidden />
+                <span className="mx-2 hidden flex-1 border-b border-dotted border-[#241a12]/30 sm:block" aria-hidden />
                 <span className="font-serif text-2xl text-[#b98a2f]">{service.price}</span>
                 <span className="hidden rounded-full border border-[#b98a2f]/40 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-[#8a5f1e] uppercase opacity-0 transition-all duration-300 group-hover:opacity-100 sm:block">
                   Book

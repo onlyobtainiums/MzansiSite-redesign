@@ -180,8 +180,8 @@ export default function PraxisTemplate({ site }: { site: SiteData }) {
               ["1 hour", "first response time"],
               ["100%", "fees in writing"],
             ].map(([big, small], i) => (
-              <Up key={small} delay={i * 0.06} className="px-5 py-6 text-center">
-                <p className="font-display text-2xl font-extrabold text-[#1f3a5f] md:text-3xl">{big}</p>
+              <Up key={small} delay={i * 0.06} className="@container px-5 py-6 text-center">
+                <p className="font-display text-[min(1.5rem,calc(100cqw/6.8))] font-extrabold text-[#1f3a5f] md:text-[min(1.875rem,calc(100cqw/6.8))]">{big}</p>
                 <p className="mt-1 text-[10px] font-bold tracking-[0.18em] text-[#101c2c]/45 uppercase">{small}</p>
               </Up>
             ))}
