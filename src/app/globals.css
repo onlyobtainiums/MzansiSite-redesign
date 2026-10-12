@@ -32,6 +32,27 @@
   }
 }
 
+/*
+  ——— The templates' breakpoints follow the box they are rendered in ———
+
+  Every customer design is responsive to its own width instead of the visitor's
+  screen, so the phone frame in the app (a 390px box inside an already-wide
+  desktop page) renders the *mobile* layout it promises, rather than squeezing
+  the desktop layout — multi-column heroes, five-link navs — into a phone.
+
+  In a real browser tab the box is the window, so behaviour is unchanged; the
+  only difference is that the measurement excludes the classic scrollbar, the
+  way the content box does. Thresholds match Tailwind's own sm/md/lg so no
+  design shifts at any other width.
+
+  The templates mark the container with `@container/page`; these variants query
+  that container by name, so a nested `@container` (a service card, a stat cell,
+  a hero column) never captures them.
+*/
+@custom-variant bp-sm (@container page (min-width: 40rem));
+@custom-variant bp-md (@container page (min-width: 48rem));
+@custom-variant bp-lg (@container page (min-width: 64rem));
+
 html {
   scroll-behavior: auto;
   /*
