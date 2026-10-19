@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Syne, Instrument_Serif, Space_Grotesk } from "next/font/google";
+import GA4 from "@/components/analytics/GoogleAnalytics";
 import "./globals.css";
 
 const syne = Syne({
@@ -34,6 +35,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className={`${syne.variable} ${instrument.variable} ${grotesk.variable}`}>
       <body className="bg-bone text-ink antialiased">
         {children}
+        {/* Single GA4 installation — configured via NEXT_PUBLIC_GA_MEASUREMENT_ID (fallback G-W3123L8FLP). */}
+        <GA4 />
       </body>
     </html>
   );
