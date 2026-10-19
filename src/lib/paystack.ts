@@ -129,6 +129,7 @@ export interface PaystackWebhookEvent {
   data: {
     reference: string;
     amount: number;
+    currency?: string;
     customer: { customer_code: string; email: string };
     subscription?: { status: string; subscription_code: string; email_token: string; next_payment_date: string };
     metadata?: Record<string, unknown>;

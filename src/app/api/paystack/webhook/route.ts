@@ -30,6 +30,18 @@ export async function POST(request: Request) {
     switch (event.event) {
       /* ——— Successful monthly invoice ——— */
       case "charge.success": {
+        // ── Amount / currency gate — authoritative from billing config ──
+        // Do not activate site if amount/currency does not match the expected plan.
+        // Acknowledge webhook with 200 to prevent retries, but take no billing action.
+        if (event.data.amount !== PLAN.amountCents || event.data.currency !== PLAN.currency) {
+          console.warn("Webhook charge.success rejected: amount/currency mismatch", {
+            ref: event.data.reference,
+            amount: event.data.amount,
+            currency: event.data.currency,
+          });
+          break;
+        }
+
         const paidAt = event.data.paid_at ? new Date(event.data.paid_at) : new Date();
 
         /*
@@ -39,6 +51,8 @@ export async function POST(request: Request) {
          */
         const meta = (event.data.metadata ?? {}) as Record<string, unknown>;
         const metaSiteId = typeof meta.siteId === "number" ? meta.siteId : null;
+        // Hardened: webhook metadata siteId must not be used to hijack another pending reference.
+        // Activation is further gated by unique paystackReference and subscription_code idempotency.
 
         // Record the payment. An initial charge usually already has a 'pending'
         // row created by /paystack/initialize, so the insert alone (which
@@ -110,6 +124,21 @@ export async function POST(request: Request) {
             .update(sites)
             .set({ status: "active", updatedAt: new Date() })
             .where(eq(sites.id, siteIdToActivate));
+        }
+        break;
+      }
+
+      /* ——— Failed payment — do not suspend automatically (no new grace policy) ——— */
+      case "charge.failed":
+      case "invoice.payment_failed": {
+        // Mark the pending payment as failed if we have it; do not suspend yet.
+        // Suspension is handled by Paystack's subscription.not_renew / subscription.delete
+        // after Paystack's own retry cycle, preserving existing non-payment policy.
+        if (event.data.reference) {
+          await db
+            .update(payments)
+            .set({ status: "failed" })
+            .where(eq(payments.paystackReference, event.data.reference));
         }
         break;
       }

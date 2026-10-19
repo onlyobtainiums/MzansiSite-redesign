@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { payments, sites, subscriptions, users } from "@/db/schema";
 import { verifyTransaction } from "@/lib/paystack";
-import { PLAN } from "@/lib/billing";
+import { formatRand, PLAN } from "@/lib/billing";
 import { AuthError } from "@/lib/firebase/server";
 import { getAuthedUser } from "@/server/auth";
 import { validateForPublish } from "@/lib/content-policy";
@@ -48,6 +48,42 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "Payment was not successful — try again." }, { status: 402 });
     }
 
+    // ── Payment integrity checks — authoritative from src/lib/billing.ts ──
+    // Paystack returns amount in kobo/cents. Must equal expected plan amount.
+    if (tx.data.amount !== PLAN.amountCents) {
+      await db
+        .update(payments)
+        .set({ status: "failed" })
+        .where(eq(payments.paystackReference, reference));
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `Amount mismatch — expected ${formatRand(PLAN.amountCents)} but got ${formatRand(tx.data.amount)}.`,
+        },
+        { status: 402 },
+      );
+    }
+    if (tx.data.currency !== PLAN.currency) {
+      await db
+        .update(payments)
+        .set({ status: "failed" })
+        .where(eq(payments.paystackReference, reference));
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `Currency mismatch — expected ${PLAN.currency} but got ${tx.data.currency}.`,
+        },
+        { status: 402 },
+      );
+    }
+    // Paystack must echo the reference we sent; prevents truncated/altered reference attacks.
+    if (tx.data.reference !== reference) {
+      return NextResponse.json(
+        { ok: false, error: "Payment reference mismatch — please retry." },
+        { status: 402 },
+      );
+    }
+
     // Resolve the site from payment metadata — and confirm it belongs to the
     // caller, so a valid token cannot be used to activate another user's site.
     const siteId =
@@ -79,6 +115,32 @@ export async function POST(request: Request) {
     });
     if (!policy.allowed) {
       return NextResponse.json({ ok: false, error: `Cannot publish: ${policy.errors.join(" ")}`, blocked: policy.blocked, reasons: policy.errors }, { status: 400 });
+    }
+
+    // Ensure this reference was pre-created for this site via /initialize and is still pending,
+    // where possible. Prevents using another site's successful reference to publish this one.
+    const [pending] = await db
+      .select()
+      .from(payments)
+      .where(eq(payments.paystackReference, reference))
+      .limit(1);
+    if (pending && pending.siteId !== null && pending.siteId !== siteId) {
+      return NextResponse.json(
+        { ok: false, error: "Payment reference does not match this site." },
+        { status: 403 },
+      );
+    }
+    // If Paystack metadata includes siteId, it must agree with the requested site.
+    // Allows legitimate webhook-first flows where no pending row exists yet.
+    if (
+      tx.data.metadata &&
+      typeof (tx.data.metadata as Record<string, unknown>).siteId === "number" &&
+      (tx.data.metadata as Record<string, unknown>).siteId !== siteId
+    ) {
+      return NextResponse.json(
+        { ok: false, error: "Payment metadata does not match this site." },
+        { status: 403 },
+      );
     }
 
     // Claim the payment record
