@@ -23,7 +23,7 @@ const STEPS = [
     icon: Rocket,
     title: "Publish",
     copy: "Go live when you're ready. Hosting, SSL, your .co.za address and WhatsApp enquiries all included.",
-    price: "R149/m",
+    price: "R149.99/m",
   },
 ];
 

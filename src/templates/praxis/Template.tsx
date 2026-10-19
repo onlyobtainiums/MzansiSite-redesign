@@ -19,7 +19,7 @@ import {
 import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
-import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
 
 /* Praxis — crisp, credibility-first design for professional services.
@@ -50,7 +50,7 @@ export default function PraxisTemplate({ site }: { site: SiteData }) {
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-1 text-[10px] font-semibold tracking-[0.22em] uppercase">
             <span className="flex items-center gap-2">
               <ShieldCheck className="h-3.5 w-3.5 text-[#a8895b]" />
-              Registered practitioners · Est. {new Date().getFullYear() - (site.yearsInBusiness ?? 10)}
+              {site.area} · Enquire for credentials
             </span>
             <span className="hidden items-center gap-2 bp-sm:flex">
               <Clock className="h-3.5 w-3.5 text-[#a8895b]" /> {site.hours}
@@ -185,13 +185,13 @@ export default function PraxisTemplate({ site }: { site: SiteData }) {
           <div className="border-y border-[#101c2c]/10 bg-[#ece8de]">
             <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-[#101c2c]/10 bp-md:grid-cols-4">
               {[
-                [`${(site.reviews ?? 100) * 12}+`, "matters handled"],
-                [`${site.rating}/5`, "client rating"],
-                ["1 hour", "first response time"],
-                ["100%", "fees in writing"],
+                [site.services.length + " services", "listed with prices"],
+                [site.area.split(",")[0], "based in"],
+                [site.hours, "hours"],
+                ["WhatsApp", "enquiries"],
               ].map(([big, small], i) => (
                 <Up key={small} delay={i * 0.06} className="@container px-5 py-6 text-center">
-                  <p className="font-display text-[min(1.5rem,calc(100cqw/6.8))] font-extrabold text-[#1f3a5f] bp-md:text-[min(1.875rem,calc(100cqw/6.8))]">{big}</p>
+                  <p className="font-display text-[min(1.25rem,calc(100cqw/6.8))] font-extrabold text-[#1f3a5f] break-words bp-md:text-[min(1.5rem,calc(100cqw/6.8))]">{big}</p>
                   <p className="mt-1 text-[10px] font-bold tracking-[0.18em] text-[#101c2c]/45 uppercase">{small}</p>
                 </Up>
               ))}
@@ -311,9 +311,8 @@ export default function PraxisTemplate({ site }: { site: SiteData }) {
             </Up>
             <Up delay={0.2}>
               <p className="mt-7 max-w-lg text-sm leading-relaxed text-[#101c2c]/60 bp-md:text-base">
-                {site.businessName} has served {site.area.split(",")[1]?.trim() ?? "South Africa"} for{" "}
-                {site.yearsInBusiness} years. A deliberately small practice: every client deals with a partner, every fee
-                is quoted in writing, and every matter gets a WhatsApp channel you can reach seven days a week.
+                {site.businessName} serves {site.area}. Every fee is quoted in writing before work begins; enquire on WhatsApp for availability and next steps.
+                {site.isDemo && <><br/><DemoBadge className="mt-2" /></>}
               </p>
             </Up>
             <Up delay={0.3}>
@@ -332,28 +331,32 @@ export default function PraxisTemplate({ site }: { site: SiteData }) {
                   with a longer word shrinks instead of clipping. */}
               <h2 className="font-serif text-[min(2.25rem,calc(100cqw/7))] break-words bp-md:text-[min(3.75rem,calc(100cqw/7))]">{site.reviewHeading ?? "Said better by clients"}</h2>
             </Up>
-            <div className="grid grid-cols-1 gap-6 bp-md:grid-cols-3">
-              {(site.reviewItems ?? [
-                { quote: "Quoted in writing on Tuesday, transfer lodged by Friday. Professional and responsive.", name: "R. Oosthuizen", label: "Property transfer" },
-                { quote: "Told me honestly my case was weak, saved me thousands, then helped me settle.", name: "N. Dube", label: "Labour matter" },
-                { quote: "Five years, three businesses, one WhatsApp away. Best decision I made.", name: "S. Pillay", label: "Retainer client" },
-              ]).map((review, i) => (
-                <Up key={review.name} delay={i * 0.1}>
-                  <figure className="flex h-full flex-col rounded-sm border border-[#101c2c]/10 bg-[#f4f2ec] p-7">
-                    <div className="mb-4 flex gap-1">
-                      {Array.from({ length: 5 }).map((_, s) => (
-                        <Star key={s} className="h-3.5 w-3.5 fill-[#a8895b] text-[#a8895b]" />
-                      ))}
-                    </div>
-                    <blockquote className="flex-1 text-sm leading-relaxed text-[#101c2c]/75">&ldquo;{review.quote}&rdquo;</blockquote>
-                    <figcaption className="mt-6 border-t border-[#101c2c]/10 pt-4">
-                      <p className="font-serif text-lg">{review.name}</p>
-                      <p className="text-[10px] font-bold tracking-[0.18em] text-[#a8895b] uppercase">{review.label}</p>
-                    </figcaption>
-                  </figure>
-                </Up>
-              ))}
-            </div>
+            {site.isDemo && site.reviewItems ? (
+              <div className="grid grid-cols-1 gap-6 bp-md:grid-cols-3">
+                {site.reviewItems.map((review, i) => (
+                  <Up key={review.name} delay={i * 0.1}>
+                    <figure className="flex h-full flex-col rounded-sm border border-[#101c2c]/10 bg-[#f4f2ec] p-7">
+                      <div className="mb-4 flex gap-1">
+                        {Array.from({ length: 5 }).map((_, s) => (
+                          <Star key={s} className="h-3.5 w-3.5 fill-[#a8895b] text-[#a8895b]" />
+                        ))}
+                      </div>
+                      <blockquote className="flex-1 text-sm leading-relaxed text-[#101c2c]/75">&ldquo;{review.quote}&rdquo;</blockquote>
+                      <figcaption className="mt-6 border-t border-[#101c2c]/10 pt-4">
+                        <p className="font-serif text-lg">{review.name} — DEMO</p>
+                        <p className="text-[10px] font-bold tracking-[0.18em] text-[#a8895b] uppercase">{review.label}</p>
+                        <DemoBadge className="mt-1" />
+                      </figcaption>
+                    </figure>
+                  </Up>
+                ))}
+              </div>
+            ) : (
+              <div className="mx-auto max-w-2xl text-center">
+                <p className="font-serif text-xl text-[#101c2c]">References available on request</p>
+                <p className="mt-3 text-sm leading-relaxed text-[#101c2c]/60">We do not display invented client testimonials. Enquire on WhatsApp to discuss your matter and ask about previous work.</p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -442,7 +445,7 @@ export default function PraxisTemplate({ site }: { site: SiteData }) {
               </p>
             </div>
             <p className="mt-8 border-t border-[#f4f2ec]/10 pt-6 text-center text-[10px] tracking-[0.14em] text-[#f4f2ec]/30 uppercase">
-              {site.guarantee ?? "Registered practitioners · Fees quoted & agreed in writing · POPIA compliant"}
+              {site.guarantee ? <><DemoBadge /> <span className="ml-2">{site.guarantee} — DEMO</span></> : "Enquire for written quotes · Fees agreed in writing · POPIA compliant"}
             </p>
           </div>
         </footer>

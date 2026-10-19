@@ -116,7 +116,7 @@ export default async function SitePreviewPage({ params }: PageProps) {
     galleryUrls: site.galleryUrls.length ? site.galleryUrls : undefined,
     services: site.services.length ? site.services : undefined,
     socials: site.socials,
-  });
+  }, { isDemo: false });
 
   /* ——— Live subdomain: the real, public website ——— */
   if (isLive) {

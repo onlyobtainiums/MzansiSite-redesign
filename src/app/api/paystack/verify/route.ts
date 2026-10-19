@@ -6,6 +6,7 @@ import { verifyTransaction } from "@/lib/paystack";
 import { PLAN } from "@/lib/billing";
 import { AuthError } from "@/lib/firebase/server";
 import { getAuthedUser } from "@/server/auth";
+import { validateForPublish } from "@/lib/content-policy";
 
 interface VerifyBody {
   reference?: string;
@@ -62,6 +63,23 @@ export async function POST(request: Request) {
       .where(and(eq(sites.id, siteId), eq(sites.userId, user.id)))
       .limit(1);
     if (!site) return NextResponse.json({ ok: false, error: "Site not found." }, { status: 404 });
+
+    // Final publishing safeguard — re-validate policy before going live
+    const policy = validateForPublish({
+      businessName: site.businessName,
+      tagline: site.tagline ?? "",
+      industry: site.industry,
+      area: site.area ?? "",
+      hours: site.hours ?? "",
+      whatsapp: site.whatsapp ?? undefined,
+      phone: site.phone ?? undefined,
+      email: site.email ?? undefined,
+      services: site.services,
+      socials: site.socials as Record<string, string | undefined>,
+    });
+    if (!policy.allowed) {
+      return NextResponse.json({ ok: false, error: `Cannot publish: ${policy.errors.join(" ")}`, blocked: policy.blocked, reasons: policy.errors }, { status: 400 });
+    }
 
     // Claim the payment record
     await db

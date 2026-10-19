@@ -22,7 +22,7 @@ import {
 import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
-import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
 
 /* Vital — clean, versatile design for services, IT, transport & agri.
@@ -54,13 +54,13 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
         <div className="bg-[#0c1d18] px-4 py-2.5 text-[#f2f6f3]/85">
           <div className="mx-auto flex max-w-6xl items-center justify-center gap-x-6 gap-y-1 text-[10px] font-semibold tracking-[0.18em] uppercase bp-sm:justify-between">
             <span className="flex items-center gap-1.5">
-              <Star className="h-3.5 w-3.5 fill-[#d9a62e] text-[#d9a62e]" /> {site.rating} rated
-            </span>
-            <span className="hidden items-center gap-1.5 bp-sm:flex">
-              <Clock className="h-3.5 w-3.5 text-[#d9a62e]" /> {site.hours}
+              <MapPin className="h-3.5 w-3.5 text-[#d9a62e]" /> {site.area}
             </span>
             <span className="flex items-center gap-1.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-[#d9a62e]" /> Work guaranteed
+              <Clock className="h-3.5 w-3.5 text-[#d9a62e]" /> {site.hours}
+            </span>
+            <span className="hidden items-center gap-1.5 bp-sm:flex">
+              <ShieldCheck className="h-3.5 w-3.5 text-[#d9a62e]" /> Enquire on WhatsApp
             </span>
           </div>
         </div>
@@ -191,15 +191,11 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[4/5] w-full object-cover" />
                 </div>
-                <div
-                  className="mz-bob absolute -bottom-6 left-6 right-6 flex items-center justify-between rounded-2xl bg-[#0c1d18] px-6 py-4 text-[#f2f6f3] shadow-2xl"
-                >
+                <div className="mz-bob absolute -bottom-6 left-6 right-6 flex items-center justify-between rounded-2xl bg-[#0c1d18] px-6 py-4 text-[#f2f6f3] shadow-2xl">
                   <div>
-                    <p className="text-[9px] font-bold tracking-[0.22em] text-[#d9a62e] uppercase">Client rating</p>
-                    <p className="flex items-center gap-1.5 font-display text-xl font-extrabold">
-                      <Star className="h-4.5 w-4.5 fill-[#d9a62e] text-[#d9a62e]" /> {site.rating}
-                      <span className="text-sm font-medium text-[#f2f6f3]/50">· {site.reviews}+ reviews</span>
-                    </p>
+                    <p className="text-[9px] font-bold tracking-[0.22em] text-[#d9a62e] uppercase">Contact</p>
+                    <p className="font-display text-sm font-bold text-[#f2f6f3] break-words">{site.area} · {site.hours}</p>
+                    {site.isDemo && site.rating && <><DemoBadge className="mt-1" /><p className="text-[10px] text-[#f2f6f3]/50">{site.rating} · {site.reviews}+ (demo)</p></>}
                   </div>
                   <BadgeCheck className="h-8 w-8 text-[#0e7a5f]" />
                 </div>
@@ -212,13 +208,13 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
         <section className="border-y border-[#0c1d18]/10 bg-white/60">
           <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-[#0c1d18]/10 bp-md:grid-cols-4">
             {[
-              [`${site.yearsInBusiness} yrs`, "in business"],
-              [`${(site.reviews ?? 100) * 6}+`, "jobs delivered"],
-              ["< 2 hrs", "avg. response"],
-              ["100%", "satisfaction focus"],
+              [site.area.split(",")[0], "based in"],
+              [site.services.length + " services", "listed"],
+              [site.hours, "hours"],
+              ["WhatsApp", "enquiries"],
             ].map(([big, small], i) => (
               <Up key={small} delay={i * 0.06} className="@container px-5 py-7 text-center">
-                <p className="font-display text-[min(1.5rem,calc(100cqw/6.8))] font-extrabold text-[#0e7a5f] bp-md:text-[min(1.875rem,calc(100cqw/6.8))]">{big}</p>
+                <p className="font-display text-[min(1.25rem,calc(100cqw/6.8))] font-extrabold text-[#0e7a5f] break-words bp-md:text-[min(1.5rem,calc(100cqw/6.8))]">{big}</p>
                 <p className="mt-1 text-[10px] font-bold tracking-[0.18em] text-[#0c1d18]/45 uppercase">{small}</p>
               </Up>
             ))}
@@ -291,7 +287,7 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
                 [
                   [MessageCircle, "Message us", "One WhatsApp with what you need. We reply inside two hours, seven days a week."],
                   [CalendarCheck, "Get a slot & quote", "Clear price, clear time. You approve before we move — no surprises later."],
-                  [BadgeCheck, "We deliver", "On time, guaranteed. Pay when the job's done and you're happy."],
+                  [BadgeCheck, "We deliver", "On time as arranged. Ask about payment terms on WhatsApp."],
                 ] as const
               ).map(([Icon, title, copy], i) => (
                 <Up key={title} delay={i * 0.12} className="relative">
@@ -354,32 +350,44 @@ export default function VitalTemplate({ site }: { site: SiteData }) {
         <section id="reviews" className="bg-[#e6efe9] py-20 bp-md:py-28">
           <div className="mx-auto max-w-6xl px-5">
             <Up className="mb-12 text-center">
-              <p className="mb-3 text-[11px] font-bold tracking-[0.3em] text-[#0e7a5f] uppercase">In their words</p>
-              <h2 className="font-display text-4xl font-extrabold tracking-tight bp-md:text-6xl">
-                {site.reviews}+ people rate us {site.rating}
+              <p className="mb-3 text-[11px] font-bold tracking-[0.3em] text-[#0e7a5f] uppercase">What to expect</p>
+              <h2 className="font-display text-3xl font-extrabold tracking-tight bp-md:text-4xl">
+                Honest service, clear communication
               </h2>
+              {site.isDemo && site.reviewItems && <DemoBadge className="mt-3" />}
             </Up>
-            <div className="grid grid-cols-1 gap-5 bp-md:grid-cols-3">
-              {[
-                ["Sent one WhatsApp, job was booked for the next morning. This is how every business should run.", "Thandi N."],
-                ["Quoted before starting, arrived on time, cleaned up after. Ten out of ten.", "Mr. van Wyk"],
-                ["We've used them for two years straight. Reliable is an understatement.", "Busisiwe K."],
-              ].map(([quote, name], i) => (
-                <Up key={name} delay={i * 0.1}>
-                  <figure className="flex h-full flex-col rounded-3xl bg-white p-7">
-                    <div className="mb-4 flex gap-1">
-                      {Array.from({ length: 5 }).map((_, s) => (
-                        <Star key={s} className="h-3.5 w-3.5 fill-[#d9a62e] text-[#d9a62e]" />
-                      ))}
+            {site.isDemo && site.reviewItems ? (
+              <div className="grid grid-cols-1 gap-5 bp-md:grid-cols-3">
+                {site.reviewItems.map((r, i) => (
+                  <Up key={r.name} delay={i * 0.1}>
+                    <figure className="flex h-full flex-col rounded-3xl bg-white p-7">
+                      <div className="mb-4 flex gap-1">
+                        {Array.from({ length: 5 }).map((_, s) => (
+                          <Star key={s} className="h-3.5 w-3.5 fill-[#d9a62e] text-[#d9a62e]" />
+                        ))}
+                      </div>
+                      <blockquote className="flex-1 text-sm leading-relaxed text-[#0c1d18]/70">“{r.quote}”</blockquote>
+                      <figcaption className="mt-5 text-[11px] font-bold tracking-[0.18em] text-[#0c1d18]/40 uppercase">{r.name} — DEMO <DemoBadge /></figcaption>
+                    </figure>
+                  </Up>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-5 bp-md:grid-cols-3">
+                {[
+                  ["Enquire on WhatsApp", "Send your details and we\'ll confirm availability, pricing and next steps during trading hours."],
+                  ["Get a written quote", "Clear pricing before work begins — no hidden fees, no fabricated guarantees."],
+                  ["We deliver as arranged", "Work completed as quoted. Ask for references if you\'d like."],
+                ].map(([title, copy], i) => (
+                  <Up key={title} delay={i * 0.1}>
+                    <div className="flex h-full flex-col rounded-3xl bg-white p-7">
+                      <h3 className="font-display text-lg font-extrabold">{title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-[#0c1d18]/60">{copy}</p>
                     </div>
-                    <blockquote className="flex-1 text-sm leading-relaxed text-[#0c1d18]/70">“{quote}”</blockquote>
-                    <figcaption className="mt-5 text-[11px] font-bold tracking-[0.18em] text-[#0c1d18]/40 uppercase">
-                      {name}
-                    </figcaption>
-                  </figure>
-                </Up>
-              ))}
-            </div>
+                  </Up>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 

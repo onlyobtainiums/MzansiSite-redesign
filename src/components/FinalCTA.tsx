@@ -11,7 +11,7 @@ export default function FinalCTA() {
       <div className="border-b-2 border-ink/20 py-3.5">
         <Marquee
           inverted
-          items={["See it before you pay", "Free to build", "R149/month to publish", "Cancel anytime"]}
+          items={["See it before you pay", "Free to build", "R149.99/month to publish", "Cancel anytime"]}
           className="text-bone"
         />
       </div>

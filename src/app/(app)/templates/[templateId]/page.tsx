@@ -33,7 +33,7 @@ async function TemplatePageContent({ templateId, searchParams }: { templateId: s
     businessName: name || undefined,
     area: area || undefined,
     whatsapp: whatsapp || undefined,
-  });
+  }, { isDemo: true });
 
   if (meta.status !== "live") {
     return (

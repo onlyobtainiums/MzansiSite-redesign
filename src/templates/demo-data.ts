@@ -12,44 +12,52 @@ const pxSq = (id: number) =>
 const pxT = (id: number) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp`;
 
-/* ——— Photo ID banks per category ——— */
-// Beauty
-const BEAUTY_IDS    = [28383173, 16563139, 34384310, 7607808, 28383173, 16563139];
-const BARBER_IDS    = [19140178, 4625626, 33461079, 18503604, 19140178, 4625626];
-const SPA_IDS       = [6628485, 8988362, 3997983, 6186744, 6187305, 6187256];
-// Trades
-const TRADE_IDS     = [5463580, 7540625, 8478258, 17499393, 14315283, 8470249];
+/* ——— Photo ID banks per category ———
+ * Audited 2025-10: All default imagery now uses modest, non-human subjects:
+ * products, professional tools, salon equipment, workspaces, shop interiors,
+ * buildings, materials, nature and abstract geometric artwork.
+ * No human faces/models, no sexualised imagery, no autoplay audio/video.
+ * Example replacements: salon chairs/mirrors instead of models, tool benches
+ * instead of technicians, clinic interiors instead of practitioners, food
+ * flat-lays instead of diners, lodge exteriors instead of guests.
+ */
+// Beauty — salon interiors, tools, products, workspaces (no models)
+const BEAUTY_IDS    = [3184296, 3212167, 3993446, 3993467, 7750119, 3997983];
+const BARBER_IDS    = [1813272, 3212167, 3993446, 7750119, 3997983, 3184296];
+const SPA_IDS       = [6621334, 6187471, 3997983, 6186744, 6187305, 6187256];
+// Trades — tools, materials, workspaces (no people)
+const TRADE_IDS     = [221902, 2769743, 1216589, 1108109, 356040, 221902];
 const PAINT_IDS     = [6474135, 7217975, 7217974, 6474135, 7217975, 7217974];
 const CLEAN_IDS     = [6196235, 33701232, 6197106, 6196235, 33701232, 6197106];
 const SOLAR_IDS     = [11645008, 11644973, 6961215, 11645008, 11644973, 6961215];
-// Auto
-const MECH_IDS      = [17499393, 14315283, 8470249, 7540625, 8478258, 5463580];
+// Auto — workshop tools, vehicle details, interiors (no drivers)
+const MECH_IDS      = [3806288, 190574, 244206, 3806288, 190574, 244206];
 const CAR_WASH_IDS  = [4870707, 6872601, 4870691, 4870707, 6872601, 4870691];
-// Health
-const MEDICAL_IDS   = [5668806, 5669619, 8111815, 8111818, 8730964, 8837533];
-const DENTAL_IDS    = [6627524, 19879749, 6627483, 6627524, 19879749, 6627483];
-const VET_IDS       = [7470633, 7469231, 28644631, 7470633, 7469231, 28644631];
-// Food & Tourism
-const REST_IDS      = [37790193, 39836722, 17831035, 15470975, 37790193, 39836722];
-const CAFE_IDS      = [6152270, 15533806, 39103471, 6152270, 15533806, 39103471];
-const BAKERY_IDS    = [28965344, 5112575, 3341067, 28965344, 5112575, 3341067];
+// Health — clinic interiors, equipment, materials (no practitioners/patients)
+const MEDICAL_IDS   = [40568, 7089401, 3938023, 3952248, 263402, 40568];
+const DENTAL_IDS    = [6627524, 3844581, 6627483, 3844581, 6627524, 6627483];
+const VET_IDS       = [1805168, 7469231, 28644631, 1805168, 7469231, 28644631];
+// Food & Tourism — dishes/ingredients/flat-lays, building exteriors, landscapes (no diners)
+const REST_IDS      = [958545, 1640777, 958545, 1099680, 958545, 1640777];
+const CAFE_IDS      = [1307698, 680122, 585752, 1307698, 680122, 585752];
+const BAKERY_IDS    = [1070850, 2915282, 2915282, 1070850, 461428, 2915282];
 const CATER_IDS     = [7245469, 38742724, 38549538, 7245469, 38742724, 38549538];
-const LODGE_IDS     = [37790193, 39836722, 17831035, 15470975, 37790193, 39836722];
-// Pet
-const PET_IDS       = [7470633, 7469231, 28644631, 7470633, 7469231, 28644631];
-// Professional
-const LEGAL_IDS     = [5669619, 5668806, 8111815, 8111818, 5669619, 5668806];
-const ACCT_IDS      = [8730964, 8837533, 8052845, 8730964, 8837533, 8052845];
-const RE_IDS        = [8815820, 7937330, 7937363, 8815820, 7937330, 7937363];
-const SEC_IDS       = [31282368, 30516935, 31282369, 31282368, 30516935, 31282369];
-// Events
-const EVENT_IDS     = [37828118, 17001844, 16120239, 37828118, 17001844, 16120239];
-const FLOWER_IDS    = [34375019, 5894040, 16117968, 34375019, 5894040, 16117968];
-// Gym
-const GYM_IDS       = [31012861, 4164463, 4164451, 31012861, 4164463, 4164451];
-// Ag / farm
-const FARM_IDS      = [5425892, 38571555, 5425806, 5425892, 38571555, 5425806];
-// Delivery
+const LODGE_IDS     = [258154, 417074, 258154, 417074, 338504, 338504];
+// Pet — pet accessories, kennel interiors, nature (no owner faces)
+const PET_IDS       = [1805168, 7469231, 28644631, 1805168, 7469231, 28644631];
+// Professional — office interiors, documents, buildings (no lawyers/accountants posing)
+const LEGAL_IDS     = [566040, 4427430, 566040, 4427430, 4427446, 4427446];
+const ACCT_IDS      = [6694960, 6694914, 6694960, 6694914, 8052845, 8052845];
+const RE_IDS        = [323780, 1396122, 1396122, 323780, 1063999, 1063999];
+const SEC_IDS       = [430208, 859013, 430208, 859013, 31282368, 31282368];
+// Events — venue interiors, floral arrangements (no guests)
+const EVENT_IDS     = [2608517, 17001844, 1190298, 2608517, 17001844, 1190298];
+const FLOWER_IDS    = [691339, 931162, 691339, 931162, 34375019, 34375019];
+// Gym — equipment, studio interiors, geometric (no flexing models)
+const GYM_IDS       = [7917632, 4164836, 414029, 7917632, 4164836, 414029];
+// Ag / farm — fields, produce, equipment
+const FARM_IDS      = [974314, 2252584, 974314, 2252584, 5425806, 5425806];
+// Delivery — vans, parcels, warehouse (no couriers posing)
 const DELIV_IDS     = [6169129, 6169047, 6169135, 6169129, 6169047, 6169135];
 
 const gallery = (ids: number[]) => ids.map((id, i) =>
@@ -117,7 +125,7 @@ const BASE: Record<string, SiteData> = {
   /* ════════ TRADES ════════ */
   plumber: {
     businessName: "Dlamini Plumbing",
-    tagline: "24/7 geyser repairs, leak detection and drain unblocking — guaranteed in writing.",
+    tagline: "24/7 geyser repairs, leak detection and drain unblocking across Centurion.",
     industry: "plumber", area: "Centurion, Pretoria",
     hours: "24/7 Emergency call-outs", whatsapp: "0824455667",
     heroImageUrl: pxT(TRADE_IDS[0]), galleryUrls: gallery(TRADE_IDS),
@@ -153,7 +161,7 @@ const BASE: Record<string, SiteData> = {
 
   handyman: {
     businessName: "Fix-It Handyman Services",
-    tagline: "Leaks, shelves, gates and everything in between — done properly the first time.",
+    tagline: "Leaks, shelves, gates and general maintenance — hourly and day rates available.",
     industry: "handyman", area: "Randburg, Johannesburg",
     hours: "Mon – Sat · 07:00 – 17:00", whatsapp: "0827771234",
     heroImageUrl: pxT(TRADE_IDS[2]), galleryUrls: gallery(TRADE_IDS),
@@ -207,7 +215,7 @@ const BASE: Record<string, SiteData> = {
 
   roofer: {
     businessName: "TopGuard Roofing",
-    tagline: "Leak repairs, IBR and corrugated roofing — waterproof or we come back free.",
+    tagline: "Leak repairs, IBR and corrugated roofing for homes and businesses.",
     industry: "roofer", area: "Boksburg, Gauteng",
     hours: "Mon – Sat · 07:00 – 17:00", whatsapp: "0845554321",
     heroImageUrl: pxT(TRADE_IDS[4]), galleryUrls: gallery(TRADE_IDS),
@@ -243,7 +251,7 @@ const BASE: Record<string, SiteData> = {
 
   solar: {
     businessName: "Bright Future Solar",
-    tagline: "Load-shedding proof your home or business — installed in a day, guaranteed 25 years.",
+    tagline: "Solar installations for homes and businesses — site assessment and clear quotes.",
     industry: "solar", area: "Pretoria East",
     hours: "Mon – Fri · 08:00 – 17:00", whatsapp: "0124445678",
     heroImageUrl: pxWide(SOLAR_IDS[0]), galleryUrls: gallery(SOLAR_IDS),
@@ -261,7 +269,7 @@ const BASE: Record<string, SiteData> = {
 
   applianceRepair: {
     businessName: "QuickFix Appliances",
-    tagline: "Washing machines, fridges and stoves repaired same day — no fix, no fee.",
+    tagline: "Washing machines, fridges and stoves — diagnosis and repair, parts quoted separately.",
     industry: "applianceRepair", area: "Durbanville, Cape Town",
     hours: "Mon – Sat · 08:00 – 17:30", whatsapp: "0219998877",
     heroImageUrl: pxT(TRADE_IDS[5]), galleryUrls: gallery(TRADE_IDS),
@@ -370,7 +378,7 @@ const BASE: Record<string, SiteData> = {
   /* ════════ AUTO & TRANSPORT ════════ */
   mechanic: {
     businessName: "AutoPro Repairs",
-    tagline: "Full mechanical services, diagnostics and COF — honest quotes, quality work.",
+    tagline: "Full mechanical services, diagnostics and COF — quotes provided before work begins.",
     industry: "mechanic", area: "Germiston, Gauteng",
     hours: "Mon – Sat · 07:30 – 17:30", whatsapp: "0845550011",
     heroImageUrl: pxT(MECH_IDS[0]), galleryUrls: gallery(MECH_IDS),
@@ -661,7 +669,7 @@ const BASE: Record<string, SiteData> = {
   /* ════════ TOURISM ════════ */
   guestHouse: {
     businessName: "Lavender Stay B&B",
-    tagline: "A peaceful retreat with mountain views and home-cooked breakfasts.",
+    tagline: "A quiet stay with mountain views and breakfast included (see rates for details).",
     industry: "guestHouse", area: "Dullstroom, Mpumalanga",
     hours: "Check-in 14:00 · Check-out 10:00", whatsapp: "0827778899",
     heroImageUrl: pxWide(LODGE_IDS[0]), galleryUrls: gallery(LODGE_IDS),
@@ -679,7 +687,7 @@ const BASE: Record<string, SiteData> = {
 
   lodge: {
     businessName: "Thaba View Safari Lodge",
-    tagline: "Eight rooms, endless Bushveld — two hours from Joburg with zero phone signal and a full bar.",
+    tagline: "Eight rooms in the Bushveld — two hours from Joburg, self-catering and guided options.",
     industry: "lodge", area: "Waterberg, Limpopo",
     hours: "Check-in 14:00 · Check-out 10:00", whatsapp: "0155553344",
     heroImageUrl: pxWide(LODGE_IDS[1]), galleryUrls: gallery(LODGE_IDS),
@@ -789,7 +797,7 @@ const BASE: Record<string, SiteData> = {
   /* ════════ PROFESSIONAL ════════ */
   lawyer: {
     businessName: "Mashaba Attorneys",
-    tagline: "Family, labour and property law — answered in plain language, billed in writing.",
+    tagline: "Family, labour and property law — consultations by appointment, fees quoted in writing.",
     industry: "lawyer", area: "Sandton, Johannesburg",
     hours: "Mon – Fri · 08:00 – 17:00", whatsapp: "0825556677",
     heroImageUrl: pxT(LEGAL_IDS[0]), galleryUrls: gallery(LEGAL_IDS),
@@ -1025,7 +1033,7 @@ const BASE: Record<string, SiteData> = {
 
   construction: {
     businessName: "Kagiso Construction & Civils",
-    tagline: "Residential builds, extensions and civil works — NHBRC registered, priced in writing.",
+    tagline: "Residential builds, extensions and civil works — site visits and written quotes available.",
     industry: "construction", area: "Midrand, Gauteng",
     hours: "Mon – Sat · 07:00 – 17:00", whatsapp: "0768889900",
     heroImageUrl: pxT(TRADE_IDS[3]), galleryUrls: gallery(TRADE_IDS),
@@ -1421,7 +1429,8 @@ const DEFAULT_COPY: IndustryCopy = {
   ],
 };
 
-export function getDemoSiteData(input: DemoInput): SiteData {
+export function getDemoSiteData(input: DemoInput, opts?: { isDemo?: boolean }): SiteData {
+  const isDemo = opts?.isDemo ?? true;
   const key = FALLBACK[input.industry] ?? "hairSalon";
   const base = BASE[key] ?? BASE.hairSalon;
   const copy = COPY[key] ?? DEFAULT_COPY;
@@ -1446,19 +1455,43 @@ export function getDemoSiteData(input: DemoInput): SiteData {
     Object.entries(input).filter(([, value]) => value !== undefined),
   ) as Partial<SiteData>;
 
+  const demoExtras = isDemo
+    ? {
+        rating: base.rating,
+        reviews: base.reviews,
+        yearsInBusiness: base.yearsInBusiness,
+        serviceNoun: copy.serviceNoun,
+        galleryHeading: copy.galleryHeading,
+        aboutQuote: copy.aboutQuote,
+        reviewHeading: copy.reviewHeading,
+        reviewItems: copy.reviewItems,
+        guarantee: copy.guarantee,
+        isDemo: true as const,
+      }
+    : {
+        rating: undefined,
+        reviews: undefined,
+        yearsInBusiness: undefined,
+        serviceNoun: copy.serviceNoun,
+        galleryHeading: copy.galleryHeading,
+        aboutQuote: copy.aboutQuote,
+        reviewHeading: undefined, // do not show review headings on published sites unless owner supplies
+        reviewItems: undefined,
+        guarantee: undefined,
+        isDemo: false as const,
+      };
+
   return {
     ...base,
-    serviceNoun: copy.serviceNoun,
-    galleryHeading: copy.galleryHeading,
-    aboutQuote: copy.aboutQuote,
-    reviewHeading: copy.reviewHeading,
-    reviewItems: copy.reviewItems,
-    guarantee: copy.guarantee,
+    ...demoExtras,
     ...provided,
+    // Ensure published sites do not retain demo-only fields if owner did not provide them
+    ...(isDemo ? {} : { rating: undefined, reviews: undefined, yearsInBusiness: undefined, reviewItems: undefined, guarantee: undefined, reviewHeading: undefined }),
     industry: input.industry,
     galleryUrls: (input.galleryUrls ?? base.galleryUrls).slice(0, 6),
     services: input.services ?? base.services,
     socials: input.socials ?? base.socials,
+    isDemo,
   };
 }
 

@@ -18,13 +18,13 @@ import {
 import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
-import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
 
 /* Market — product-led storefront for retail, wholesale & manufacturing.
    Palette: paper #fbf7ef · ink #191406 · red #e0402a · green #2f7d4f */
 
-const PRODUCT_BADGES = ["New drop", "Best seller", "Low stock", "Back in", "", ""];
+const PRODUCT_BADGES: string[] = ["", "", "", "", "", ""]; // Removed false scarcity badges ("Low stock", "Best seller") — only owner-verified labels allowed
 
 export default function MarketTemplate({ site }: { site: SiteData }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -51,8 +51,7 @@ export default function MarketTemplate({ site }: { site: SiteData }) {
             {[0, 1].map((n) => (
               <div key={n} className="flex shrink-0 items-center">
                 {[
-                  "Fresh stock weekly", "Order on WhatsApp", "Nationwide delivery",
-                  `Rated ${site.rating} by ${site.reviews}+ customers`, site.area,
+                  "Fresh stock weekly", "Order on WhatsApp", "Nationwide delivery", site.area,
                 ].map((text, i) => (
                   <span key={`${n}-${i}`} className="flex items-center whitespace-nowrap">
                     <span className="px-5 text-[11px] font-bold tracking-[0.18em] uppercase">{text}</span>
@@ -159,9 +158,13 @@ export default function MarketTemplate({ site }: { site: SiteData }) {
                     Browse & order
                     <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
                   </a>
-                  <span className="flex items-center gap-2 text-sm font-semibold text-[#191406]/60">
-                    <Star className="h-4 w-4 fill-[#2f7d4f] text-[#2f7d4f]" /> {site.rating} · {site.reviews} reviews
-                  </span>
+                  {site.isDemo && site.rating ? (
+                    <span className="flex items-center gap-2 text-sm font-semibold text-[#191406]/60">
+                      <Star className="h-4 w-4 fill-[#2f7d4f] text-[#2f7d4f]" /> {site.rating} · {site.reviews} reviews <DemoBadge />
+                    </span>
+                  ) : (
+                    <span className="text-sm font-semibold text-[#191406]/60">{site.area} · {site.hours}</span>
+                  )}
                 </div>
               </Up>
             </div>
@@ -385,25 +388,27 @@ export default function MarketTemplate({ site }: { site: SiteData }) {
                 Receipts from <span className="text-[#e0402a]">customers</span>
               </h2>
               <span className="flex items-center gap-2 rounded-full border border-[#fbf7ef]/20 px-4 py-2 text-xs font-bold tracking-[0.16em] uppercase">
-                <Star className="h-4 w-4 fill-[#2f7d4f] text-[#2f7d4f]" /> {site.rating} average · {site.reviews}+ reviews
+{site.isDemo && site.rating ? <><Star className="h-4 w-4 fill-[#2f7d4f] text-[#2f7d4f]" /> {site.rating} average · {site.reviews}+ reviews <DemoBadge /></> : <>{site.area} · {site.hours}</>}
               </span>
             </Up>
-            <div className="grid grid-cols-1 gap-5 bp-md:grid-cols-3">
-              {[
-                ["Ordered Tuesday on WhatsApp, wearing it Friday. The quality punches way above the price.", "Karabo M., Bloemfontein"],
-                ["I've bought from every drop for two years. Never a miss, and delivery is always on time.", "Ané S., Cape Town"],
-                ["We buy bulk for our stokvel monthly. Proper prices, proper service, zero stories.", "Gogo Elsie, Soweto"],
-              ].map(([quote, name], i) => (
-                <Up key={name} delay={i * 0.1}>
-                  <figure className="flex h-full flex-col rounded-2xl border border-[#fbf7ef]/15 bg-[#fbf7ef]/[0.04] p-7">
-                    <blockquote className="flex-1 font-serif text-lg leading-snug text-[#fbf7ef]/85">“{quote}”</blockquote>
-                    <figcaption className="mt-6 text-[11px] font-bold tracking-[0.18em] text-[#fbf7ef]/45 uppercase">
-                      {name}
-                    </figcaption>
-                  </figure>
-                </Up>
-              ))}
-            </div>
+            {site.isDemo && site.reviewItems ? (
+              <div className="grid grid-cols-1 gap-5 bp-md:grid-cols-3">
+                {site.reviewItems.map((r, i) => (
+                  <Up key={r.name} delay={i * 0.1}>
+                    <figure className="flex h-full flex-col rounded-2xl border border-[#fbf7ef]/15 bg-[#fbf7ef]/[0.04] p-7">
+                      <blockquote className="flex-1 font-serif text-lg leading-snug text-[#fbf7ef]/85">“{r.quote}”</blockquote>
+                      <figcaption className="mt-6 text-[11px] font-bold tracking-[0.18em] text-[#fbf7ef]/45 uppercase">{r.name} — DEMO <DemoBadge /></figcaption>
+                    </figure>
+                  </Up>
+                ))}
+              </div>
+            ) : (
+              <div className="mx-auto max-w-2xl text-center">
+                <p className="font-serif text-xl text-[#fbf7ef]">Our products, your choice</p>
+                <p className="mt-3 text-sm leading-relaxed text-[#fbf7ef]/60">Prices and availability are listed above. WhatsApp us for stock checks and delivery quotes — we do not publish invented customer reviews.</p>
+                <a href={waLink(site.whatsapp, `Hi ${site.businessName}! I\'d like to check stock.`)} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#2f7d4f] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white">Check stock on WhatsApp</a>
+              </div>
+            )}
           </div>
         </section>
 

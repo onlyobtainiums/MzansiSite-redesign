@@ -9,7 +9,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const FAQS = [
   {
     q: "Is it really free to build?",
-    a: "Yes. You build and preview the entire site for free — no card, no trial countdown. You only pay R149/month at the moment you choose to publish it to your live .co.za address.",
+    a: "Yes. You build and preview the entire site for free — no card, no trial countdown. You only pay R149.99/month at the moment you choose to publish it to your live .co.za address.",
   },
   {
     q: "I already get customers on WhatsApp. Why a website?",

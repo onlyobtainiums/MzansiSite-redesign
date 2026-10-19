@@ -5,7 +5,8 @@ import { getAuthedUser } from "@/server/auth";
 import { AuthError } from "@/lib/firebase/server";
 import { db } from "@/db";
 import { and, eq } from "drizzle-orm";
-import { payments, sites, subscriptions } from "@/db/schema";
+import { payments, sites } from "@/db/schema";
+import { validateForPublish } from "@/lib/content-policy";
 
 /**
  * Starts a R149.99/month subscription checkout for a signed-in customer's site.
@@ -36,6 +37,27 @@ export async function POST(request: Request) {
     if (!site) return NextResponse.json({ ok: false, error: "Site not found." }, { status: 404 });
     if (site.status === "active") {
       return NextResponse.json({ ok: false, error: "This site is already published." }, { status: 400 });
+    }
+
+    // Publishing safeguard: validate against Acceptable Use Policy and placeholder data
+    const policy = validateForPublish({
+      businessName: site.businessName,
+      tagline: site.tagline ?? "",
+      industry: site.industry,
+      area: site.area ?? "",
+      hours: site.hours ?? "",
+      whatsapp: site.whatsapp ?? undefined,
+      phone: site.phone ?? undefined,
+      email: site.email ?? undefined,
+      services: site.services,
+      socials: site.socials as Record<string, string | undefined>,
+    });
+    if (!policy.allowed) {
+      return NextResponse.json({ ok: false, error: policy.errors.join(" "), blocked: policy.blocked, flagged: policy.flagged, reasons: policy.errors }, { status: 400 });
+    }
+    if (policy.flagged) {
+      // Flagged but not blocked — log for admin review but allow checkout
+      console.warn(`Site ${site.id} flagged for review:`, policy.warnings);
     }
 
     const email = user.email;

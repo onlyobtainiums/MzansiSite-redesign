@@ -25,6 +25,7 @@ export interface SiteData {
   rating?: string;
   reviews?: number;
   yearsInBusiness?: number;
+  isDemo?: boolean;
 
   /** ——— Dynamic copy so every template adapts to the industry ——— */
   /** Short noun for the service category: "work", "treatments", "menu" */

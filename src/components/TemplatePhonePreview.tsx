@@ -37,7 +37,7 @@ export default function TemplatePhonePreview({
     if (cleanArea) overrides.area = cleanArea;
     if (cleanWhatsapp) overrides.whatsapp = cleanWhatsapp;
 
-    return getDemoSiteData(overrides as { industry: string; businessName?: string; area?: string; whatsapp?: string });
+    return getDemoSiteData(overrides as { industry: string; businessName?: string; area?: string; whatsapp?: string }, { isDemo: true });
   }, [industry, businessName, area, whatsapp]);
 
   /**

@@ -19,7 +19,7 @@ import {
 import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
-import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
 
 /* Savanna — warm, wanderlust design for hospitality & tourism.
@@ -137,10 +137,14 @@ export default function SavannaTemplate({ site }: { site: SiteData }) {
                   Check availability
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </a>
-                <span className="flex items-center gap-2 text-sm font-medium text-[#f5ead8]/70">
-                  <Star className="h-4 w-4 fill-[#d97b2b] text-[#d97b2b]" />
-                  {site.rating} · {site.reviews} guest reviews
-                </span>
+                {site.isDemo && site.rating ? (
+                  <span className="flex items-center gap-2 text-sm font-medium text-[#f5ead8]/70">
+                    <Star className="h-4 w-4 fill-[#d97b2b] text-[#d97b2b]" />
+                    {site.rating} · {site.reviews} guest reviews <DemoBadge />
+                  </span>
+                ) : (
+                  <span className="text-sm font-medium text-[#f5ead8]/70">{site.area} · {site.hours}</span>
+                )}
               </div>
             </Up>
           </div>
@@ -174,8 +178,8 @@ export default function SavannaTemplate({ site }: { site: SiteData }) {
             </Up>
             <Up delay={0.2}>
               <p className="mt-6 text-sm leading-relaxed text-[#1d241a]/65 bp-md:text-base">
-                Family-run for {site.yearsInBusiness} years. Every stay includes sunrise coffee on the deck, trails from
-                your door, and a WhatsApp line that actually answers.
+                Every stay is arranged directly with the host. Enquire on WhatsApp for availability, rates and what is included — we reply during trading hours.
+                {site.isDemo && <DemoBadge className="mt-2" />}
               </p>
             </Up>
             <Up delay={0.3}>
@@ -355,27 +359,29 @@ export default function SavannaTemplate({ site }: { site: SiteData }) {
               <p className="mb-4 text-[11px] font-bold tracking-[0.3em] text-[#d97b2b] uppercase">Guest book</p>
               <h2 className="font-serif text-[min(2.25rem,calc(100cqw/7.5))] break-words bp-md:text-[min(3.75rem,calc(100cqw/7.5))]">{site.reviewHeading ?? "They came back. Twice."}</h2>
             </Up>
-            <div className="grid grid-cols-1 gap-6 bp-md:grid-cols-3">
-              {[
-                ["Booked on a whim via WhatsApp — replied in minutes, sorted in four messages. The deck at sunset is unreal.", "Pieter & Anél v.d. Berg"],
-                ["Our third anniversary here. Breakfast on the mountain, game drive at dusk, and the family cottage is perfect with kids.", "The Ngcobo family"],
-                ["Two hours from Joburg and it feels like another country. Best-value weekend escape we've found.", "Kavisha R."],
-              ].map(([quote, name], i) => (
-                <Up key={name} delay={i * 0.1}>
-                  <figure className="flex h-full flex-col rounded-3xl border border-[#f5ead8]/12 bg-[#262e22] p-7">
-                    <div className="mb-4 flex gap-1">
-                      {Array.from({ length: 5 }).map((_, s) => (
-                        <Star key={s} className="h-3.5 w-3.5 fill-[#d97b2b] text-[#d97b2b]" />
-                      ))}
-                    </div>
-                    <blockquote className="flex-1 font-serif text-lg leading-snug text-[#f5ead8]/85">“{quote}”</blockquote>
-                    <figcaption className="mt-6 text-[11px] font-bold tracking-[0.18em] text-[#a8b896] uppercase">
-                      {name}
-                    </figcaption>
-                  </figure>
-                </Up>
-              ))}
-            </div>
+            {site.isDemo && site.reviewItems ? (
+              <div className="grid grid-cols-1 gap-6 bp-md:grid-cols-3">
+                {site.reviewItems.map((r, i) => (
+                  <Up key={r.name} delay={i * 0.1}>
+                    <figure className="flex h-full flex-col rounded-3xl border border-[#f5ead8]/12 bg-[#262e22] p-7">
+                      <div className="mb-4 flex gap-1">
+                        {Array.from({ length: 5 }).map((_, s) => (
+                          <Star key={s} className="h-3.5 w-3.5 fill-[#d97b2b] text-[#d97b2b]" />
+                        ))}
+                      </div>
+                      <blockquote className="flex-1 font-serif text-lg leading-snug text-[#f5ead8]/85">“{r.quote}”</blockquote>
+                      <figcaption className="mt-6 text-[11px] font-bold tracking-[0.18em] text-[#a8b896] uppercase">{r.name} — DEMO <DemoBadge /></figcaption>
+                    </figure>
+                  </Up>
+                ))}
+              </div>
+            ) : (
+              <div className="mx-auto max-w-2xl text-center">
+                <p className="font-serif text-xl text-[#f5ead8]/85">Enquire for availability and honest information</p>
+                <p className="mt-3 text-sm leading-relaxed text-[#f5ead8]/60">Prices and details are listed above. Contact us on WhatsApp for accurate availability — we do not display invented guest reviews. References available on request.</p>
+                <a href={waLink(site.whatsapp, `Hi ${site.businessName}! I\'d like to check availability.`)} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#d97b2b] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-[#1d241a]">Check on WhatsApp</a>
+              </div>
+            )}
           </div>
         </section>
 

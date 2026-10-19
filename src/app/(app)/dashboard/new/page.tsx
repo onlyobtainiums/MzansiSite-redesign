@@ -23,6 +23,7 @@ import { apiFetch } from "@/lib/api-fetch";
 import { INDUSTRY_LIST } from "@/templates/industries";
 import { TEMPLATES } from "@/templates/registry";
 import AccountImageUploader, { type LocalImage } from "@/components/AccountImageUploader";
+import { ACCEPTABLE_USE_POLICY_TEXT, MERCHANT_DECLARATION_TEXT, validateForPublish } from "@/lib/content-policy";
 
 const STEPS = ["Industry", "Business info", "Photos", "Socials & review"] as const;
 const GALLERY_MAX = 6;
@@ -51,6 +52,8 @@ export default function NewSiteWizard() {
   const [activity, setActivity] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [acceptedDeclaration, setAcceptedDeclaration] = useState(false);
+  const [policyNotice, setPolicyNotice] = useState<{ errors: string[]; warnings: string[] } | null>(null);
 
   const template = industry ? TEMPLATES.find((t) => t.id === INDUSTRY_LIST.find((i) => i.key === industry)?.templateId) : null;
 
@@ -117,6 +120,32 @@ export default function NewSiteWizard() {
   };
 
   const create = async () => {
+    // Merchant declaration must be accepted before any site creation
+    if (!acceptedDeclaration) {
+      setError("Please confirm the Acceptable Use Policy declaration before creating your site.");
+      return;
+    }
+    // Client-side policy pre-check for immediate feedback
+    {
+      const pre = validateForPublish({
+        businessName: businessName.trim(),
+        tagline: tagline.trim(),
+        industry: industry ?? undefined,
+        area: area.trim(),
+        hours: hours.trim(),
+        whatsapp,
+        phone,
+        email: email.trim() || undefined,
+        socials: { instagram, facebook, tiktok, website },
+      });
+      if (!pre.allowed) {
+        setError(pre.errors.join(" "));
+        setPolicyNotice({ errors: pre.errors, warnings: pre.warnings });
+        return;
+      }
+      if (pre.flagged) setPolicyNotice({ errors: [], warnings: pre.warnings });
+    }
+
     const token = await getToken();
     if (!token || creating) return;
     setCreating(true);
@@ -375,6 +404,42 @@ export default function NewSiteWizard() {
                   </div>
                 ))}
               </div>
+
+              {/* Merchant declaration */}
+              <div className="mt-8 rounded-2xl border-2 border-ink/15 bg-white p-5">
+                <label className="flex cursor-pointer items-start gap-3">
+                  <input
+                    type="checkbox"
+                    checked={acceptedDeclaration}
+                    onChange={(e) => setAcceptedDeclaration(e.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-ink/30"
+                  />
+                  <span className="text-xs leading-relaxed text-ink/70">
+                    I confirm that my business information is true, that my offerings comply with{" "}
+                    <Link href="/acceptable-use" target="_blank" className="font-bold text-flame underline">
+                      MzansiSite&apos;s Acceptable Use Policy
+                    </Link>
+                    , and that I will not promote prohibited goods or services. I understand invented reviews/ratings must
+                    not be shown as genuine.
+                  </span>
+                </label>
+                <p className="mt-3 text-[11px] leading-relaxed text-ink/40">{MERCHANT_DECLARATION_TEXT}</p>
+              </div>
+
+              {policyNotice && (policyNotice.errors.length > 0 || policyNotice.warnings.length > 0) && (
+                <div className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs leading-relaxed">
+                  {policyNotice.errors.map((e, i) => (
+                    <p key={i} className="font-medium text-flame-deep">
+                      {e}
+                    </p>
+                  ))}
+                  {policyNotice.warnings.map((w, i) => (
+                    <p key={`w${i}`} className="text-amber-900">
+                      {w}
+                    </p>
+                  ))}
+                </div>
+              )}
 
               {/* Review card */}
               <div className="mt-9 rounded-2xl border-2 border-ink bg-ink p-6 text-bone">

@@ -25,11 +25,11 @@ export const TRADES: Record<TradeKey, Trade> = {
     key: "salon",
     label: "Hair Salon",
     badge: "Hair & Braids",
-    business: "Naledi's Braids",
+    business: "Naledi's Braids — DEMO",
     area: "Soweto, Johannesburg",
-    blurb: "Knotless braids, installs and treatments — book your chair before it's gone.",
+    blurb: "Knotless braids, installs and treatments — enquire for prices and availability.",
     image:
-      "https://images.pexels.com/photos/28383173/pexels-photo-28383173.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
+      "https://images.pexels.com/photos/3212167/pexels-photo-3212167.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
     accent: "#c96f3f",
     services: [
       { name: "Knotless braids", price: "R450" },
@@ -45,11 +45,11 @@ export const TRADES: Record<TradeKey, Trade> = {
     key: "barber",
     label: "Barbershop",
     badge: "Cuts & Fades",
-    business: "Siya's Cuts",
+    business: "Siya's Cuts — DEMO",
     area: "Khayelitsha, Cape Town",
-    blurb: "Sharp fades, clean shaves and beard sculpting. Walk out a new person.",
+    blurb: "Sharp fades, clean shaves and beard sculpting — walk-ins and bookings welcome.",
     image:
-      "https://images.pexels.com/photos/19140178/pexels-photo-19140178.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
+      "https://images.pexels.com/photos/3184296/pexels-photo-3184296.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
     accent: "#7a8b6f",
     services: [
       { name: "Skin fade", price: "R120" },
@@ -65,11 +65,11 @@ export const TRADES: Record<TradeKey, Trade> = {
     key: "spa",
     label: "Day Spa",
     badge: "Wellness & Beauty",
-    business: "Amara Day Spa",
+    business: "Amara Day Spa — DEMO",
     area: "Umhlanga, Durban",
-    blurb: "Massage, facials and glow treatments in a space made for switching off.",
+    blurb: "Wellness treatments in a calm space — enquire for treatments and availability.",
     image:
-      "https://images.pexels.com/photos/6186744/pexels-photo-6186744.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
+      "https://images.pexels.com/photos/6621334/pexels-photo-6621334.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
     accent: "#a3856a",
     services: [
       { name: "Full-body massage", price: "R550" },
@@ -85,11 +85,11 @@ export const TRADES: Record<TradeKey, Trade> = {
     key: "plumber",
     label: "Plumbing",
     badge: "Home Services",
-    business: "Dlamini Plumbing",
+    business: "Dlamini Plumbing — DEMO",
     area: "Centurion, Pretoria",
-    blurb: "Geysers, leaks and blockages — sorted same-day, guaranteed for 6 months.",
+    blurb: "Geysers, leaks and blockages — enquire for quotes and availability.",
     image:
-      "https://images.pexels.com/photos/5463580/pexels-photo-5463580.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
+      "https://images.pexels.com/photos/221902/pexels-photo-221902.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800&fm=webp",
     accent: "#4a6b8a",
     services: [
       { name: "Call-out fee", price: "R450" },
@@ -97,7 +97,7 @@ export const TRADES: Record<TradeKey, Trade> = {
       { name: "Drain unblock", price: "R650" },
       { name: "Leak detection", price: "R550" },
     ],
-    hours: "24/7 emergency call-outs",
+    hours: "Mon – Sat · 07:00 – 17:00",
     rating: "4.9",
     reviews: 167,
   },

@@ -14,7 +14,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 function LiveThumb({ templateId, industry }: { templateId: string; industry: string }) {
-  const site = getDemoSiteData({ industry });
+  const site = getDemoSiteData({ industry }, { isDemo: true });
   return (
     <div className="pointer-events-none relative h-full w-full overflow-hidden bg-white">
       <div className="absolute left-0 top-0 h-[400%] w-[400%] origin-top-left" style={{ transform: "scale(0.25)" }}>

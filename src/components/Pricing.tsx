@@ -20,13 +20,13 @@ export default function Pricing() {
     <section id="pricing" className="relative overflow-hidden bg-bone-deep py-24 md:py-36">
       {/* Giant background price */}
       <div
-        className="pointer-events-none absolute -right-20 top-1/2 hidden -translate-y-1/2 select-none font-display text-[34rem] font-extrabold leading-none tracking-tighter text-ink/[0.04] lg:block"
+        className="pointer-events-none absolute right-0 top-1/2 hidden -translate-y-1/2 select-none font-display text-[28rem] font-extrabold leading-none tracking-tighter text-ink/[0.04] lg:block xl:text-[34rem]"
         aria-hidden
       >
         149
       </div>
 
-      <div className="relative mx-auto max-w-[1200px] px-5 md:px-10">
+      <div className="relative mx-auto max-w-[1140px] px-6 md:px-8">
         <div className="mb-14 text-center md:mb-20">
           <Reveal>
             <p className="mb-6 flex items-center justify-center gap-3 text-xs font-bold uppercase tracking-[0.28em] text-flame">
@@ -42,13 +42,13 @@ export default function Pricing() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1fr_1.1fr]">
+        <div className="grid w-full grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_1.1fr]">
           {/* Free card */}
-          <Reveal delay={0.1}>
-            <div className="rounded-3xl border-2 border-ink/12 bg-white/50 p-8 md:p-10">
+          <Reveal delay={0.1} className="min-w-0">
+            <div className="rounded-3xl border-2 border-ink/12 bg-white/50 p-6 sm:p-8 md:p-10">
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-ink/45">Start here</p>
-              <div className="mt-4 flex items-baseline gap-2">
-                <span className="font-display text-6xl font-extrabold tracking-tight">R0</span>
+              <div className="mt-4 flex flex-wrap items-baseline gap-2">
+                <span className="font-display text-5xl font-extrabold leading-none tracking-tight sm:text-6xl">R0</span>
                 <span className="text-sm font-semibold text-ink/45">to build & preview</span>
               </div>
               <ul className="mt-7 space-y-3">
@@ -73,17 +73,17 @@ export default function Pricing() {
           <Reveal
             delay={0.2}
             y={48}
-            className="relative overflow-hidden rounded-3xl border-2 border-ink bg-ink p-8 text-bone shadow-[12px_12px_0_#ff4d00] md:p-12"
+            className="relative min-w-0 overflow-visible rounded-3xl border-2 border-ink bg-ink p-6 text-bone shadow-[8px_8px_0_#ff4d00] sm:p-8 md:p-10 lg:p-12 sm:shadow-[12px_12px_0_#ff4d00]"
           >
-            <span className="absolute right-6 top-6 rotate-3 rounded-full bg-gold px-3.5 py-1.5 font-display text-[10px] font-bold uppercase tracking-[0.14em] text-ink">
+            <span className="absolute right-4 top-5 rotate-3 rounded-full bg-gold px-3 py-1 font-display text-[10px] font-bold uppercase tracking-[0.14em] text-ink sm:right-6 sm:top-6 sm:px-3.5 sm:py-1.5">
               Most popular
             </span>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-gold">Publish when ready</p>
-            <div className="mt-4 flex items-baseline gap-1">
-              <span className="font-display text-7xl font-extrabold tracking-tight md:text-8xl">R149</span>
-              <span className="text-base font-semibold text-bone/50">/month</span>
+            <p className="pr-24 text-xs font-bold uppercase tracking-[0.22em] text-gold">Publish when ready</p>
+            <div className="mt-4 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <span className="font-display text-5xl font-extrabold leading-none tracking-tight sm:text-6xl md:text-7xl lg:text-[4.5rem] xl:text-8xl">R149.99</span>
+              <span className="shrink-0 text-sm font-semibold text-bone/50 sm:text-base">/month</span>
             </div>
-            <p className="mt-2 text-sm font-medium text-bone/50">Billed monthly · no setup fees</p>
+            <p className="mt-2 text-sm font-medium text-bone/50">Billed monthly · cancel anytime · no setup fees</p>
 
             <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {FEATURES.map((f) => (

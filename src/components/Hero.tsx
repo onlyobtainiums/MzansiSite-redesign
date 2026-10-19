@@ -138,11 +138,11 @@ export default function Hero() {
             {[
               ["60 sec", "to build your site"],
               ["R0", "until you publish"],
-              ["R149/m", "all-in, cancel anytime"],
+              ["R149.99/m", "all-in, cancel anytime"],
             ].map(([big, small]) => (
               <div key={big} className="px-2 first:pl-0 sm:px-4">
                 {/* Sized to fit three columns across a 350px phone: at
-                    text-2xl "R149/m" was cut off by the viewport edge and
+                    text-2xl "R149.99/m" was cut off by the viewport edge and
                     "60 sec" wrapped onto two lines. */}
                 <p className="font-display text-lg font-extrabold sm:text-2xl md:text-3xl">{big}</p>
                 <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.1em] text-ink/50 sm:text-[11px] md:text-xs">{small}</p>
@@ -210,7 +210,7 @@ export default function Hero() {
       >
         <Marquee
           inverted
-          items={["Free to build", "Preview before you pay", "R149/month to publish", "Cancel anytime", "Made in Mzansi", "WhatsApp bookings included"]}
+          items={["Free to build", "Preview before you pay", "R149.99/month to publish", "Cancel anytime", "Made in Mzansi", "WhatsApp bookings included"]}
         />
       </div>
     </section>

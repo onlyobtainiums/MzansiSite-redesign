@@ -16,7 +16,7 @@ import {
 import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
-import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
 
 /* Forge — rugged, high-trust design for trades & construction.
@@ -136,7 +136,7 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
             <div className="@container">
               <Up>
                 <p className="mb-5 inline-flex items-center gap-2 border-2 border-[#ffc400] px-3 py-1.5 text-[11px] font-bold tracking-[0.22em] text-[#ffc400] uppercase">
-                  <BadgeCheck className="h-4 w-4" /> Registered & insured · {site.area}
+                  <BadgeCheck className="h-4 w-4" /> {site.area} · {site.hours}
                 </p>
               </Up>
               <Up delay={0.08}>
@@ -198,11 +198,9 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
                 <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[4/5] w-full object-cover" />
                 <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between bg-[#16181a]/90 px-5 py-4 backdrop-blur">
                   <div>
-                    <p className="text-[10px] font-bold tracking-[0.2em] text-[#ffc400] uppercase">Rating</p>
-                    <p className="flex items-center gap-1.5 font-display text-xl font-extrabold">
-                      <Star className="h-4.5 w-4.5 fill-[#ffc400] text-[#ffc400]" /> {site.rating}
-                      <span className="text-sm font-medium text-[#eceae3]/50">({site.reviews} jobs)</span>
-                    </p>
+                    <p className="text-[10px] font-bold tracking-[0.2em] text-[#ffc400] uppercase">Enquire</p>
+                    <p className="font-display text-sm font-bold text-[#eceae3]">{site.area} · {site.hours}</p>
+                    {site.isDemo && site.rating && <DemoBadge className="mt-1" />}
                   </div>
                   <Wrench className="h-7 w-7 text-[#ffc400]" />
                 </div>
@@ -214,13 +212,13 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
           <div className="relative border-t-2 border-[#eceae3]/10 bg-[#1d1f22]">
             <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x-2 divide-[#eceae3]/10 bp-md:grid-cols-4">
               {[
-                [`${site.yearsInBusiness} yrs`, "in the trade"],
-                [`${(site.reviews ?? 100) * 8}+`, "jobs completed"],
-                ["6 mo", "workmanship guarantee"],
-                ["60 min", "emergency response"],
+                [site.area.split(",")[0], "based in"],
+                [site.services.length + " services", "listed with prices"],
+                [site.hours, "hours"],
+                ["WhatsApp", "enquiries welcome"],
               ].map(([big, small], i) => (
                 <Up key={small} delay={i * 0.08} className="@container px-5 py-6 text-center bp-md:py-8">
-                  <p className="font-display text-[min(1.5rem,calc(100cqw/6.8))] font-extrabold text-[#ffc400] bp-md:text-[min(1.875rem,calc(100cqw/6.8))]">{big}</p>
+                  <p className="font-display text-[min(1.25rem,calc(100cqw/6.8))] font-extrabold text-[#ffc400] break-words bp-md:text-[min(1.5rem,calc(100cqw/6.8))]">{big}</p>
                   <p className="mt-1 text-[10px] font-bold tracking-[0.18em] text-[#eceae3]/50 uppercase">{small}</p>
                 </Up>
               ))}
@@ -309,13 +307,11 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
                 whatever an owner types next.
               */}
               <h2 className="font-display text-[min(1.875rem,calc(100cqw/15))] font-extrabold tracking-tight uppercase break-words bp-md:text-[min(3rem,calc(100cqw/15))]">
-                {(site.guarantee ?? 'If it breaks in 6 months, we come back free.').split(',')[0]},
-                <br />
-                <span className="text-[#ffc400]">{(site.guarantee ?? "we come back free.").split(",").slice(1).join(",").trim() || "we come back free."}</span>
+                Clear quotes, honest work
               </h2>
               <p className="mt-3 max-w-lg text-sm leading-relaxed text-[#eceae3]/55">
-                Workmanship guaranteed in writing on every job card. That&apos;s how {site.businessName} has kept a{" "}
-                {site.rating} rating across {site.reviews}+ reviews.
+                Every job is quoted in writing before we start. {site.businessName} serves {site.area} — enquire on WhatsApp for availability and pricing.
+                {site.isDemo && site.guarantee && <><br/><DemoBadge className="mt-2" /> <span className="text-[#eceae3]/50 text-xs">Demo guarantee: {site.guarantee}</span></>}
               </p>
             </Up>
             <Up delay={0.2}>

@@ -26,7 +26,7 @@ const grotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "MzansiSite — Turn WhatsApp into your online storefront",
   description:
-    "A professional website for your South African business — services, prices, location and a WhatsApp booking button. Free to build, preview first, R149/month to publish.",
+    "A professional website for your South African business — services, prices, location and a WhatsApp booking button. Free to build, preview first, R149.99/month to publish.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

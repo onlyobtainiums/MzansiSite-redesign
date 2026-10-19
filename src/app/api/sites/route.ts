@@ -8,6 +8,7 @@ import { INDUSTRIES } from "@/templates/industries";
 import { getDemoSiteData } from "@/templates/demo-data";
 import { makeSlug } from "@/lib/slug";
 import { describeError } from "@/lib/errors";
+import { validateForPublish } from "@/lib/content-policy";
 
 export const dynamic = "force-dynamic";
 
@@ -34,8 +35,6 @@ export async function GET(request: Request) {
       const status = error.code === "not-configured" ? 503 : 401;
       return jsonError(error.message, status);
     }
-    // describeError() unwraps Drizzle's "Failed query:" wrapper to the real
-    // cause, so a database problem is obvious in the UI instead of generic.
     const msg = describeError(error);
     console.error("List sites failed:", msg, error);
     return jsonError(`Could not load your sites: ${msg}`, 500);
@@ -56,22 +55,10 @@ export async function POST(request: Request) {
       typeof body.industry === "string" && INDUSTRIES[body.industry]
         ? body.industry
         : null;
-    const whatsapp = sanitise(body.whatsapp, 20).replace(/[^+\d]/g, "");
-    const phone = sanitise(body.phone, 20).replace(/[^+\d]/g, "");
+    const whatsapp = sanitise(body.whatsapp, 20).replace(/[^+\\d]/g, "");
+    const phone = sanitise(body.phone, 20).replace(/[^+\\d]/g, "");
     const area = sanitise(body.area, 80);
 
-    /*
-     * Business name, industry, and a WhatsApp number. Tagline, area, hours and
-     * email are optional and fall back to the industry's demo content until the
-     * owner fills them in.
-     *
-     * WhatsApp stays required, and deliberately so: every template renders its
-     * booking buttons as wa.me links, so a site without a real WhatsApp number
-     * falls back to the DEMO number baked into the template data — verified by
-     * creating one. A visitor tapping "WhatsApp us" would then be messaging a
-     * stranger. A landline cannot stand in for it either, since that number
-     * would not be on WhatsApp.
-     */
     if (businessName.length < 2) return jsonError("Business name is required.", 400);
     if (!industry) return jsonError("Pick your industry.", 400);
     if (whatsapp.replace(/\D/g, "").length < 9)
@@ -80,7 +67,7 @@ export async function POST(request: Request) {
       return jsonError("That phone number looks too short.", 400);
 
     const templateId = INDUSTRIES[industry].templateId;
-    const starter = getDemoSiteData({ industry });
+    const starter = getDemoSiteData({ industry }, { isDemo: false });
 
     const socials = {
       instagram: sanitise(body.socials?.instagram, 200) || undefined,
@@ -88,6 +75,26 @@ export async function POST(request: Request) {
       tiktok: sanitise(body.socials?.tiktok, 200) || undefined,
       website: sanitise(body.socials?.website, 200) || undefined,
     };
+
+    // Content policy check — block clearly prohibited offerings at creation
+    const policy = validateForPublish({
+      businessName,
+      tagline: sanitise(body.tagline, 140) || starter.tagline,
+      industry,
+      area: area || starter.area,
+      services: starter.services,
+      hours: sanitise(body.hours, 60) || starter.hours,
+      whatsapp,
+      phone,
+      email: sanitise(body.email, 120) || undefined,
+      socials,
+    });
+    if (policy.blocked) {
+      return NextResponse.json({ ok: false, error: policy.errors.join(" "), blocked: true, reasons: policy.errors }, { status: 400 });
+    }
+    if (policy.flagged) {
+      console.warn("Site flagged for review:", policy.warnings);
+    }
 
     const galleryUrls = Array.isArray(body.galleryUrls)
       ? body.galleryUrls
@@ -118,8 +125,6 @@ export async function POST(request: Request) {
             area: area || null,
             hours: sanitise(body.hours, 60) || starter.hours,
             whatsapp: whatsapp || null,
-            // Stored only when it differs from WhatsApp; otherwise NULL, and the
-            // templates fall back to the WhatsApp number.
             phone: phone || null,
             email: sanitise(body.email, 120) || undefined,
             logoUrl,

@@ -63,6 +63,12 @@ export default function PhoneMockup({ trade, businessName, area, className = "" 
             </div>
           </div>
 
+          {/* DEMO badge */}
+          <div className="flex items-center gap-1.5 border-b border-ink/8 bg-amber-50 px-3 py-1.5 text-center">
+            <span className="rounded bg-amber-200 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.14em] text-amber-900">Demo</span>
+            <span className="text-[8px] font-bold uppercase tracking-[0.14em] text-ink/60">DEMO CONTENT — NOT A REAL BUSINESS</span>
+          </div>
+
           {/* Meta row */}
           <div className="flex items-center gap-2 border-b border-ink/8 px-3 py-2.5">
             <span className="flex items-center gap-1 rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold text-ink">
