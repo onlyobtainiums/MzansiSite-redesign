@@ -106,6 +106,28 @@ export const analyticsEvents = {
 } as const;
 
 /**
+ * Non-branded acquisition events — P0 measurement, reuses trackEvent, no PII.
+ * Firing is manual (call from components) to avoid duplicate page_view.
+ * Definitions (how measured in GA4/GSC):
+ * - view_seo_guide: when a 7-guide page is viewed (content_group = guide id, e.g., "website-for-braiders").
+ *   Measured: GSC non-branded impressions/clicks per page + GA4 event count per guide.
+ * - select_industry: click from builder-SA overview to a specific industry (salons/barbers/braiders/nails/small-business/whatsapp-booking).
+ *   Params: from_guide, to_guide — no PII, max 100 chars.
+ * - cta_demo_click / cta_pricing_click: any guide CTA to /#demo or /#pricing.
+ *   Params: guide — identifies which guide drove intent, no personal data.
+ * - whatsapp_booking_click: click on any wa.me link (existing whatsapp_click alias).
+ *   Params: guide, link_type (e.g., "per_service" or "main_cta") — never includes phone/email/address.
+ * Avoid duplicate page_view: GA4 auto page_view via @next/third-parties is sufficient; do not manually fire page_view on guides.
+ */
+export const nonBrandedEvents = {
+  viewSeoGuide: (guide: string) => trackEvent("view_seo_guide", { content_group: guide, guide }),
+  selectIndustry: (from: string, to: string) => trackEvent("select_industry", { from_guide: from, to_guide: to }),
+  ctaDemoClick: (guide: string) => trackEvent("cta_demo_click", { guide }),
+  ctaPricingClick: (guide: string) => trackEvent("cta_pricing_click", { guide }),
+  whatsappBookingClick: (guide: string, linkType?: string) => trackEvent("whatsapp_booking_click", { guide, link_type: linkType }),
+} as const;
+
+/**
  * Consent Mode defaults — called once on load if GA is present.
  * MzansiSite does not use ad_storage for payment or personalization;
  * analytics_storage is granted by default but can be revoked via a consent

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL } from "@/lib/seo";
 import { SeoPageShell, FeatureGrid, Faq } from "@/components/SeoPageShell";
+import { ComparisonTable, GbpPopiaBlock } from "@/components/SeoHelpers";
 
 export const metadata: Metadata = {
   title: "Website Builder South Africa — MzansiSite",
@@ -61,8 +62,12 @@ export default function Page() {
           <Link href="/website-for-barbers" className="rounded-2xl border-2 border-ink/10 bg-white p-5 hover:border-ink"><strong className="text-sm">Barbers →</strong><p className="mt-1 text-xs text-ink/60">Fades, shaves, beard work — walk-in hours + chairs.</p></Link>
           <Link href="/website-for-nail-technicians" className="rounded-2xl border-2 border-ink/10 bg-white p-5 hover:border-ink"><strong className="text-sm">Nail technicians →</strong><p className="mt-1 text-xs text-ink/60">Manicures, acrylics, gel, art — sets by design + refill pricing.</p></Link>
         </div>
-        <p className="mt-4 text-sm"><Link href="/website-for-small-businesses" className="font-bold underline">Also: tutors, cleaners, photographers, trades and more →</Link></p>
+        <p className="mt-4 text-sm"><Link href="/website-for-small-businesses" className="font-bold underline">Also: plumbers, cleaners, electricians, tutors and other trades →</Link> · For a full comparison see pricing below.</p>
       </section>
+
+      <ComparisonTable />
+
+      <GbpPopiaBlock />
 
       <section className="mt-12 rounded-2xl bg-ink p-6 text-bone md:p-8">
         <h2 className="font-display text-xl font-extrabold uppercase tracking-tight">Ready to put your WhatsApp on the web?</h2>
@@ -76,10 +81,12 @@ export default function Page() {
       <div className="mt-12">
         <Faq
           items={[
-            { q: "Do I need a laptop?", a: "No. The editor and your live site are both phone-friendly. Build, preview and publish from your phone — or laptop, either works." },
-            { q: "What counts as a template?", a: "Six styles ships: Velvet, Forge, Savanna, Praxis, Market, Vital. Each is a full layout (fonts, colours, sections) optimised for its trade. You can switch before publishing." },
-            { q: "Can I use my own domain?", a: "Every published site gets a subdomain (yoursite.mzansisite.co.za). A custom-domain connector is available in the dashboard; point your DNS as shown after you publish." },
-            { q: "Will my site show on Google?", a: "Customer sites are server-rendered HTML (not hidden behind JS) and linked from the platform's public directory — indexable once published. Keep your services, hours and prices up to date for best results." },
+            { q: "Do I need a laptop or designer?", a: "No. The editor and your live site are both phone-friendly. Build, preview and publish from your phone — templates provide typography so you don’t need a designer. If you can type your business name, suburb and WhatsApp number, you can create a site." },
+            { q: "What counts as a template — and which should I pick?", a: "Six styles ship: Velvet (beauty), Forge (barbershop grit), Savanna (warm earthy), Praxis (clean services), Market (retail), Vital (wellness). Each is a full layout (fonts, colours, sections) optimised for its trade. Preview all six before publishing; you can switch before you pay." },
+            { q: "How is R149.99 different from R29 or free builders?", a: "HostAfrica advertises R29.70 for 3 months then R99/mo and 1Grid from R129/mo — those are page-count tiers (10 pages, 35 pages, unlimited). MzansiSite is a single flat R149.99/mo for one clear page with WhatsApp-first setup, hosting, SSL and a MzansiSite subdomain included. Check the comparison table above (verified 22 Oct 2026) for current prices." },
+            { q: "Can I use my own .co.za domain?", a: "Every published site gets a subdomain (yoursite.mzansisite.co.za). A custom-domain connector is available in the dashboard after publishing; point your DNS as shown. You keep the subdomain as well." },
+            { q: "Will my site show on Google and AI answers?", a: "Customer sites are server-rendered HTML (not hidden behind JS) and linked from the platform — indexable once published. Keep services, hours, prices and suburb mentions fresh. MzansiSite adds canonical, Organization/WebSite/SoftwareApplication and BreadcrumbList structured data — it does not guarantee Google rankings or AI citations; those depend on the search provider." },
+            { q: "Do I need a Google Business Profile too?", a: "Yes, separately. Claim your free profile at business.google.com, add category, hours, photos and your MzansiSite link. A complete profile can appear in Maps/local pack within days. MzansiSite does not create your GBP for you." },
           ]}
         />
       </div>

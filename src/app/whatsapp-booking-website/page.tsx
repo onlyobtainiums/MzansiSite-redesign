@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL } from "@/lib/seo";
 import { SeoPageShell, FeatureGrid, Faq } from "@/components/SeoPageShell";
+import { GbpPopiaBlock } from "@/components/SeoHelpers";
 
 export const metadata: Metadata = {
   title: "WhatsApp Booking Website — Book from WhatsApp | MzansiSite",
@@ -31,19 +32,19 @@ export default function Page() {
       </section>
 
       <section className="mt-12 rounded-2xl border-2 border-ink bg-white p-6 md:p-8">
-        <h2 className="font-display text-xl font-extrabold uppercase tracking-tight">Setup in the editor</h2>
+        <h2 className="font-display text-xl font-extrabold uppercase tracking-tight">Setup in the editor (no BSP needed)</h2>
         <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-ink/80">
           <li>Enter your WhatsApp number (South African mobile, e.g. 0 7x/8x …). We strip spaces and add the +27 country code to the link — customers never see raw formatting.</li>
           <li>Write your default message: “Hi, I'd like to book [service] on [date] at [time].” The builder inserts the service name when they tap from a row.</li>
           <li>Set hours (Mon–Sun) — the page badge flips between open/closed automatically; update anytime.</li>
-          <li>Publish to yoursite.mzansisite.co.za — your button is live; test it from a real phone before you share the link on Instagram/bio.</li>
+          <li>Publish to yoursite.mzansisite.co.za — your button is live; test it from a real phone before you share the link on Instagram/bio. Add your Google Business Profile link for Maps.</li>
         </ol>
-        <p className="mt-4 text-xs text-ink/50">You close the sale in WhatsApp — MzansiSite doesn't take a commission or intermediate the chat.</p>
+        <p className="mt-4 text-xs text-ink/50">You close the sale in WhatsApp — MzansiSite doesn't take a commission or intermediate the chat. No BSP API needed; this is a tap-to-chat link, not an automated bot.</p>
       </section>
 
       <section className="mt-12">
         <h2 className="font-display text-xl font-extrabold uppercase tracking-tight">Who benefits most</h2>
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-ink/70">Any business where quoting and scheduling happen in chat — which on Mzansi is most of them. Beauty pros (see <Link href="/website-for-salons" className="underline">salons</Link>, <Link href="/website-for-braiders" className="underline">braiders</Link>, <Link href="/website-for-nail-technicians" className="underline">nail technicians</Link>, <Link href="/website-for-barbers" className="underline">barbers</Link>) close faster when every price row has its own pre-filled WhatsApp prompt. Traders and tutors (<Link href="/website-for-small-businesses" className="underline">small businesses</Link>) use the same pattern with call-out or per-hour lines. See the <Link href="/website-builder-south-africa" className="underline">South African builder overview</Link> for the full offer.</p>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-ink/70">Any business where quoting and scheduling happen in chat — which on Mzansi is most of them. Beauty pros (see <Link href="/website-for-salons" className="underline">salons</Link>, <Link href="/website-for-braiders" className="underline">braiders</Link>, <Link href="/website-for-nail-technicians" className="underline">nail technicians</Link>, <Link href="/website-for-barbers" className="underline">barbers</Link>) close faster when every price row has its own pre-filled WhatsApp prompt. Traders and home services (<Link href="/website-for-small-businesses" className="underline">trades & home services</Link>) use the same pattern with call-out or per-hour lines. See the <Link href="/website-builder-south-africa" className="underline">South African builder overview</Link> for the full offer.</p>
       </section>
 
       <section className="mt-12 rounded-2xl bg-ink p-6 text-bone md:p-8">
@@ -55,10 +56,14 @@ export default function Page() {
         </div>
       </section>
 
+      <GbpPopiaBlock />
+
       <div className="mt-12"><Faq items={[
-        { q: "Do customers need WhatsApp Business?", a: "They need WhatsApp (personal or Business) — the link opens whichever they have. You can use Business features on your side, but it's not required." },
-        { q: "Can I track where chats come from?", a: "Add UTM params to your share link (e.g. ?utm_source=instagram). GA4 in MzansiSite fires a whatsapp_click event so you see the source in Analytics alongside the chat." },
-        { q: "What about POPIA?", a: "You're still the responsible party — only collect what you need in chat and keep personal data off the public page. Don't publish clients' phone numbers, addresses or IDs on the site." },
+        { q: "Do customers need WhatsApp Business to book?", a: "They need WhatsApp (personal or Business) — the link opens whichever they have. You can use Business features on your side, but it's not required. No BSP or API setup." },
+        { q: "Is this different from booking apps like Booklink or Fresha?", a: "Yes. Booklink (from R79/mo) and Fresha are booking calendars with reminders. MzansiSite is a website with a WhatsApp button — customers choose a service and message you. Use both if you need a calendar: link your booking app in the MzansiSite description." },
+        { q: "Can I track where chats come from?", a: "Add UTM params to your share link (e.g. ?utm_source=instagram). GA4 in MzansiSite fires a whatsapp_booking_click event so you see the source in Analytics alongside the chat — never including phone or personal data." },
+        { q: "What about POPIA and client data?", a: "You're still the responsible party — only collect what you need in chat and keep personal data off the public page. Don't publish clients' phone numbers, addresses or IDs on the site. See POPIA note above." },
+        { q: "Will this work during load-shedding?", a: "Edit your hours in the dashboard when power/water affects you; the open/closed badge updates instantly. Customers see ‘Closed — message for tomorrow’ instead of calling a dead line." },
       ]} /></div>
     </SeoPageShell>
   );

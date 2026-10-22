@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL } from "@/lib/seo";
 import { SeoPageShell, FeatureGrid, Faq } from "@/components/SeoPageShell";
+import { GbpPopiaBlock } from "@/components/SeoHelpers";
 
 export const metadata: Metadata = {
   title: "Website for Nail Technicians in South Africa — MzansiSite",
@@ -25,7 +26,7 @@ export default function Page() {
         <FeatureGrid items={[
           { title: "Sets by design complexity", body: "‘Acrylic short almond — plain R250 · French +R40 · Chrome/art per nail +R15 · XL +R80’ — rows beat captions. Customers pick length and extras without you pricing in your head late at night." },
           { title: "Refills with timelines", body: "‘GEL refill 2 weeks R150 · 3 weeks R180 · Soak-off + new set R280’. Clear refill windows prevent the ‘can you fix my 6-week set’ surprise." },
-          { title: "Gallery as menu", body: "Group your Cloudinary shots by look (French, chrome, 3D) — Vital renders tight squares that double as a pick-list. Caption each with the exact surcharge so screenshots stay shoppable." },
+          { title: "Gallery as menu", body: "Group your Cloudinary shots by look (French, chrome, 3D) — Vital renders tight squares that double as a pick-list. Caption each with the exact surcharge so screenshots stay shoppable. Only post photos you own with client consent." },
           { title: "Booking that respects your table", body: "Hours Mon–Sat with ‘Open now — WhatsApp to book’ vs ‘Closed — message for tomorrow’. Include ‘Nails at home studio — address on booking’ so you keep privacy until committed." },
         ]} />
       </section>
@@ -46,10 +47,14 @@ export default function Page() {
         <Link href="/whatsapp-booking-website" className="mt-3 inline-block text-sm font-bold underline">How the WhatsApp button turns a screenshot into a booking →</Link>
       </section>
 
+      <GbpPopiaBlock />
+
       <div className="mt-12"><Faq items={[
-        { q: "Should I list every design?", a: "List the base sets, then surcharges per technique (‘chrome/nail’, ‘encapsulated art’). Gallery photos fill the gaps — price rows keep quoting fast." },
-        { q: "How do I handle walk-ins?", a: "Be explicit: ‘Appointment only — WhatsApp for next slot’ vs ‘Walk-ins in studio 10:00–14:00’. Your hours line sets expectations before they travel." },
-        { q: "Do I need a price for men?", a: "Only if you serve them — ‘Gel mani (men) R180’ as its own row performs better than a vague ‘unisex’ note." },
+        { q: "Should I list every nail design?", a: "List base sets, then surcharges per technique (‘chrome per nail’, ‘encapsulated art’) — gallery photos fill gaps. Price rows keep quoting fast and make screenshots searchable." },
+        { q: "How do I handle walk-ins with a full book?", a: "Be explicit: ‘Appointment only — WhatsApp for next slot’ vs ‘Walk-ins 10:00–14:00’. Your hours line sets expectations before they travel. Update in dashboard anytime." },
+        { q: "What about hygiene credibility?", a: "Add plainly: ‘Tools disinfected, liners single-use, hand wash on arrival’. It builds trust without inventing certifications — don’t claim sterilisation certificates you don’t hold." },
+        { q: "How do I price male clients fairly?", a: "Only if you serve them — ‘Gel mani (men) R180’ as its own row performs better than vague ‘unisex’. Keep wording factual, no assumptions." },
+        { q: "Do I need many Instagram followers to get bookings?", a: "No. Your site link in bio converts existing followers; a Google Business Profile with your suburb and hours brings new local searches. Focus on 10 Google reviews, not 10k followers." },
       ]} /></div>
     </SeoPageShell>
   );

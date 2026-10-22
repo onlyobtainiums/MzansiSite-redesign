@@ -7,7 +7,7 @@ export interface SeoLink { href: string; label: string; desc: string }
 
 const RELATED: SeoLink[] = [
   { href: "/website-builder-south-africa", label: "Website builder South Africa", desc: "R149.99/m, WhatsApp-first" },
-  { href: "/website-for-small-businesses", label: "For small businesses", desc: "Trades, retail, services" },
+  { href: "/website-for-small-businesses", label: "Trades & home services", desc: "Plumbers, electricians, cleaners, garden" },
   { href: "/whatsapp-booking-website", label: "WhatsApp booking website", desc: "Tap-to-chat, pre-filled messages" },
   { href: "/website-for-salons", label: "For salons", desc: "Braids, washes, treatments" },
   { href: "/website-for-barbers", label: "For barbers", desc: "Fades, shaves, beard sculpt" },
@@ -98,9 +98,21 @@ export function FeatureGrid({ items }: { items: { title: string; body: string }[
 }
 
 export function Faq({ items }: { items: { q: string; a: string }[] }) {
+  // FAQPage for AI understanding — Google FAQ rich results are currently limited to
+  // authoritative sites (not guaranteed). We include valid FAQPage markup without promising rich results.
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((it) => ({
+      "@type": "Question",
+      name: it.q,
+      acceptedAnswer: { "@type": "Answer", text: it.a },
+    })),
+  };
   return (
     <section aria-labelledby="faq-heading">
       <h2 id="faq-heading" className="font-display text-2xl font-extrabold uppercase tracking-tight">FAQ</h2>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <dl className="mt-6 divide-y divide-ink/10 rounded-2xl border-2 border-ink/10 bg-white">
         {items.map((it) => (
           <div key={it.q} className="px-6 py-5">
@@ -109,6 +121,7 @@ export function Faq({ items }: { items: { q: string; a: string }[] }) {
           </div>
         ))}
       </dl>
+      <p className="mt-3 text-xs text-ink/40">Structured FAQ markup is included for AI/search understanding; visible rich results are not guaranteed and depend on the search provider.</p>
     </section>
   );
 }

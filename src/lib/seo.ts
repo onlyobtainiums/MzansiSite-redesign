@@ -19,5 +19,5 @@ export function canonical(path: string): string {
   return `${SITE_URL}${clean}`;
 }
 
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/opengraph-image`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/opengraph-image.png`;
 export const LOGO_URL = `${SITE_URL}/mzansi-logo.svg`;

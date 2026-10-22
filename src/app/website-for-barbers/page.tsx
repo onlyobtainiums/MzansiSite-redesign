@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL } from "@/lib/seo";
 import { SeoPageShell, FeatureGrid, Faq } from "@/components/SeoPageShell";
+import { GbpPopiaBlock } from "@/components/SeoHelpers";
 
 export const metadata: Metadata = {
   title: "Website for Barbers in South Africa — MzansiSite",
@@ -25,8 +26,8 @@ export default function Page() {
         <FeatureGrid items={[
           { title: "Fades by level", body: "Skin fade R120, mid fade R100, taper R90 — list them as rows, not paragraphs. Customers self-select and arrive knowing the price." },
           { title: "Beard & shave as add-ons", body: "Cut + beard sculpt R150, hot-towel shave R120, line-up R50. Show bundles so regulars can pick the usual in two taps." },
-          { title: "Chairs + walk-in hours", body: "‘3 chairs · Walk-ins — Tue–Sat 08:00–18:00 · Sun 09:00–13:00’ — the sentence regulars Screenshot. Add ‘Appointment via WhatsApp’ vs walk-in clearly." },
-          { title: "Shop proof over stock photos", body: "Your cuts on your heads — upload via dashboard. Forge frames tight crops of fresh fades; customers trust the chair, not a catalogue." },
+          { title: "Chairs + walk-in hours", body: "‘3 chairs · Walk-ins — Tue–Sat 08:00–18:00 · Sun 09:00–13:00’ — the sentence regulars screenshot. Add ‘Appointment via WhatsApp’ vs walk-in clearly." },
+          { title: "Shop proof over stock photos", body: "Your cuts on your heads — upload via dashboard. Only publish photos you own; ask clients before posting. Forge frames tight crops of fresh fades." },
         ]} />
       </section>
 
@@ -50,10 +51,14 @@ export default function Page() {
         </div>
       </section>
 
+      <GbpPopiaBlock />
+
       <div className="mt-12"><Faq items={[
-        { q: "Can I show barber names?", a: "Yes — add a Services-like section (e.g. ‘Barbers: Teboho — fades, Sipho — shaves’). Keep it as plain text so Google reads it, not only an image." },
-        { q: "Do you do slot booking?", a: "Your CTA is WhatsApp — customers pick a time in chat and you confirm. No extra fees, no double-booked calendar to manage." },
-        { q: "Will Google find my shop?", a: "Published sites are plain HTML with hours, suburb and services — indexable without JavaScript tricks. Keep prices and hours fresh for best coverage." },
+        { q: "Walk-ins vs WhatsApp bookings — which should I push?", a: "Push both. List ‘Walk-ins welcome — queue at shop’ and ‘WhatsApp to hold a chair’ as two rows. Regulars will tap to check wait time instead of calling; walk-ins still see you’re open." },
+        { q: "Can I show barber names and chair count?", a: "Yes — add a plain-text line: ‘Barbers: Teboho — fades, Sipho — shaves · 3 chairs’. Keep it as text (not only an image) so Google reads it for ‘barber near me’." },
+        { q: "How do I reduce no-shows without a booking app?", a: "Add to your policy: ‘WhatsApp to confirm 1 hour before — unconfirmed chair released’. It’s free, SA-standard, and respects POPIA (only message people who booked)." },
+        { q: "Do you do slot booking or calendars?", a: "Your CTA is WhatsApp — customers pick a time in chat and you confirm. No extra fees, no double-booked calendar to manage. If you need deposits, handle them in chat as you already do." },
+        { q: "Will Google find my shop if I’m in a township?", a: "Yes if your hours, suburb and services are plain text and your Google Business Profile is claimed at business.google.com with the same details. Keep updates weekly." },
       ]} /></div>
     </SeoPageShell>
   );

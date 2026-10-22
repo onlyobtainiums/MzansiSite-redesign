@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL } from "@/lib/seo";
 import { SeoPageShell, FeatureGrid, Faq } from "@/components/SeoPageShell";
+import { GbpPopiaBlock } from "@/components/SeoHelpers";
 
 export const metadata: Metadata = {
   title: "Website for Braiders in South Africa — MzansiSite",
@@ -26,12 +27,12 @@ export default function Page() {
           { title: "Style × length × price", body: "‘Knotless shoulder R550 (3h) · Mid-back R700 (4h) · Waist R850 (5h)’ — three columns, no mystery. Customers add extensions and choose a date in WhatsApp without you retyping the menu ten times a day." },
           { title: "Installs + curl vs straight", body: "List variants as rows: ‘Feed-in 6 cornrows R280 · With curly ends +R80’. Plain text keeps it searchable and comparable." },
           { title: "Calendar honesty", body: "Hours Mon–Sat, closed Sunday — plus a note: ‘DM before 17:00 for next-day braids’. Auto ‘open/closed’ badge on your WhatsApp CTA matches your stated hours." },
-          { title: "Texture-accurate photos", body: "Show your hands' work — tight close-ups, not over-edited stock — uploaded via dashboard. Savanna's warm crop suits coily and braided textures." },
+          { title: "Texture-accurate photos", body: "Show your hands’ work — tight close-ups, not over-edited stock — uploaded via dashboard. Use only photos you own and have client consent to publish. Savanna’s warm crop suits coily and braided textures." },
         ]} />
       </section>
 
       <section className="mt-12 rounded-2xl border-2 border-ink bg-white p-6 md:p-8">
-        <h2 className="font-display text-xl font-extrabold uppercase tracking-tight">Copy you can paste</h2>
+        <h2 className="font-display text-xl font-extrabold uppercase tracking-tight">Copy you can paste — and POPIA-safe</h2>
         <ul className="mt-4 grid gap-4 md:grid-cols-2 text-sm leading-relaxed">
           <li className="rounded-xl bg-bone p-4"><strong>Policy:</strong> “50% WhatsApp deposit secures date — balance on completion. Free reschedule 24h ahead.”</li>
           <li className="rounded-xl bg-bone p-4"><strong>What to bring:</strong> “Washed & detangled, no product. Extensions included unless listed ‘+ extensions’.”</li>
@@ -46,10 +47,14 @@ export default function Page() {
         <Link href="/whatsapp-booking-website" className="mt-4 inline-block text-sm font-bold underline">How the WhatsApp button pre-fills style + price →</Link>
       </section>
 
+      <GbpPopiaBlock />
+
       <div className="mt-12"><Faq items={[
-        { q: "Can I hide prices until they message?", a: "You can, but you'll get fewer qualified chats. Showing R-counts filters window-shoppers and shortens your closing time." },
-        { q: "How do I list ‘price from…’ fairly?", a: "Use ‘From R550 (shoulder, extensions incl.)’ and explain variables (length, thickness, add-on curl) in the line below. Honest ranges perform better than ‘DM for price’." },
-        { q: "Will my site work on cheap data?", a: "Your published page is light HTML — not a heavy app — so it loads and chats on mid-range phones and data. Images are optimised via Cloudinary." },
+        { q: "Should I hide prices until they message?", a: "You can, but you’ll get fewer qualified chats. Showing R-counts filters window-shoppers and shortens closing time. Keep deposits in WhatsApp, not on the page." },
+        { q: "How do I list ‘price from…’ fairly for braids?", a: "Use ‘From R550 (shoulder, extensions incl.)’ and explain variables (length, thickness, add-on curl) in the line below. Honest ranges perform better than ‘DM for price’ and reduce back-and-forth." },
+        { q: "How do I handle clients who come late or no-show?", a: "Add plainly: ‘Late 15 min → shortened style, 30 min → reschedule’. It sets expectations without a booking app and respects POPIA (only remind people who booked)." },
+        { q: "Will my site work on cheap data and load-shedding?", a: "Your published page is light HTML — not a heavy app — so it loads and chats on mid-range phones and data. Edit hours during outages; the open/closed badge updates instantly." },
+        { q: "Do I need a Google listing if I work from home?", a: "You can set a service area (e.g., Berea + surrounds) without showing your home address in your Business Profile at business.google.com. Link your MzansiSite subdomain in the profile’s website field." },
       ]} /></div>
     </SeoPageShell>
   );
