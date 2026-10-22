@@ -23,7 +23,7 @@ const pxT = (id: number) =>
  */
 // Beauty — salon interiors, tools, products, workspaces (no models)
 const BEAUTY_IDS    = [3184296, 3212167, 3993446, 3993467, 7750119, 3997983];
-const BARBER_IDS    = [1813272, 3212167, 3993446, 7750119, 3997983, 3184296];
+const BARBER_IDS    = [897271, 10775078, 13809242, 7697221, 1319460, 4449799];
 const SPA_IDS       = [6621334, 6187471, 3997983, 6186744, 6187305, 6187256];
 // Trades — tools, materials, workspaces (no people)
 const TRADE_IDS     = [221902, 2769743, 1216589, 1108109, 356040, 221902];
