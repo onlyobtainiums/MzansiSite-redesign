@@ -28,6 +28,8 @@ import { Up } from "../Reveal";
 const ROOM_ICONS = [BedDouble, BedDouble, Sunrise, UtensilsCrossed, MapPin];
 
 export default function SavannaTemplate({ site }: { site: SiteData }) {
+  if (site.industry === "coffeeShop") return <CoffeeShopSavanna site={site} />;
+
   const [menuOpen, setMenuOpen] = useState(false);
   const gallery = site.galleryUrls.slice(0, 6);
   const bookLink = waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to check availability.`);
@@ -465,6 +467,132 @@ export default function SavannaTemplate({ site }: { site: SiteData }) {
             </p>
           </div>
         </footer>
+      </div>
+    </>
+  );
+}
+
+function CoffeeShopSavanna({ site }: { site: SiteData }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const gallery = site.galleryUrls.slice(0, 6);
+  const hero = site.heroImageUrl;
+  const menu = site.services.slice(0, 6);
+  const orderLink = waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to place an order.`);
+  const waItem = (name: string, price: string) => waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to order: ${name} (${price}).`);
+  return (
+    <>
+      <WhatsAppFab site={site} accent="#d97b2b" />
+      <div className="@container/page fixed inset-x-0 top-0 z-40">
+        <div className="bg-[#241a12] px-3 py-2 text-center text-[10px] font-semibold leading-snug tracking-[0.18em] text-[#f5ead8]/75 uppercase">
+          <span className="inline-flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 break-words">
+            <span className="inline-flex items-center gap-1.5 min-w-0"><MapPin className="h-3 w-3 shrink-0 text-[#d97b2b]" /><span className="min-w-0 break-words">{site.area}</span></span>
+            <span className="hidden text-[#f5ead8]/25 sm:inline">·</span>
+            <span className="inline-flex items-center gap-1.5"><Clock className="h-3 w-3 shrink-0 text-[#d97b2b]" />{site.hours}</span>
+          </span>
+        </div>
+        <nav className="border-b border-white/10 bg-[#f5ead8]/95 backdrop-blur-md">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-5">
+            <a href="#top" className="flex min-w-0 items-center gap-3"><LogoBlock site={site} className="shrink-0 rounded-full bg-[#1d241a] text-[#f5ead8] font-display" /><span className="min-w-0 break-words font-serif text-[15px] leading-none sm:text-lg">{site.businessName}</span></a>
+            <div className="hidden items-center gap-6 text-[11px] font-bold tracking-[0.18em] uppercase bp-md:flex">
+              <a href="#menu" className="text-[#1d241a]/60 transition-colors hover:text-[#d97b2b]">Menu</a>
+              <a href="#story" className="text-[#1d241a]/60 transition-colors hover:text-[#d97b2b]">Our café</a>
+              <a href="#gallery" className="text-[#1d241a]/60 transition-colors hover:text-[#d97b2b]">Gallery</a>
+              <a href="#visit" className="text-[#1d241a]/60 transition-colors hover:text-[#d97b2b]">Visit</a>
+            </div>
+            <div className="flex items-center gap-2">
+              <a href={orderLink} target="_blank" rel="noopener noreferrer" className="hidden rounded-full bg-[#d97b2b] px-5 py-2.5 text-[11px] font-bold tracking-[0.14em] text-white uppercase transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 bp-sm:inline-flex">WhatsApp order</a>
+              <button onClick={() => setMenuOpen(!menuOpen)} className="grid h-10 w-10 place-items-center rounded-full border border-[#1d241a]/15 text-[#1d241a] bp-md:hidden" aria-label="Open menu" aria-expanded={menuOpen}>{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
+            </div>
+          </div>
+          {menuOpen && (
+            <div className="border-t border-[#1d241a]/10 bg-[#f5ead8] px-4 py-4 bp-md:hidden">
+              {[["Menu","#menu"],["Our café","#story"],["Gallery","#gallery"],["Visit","#visit"]].map(([label,href])=>(
+                <a key={href} href={href} onClick={()=>setMenuOpen(false)} className="block py-3 text-sm font-bold tracking-[0.14em] uppercase text-[#1d241a]/80">{label}</a>
+              ))}
+              <a href={orderLink} target="_blank" rel="noopener noreferrer" className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-[#d97b2b] px-6 py-3.5 text-[12px] font-bold tracking-[0.14em] text-white uppercase">WhatsApp order <ArrowUpRight className="h-4 w-4" /></a>
+            </div>
+          )}
+        </nav>
+      </div>
+      <div className="@container/page min-h-screen bg-[#f5ead8] font-sans text-[#1d241a]">
+        <section id="top" className="mx-auto grid max-w-6xl grid-cols-1 items-stretch gap-0 px-0 pt-[88px] sm:px-5 sm:pt-[104px] bp-md:grid-cols-[1.05fr_0.95fr] bp-md:gap-8">
+          <div className="flex flex-col justify-center px-5 py-10 sm:px-0 bp-md:py-16">
+            <Up><p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.28em] text-[#8a9a6b] uppercase"><span className="h-px w-8 bg-[#8a9a6b]" aria-hidden />Woodstock, Cape Town — single-origin daily</p></Up>
+            <Up delay={0.08}><h1 className="mt-5 max-w-[18ch] break-words font-serif text-[clamp(2rem,8vw,3.75rem)] font-normal leading-[0.95] tracking-tight text-[#1d241a]">Freshly roasted.<br /><em className="font-light text-[#d97b2b]">Daily baked.</em><br />Served with care.</h1></Up>
+            <Up delay={0.16}><p className="mt-5 max-w-[42ch] text-[15px] leading-relaxed text-[#1d241a]/65">{site.tagline}</p></Up>
+            <Up delay={0.24}>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a href={orderLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#1d241a] px-7 py-4 text-[13px] font-bold tracking-[0.12em] text-[#f5ead8] uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-black">Order on WhatsApp <ArrowRight className="h-4 w-4" /></a>
+                <a href="#menu" className="inline-flex items-center gap-2 rounded-full border border-[#1d241a]/15 bg-white px-7 py-4 text-[13px] font-bold tracking-[0.12em] text-[#1d241a] uppercase transition-colors hover:border-[#1d241a]">View menu</a>
+              </div>
+            </Up>
+            {site.isDemo && (<Up delay={0.3}><p className="mt-6 flex flex-wrap items-center gap-2 text-xs text-[#1d241a]/50"><Star className="h-3.5 w-3.5 fill-[#d97b2b] text-[#d97b2b]" />Loved for pour-overs &amp; pastries <DemoBadge /></p></Up>)}
+            <Up delay={0.32}>
+              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-[#1d241a]/10 pt-6 text-[11px] font-semibold tracking-[0.12em] text-[#1d241a]/45 uppercase">
+                <span className="inline-flex items-center gap-2 min-w-0 break-words"><Clock className="h-3.5 w-3.5 shrink-0 text-[#8a9a6b]" />{site.hours}</span>
+                <span className="inline-flex items-center gap-2"><Phone className="h-3.5 w-3.5 shrink-0 text-[#8a9a6b]" />{displayPhone(site.whatsapp)}</span>
+              </div>
+            </Up>
+          </div>
+          <Up delay={0.2} className="relative min-w-0 overflow-hidden sm:rounded-[2rem]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={hero} alt={site.businessName} className="h-[56vw] max-h-[520px] w-full object-cover bp-md:h-full bp-md:min-h-[560px]" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1d241a]/10 via-transparent to-transparent" aria-hidden />
+            <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center gap-2 text-[10px] font-bold tracking-[0.16em] text-white uppercase">
+              <span className="rounded-full bg-[#1d241a]/85 px-3 py-2 backdrop-blur">Single-origin · Small batch</span>
+              <span className="hidden rounded-full bg-white/90 px-3 py-2 text-[#1d241a] sm:inline-flex">Woodstock · Open till 4pm</span>
+            </div>
+          </Up>
+        </section>
+        <section id="menu" className="mx-auto max-w-6xl px-4 py-14 sm:px-5 bp-md:py-20">
+          <Up className="flex flex-wrap items-end justify-between gap-4"><div className="min-w-0"><p className="text-[11px] font-bold tracking-[0.3em] text-[#d97b2b] uppercase">Today&apos;s menu</p><h2 className="mt-3 max-w-[14ch] break-words font-serif text-[clamp(1.75rem,6vw,2.75rem)] leading-tight">Honest prices. <em className="font-light text-[#8a9a6b]">No surprises.</em></h2></div><p className="max-w-[36ch] text-sm leading-relaxed text-[#1d241a]/55">Tap any item to order on WhatsApp — we confirm price, collection time and extras right in chat.</p></Up>
+          <div className="mt-8 grid grid-cols-1 gap-4 bp-sm:grid-cols-2 bp-lg:grid-cols-3">
+            {menu.map((item,i)=>(
+              <Up key={`${item.name}-${i}`} delay={i*0.06}>
+                <a href={waItem(item.name,item.price)} target="_blank" rel="noopener noreferrer" className="group flex h-full flex-col rounded-[1.5rem] border border-[#1d241a]/10 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#1d241a]/20 hover:shadow-[0_16px_32px_-16px_rgba(29,36,26,0.2)]">
+                  <div className="flex items-start justify-between gap-3"><h3 className="min-w-0 flex-1 break-words font-serif text-lg leading-snug">{item.name}</h3><span className="shrink-0 rounded-full bg-[#f5ead8] px-3 py-1.5 text-sm font-extrabold tracking-tight text-[#1d241a]">{item.price}</span></div>
+                  {item.description && <p className="mt-2 break-words text-sm leading-relaxed text-[#1d241a]/55">{item.description}</p>}
+                  <p className="mt-4 flex items-center gap-1.5 text-[11px] font-bold tracking-[0.16em] text-[#d97b2b] uppercase">Order on WhatsApp <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></p>
+                </a>
+              </Up>
+            ))}
+          </div>
+          <Up delay={0.3}><div className="mt-6 rounded-2xl bg-[#1d241a] px-5 py-4 text-center text-sm leading-relaxed text-[#f5ead8]/70">All coffees available as <span className="font-semibold text-[#f5ead8]">oat, almond or dairy</span> · Pastries baked in-house each morning · Ask about today&apos;s special on WhatsApp.</div></Up>
+        </section>
+        <section id="story" className="bg-[#1d241a] py-14 text-[#f5ead8] bp-md:py-20">
+          <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 px-4 sm:px-5 bp-md:grid-cols-2 bp-md:gap-12">
+            <Up className="min-w-0"><p className="text-[11px] font-bold tracking-[0.3em] text-[#d97b2b] uppercase">Our café</p><h2 className="mt-3 break-words font-serif text-[clamp(1.75rem,6vw,2.5rem)] leading-tight">A corner to breathe. <em className="font-light text-[#e8b07c]">A cup done right.</em></h2><p className="mt-5 max-w-[48ch] text-sm leading-relaxed text-[#f5ead8]/65">We roast in small batches, pour with care and keep the music low. Whether you&apos;re grabbing a flat white to go or settling in for the morning, you&apos;ll find the same quiet attention in every cup.</p>{site.aboutQuote && <p className="mt-6 border-l-2 border-[#d97b2b]/50 pl-4 font-serif text-lg italic leading-snug text-[#f5ead8]/80">“{site.aboutQuote}”</p>}<div className="mt-8 grid grid-cols-2 gap-3 text-sm">{[["Single-origin beans","Ethically sourced, roasted weekly"],["Fresh pastries","Baked in-house before sunrise"],["Free Wi-Fi","Stay as long as you like"],["Woodstock corner","Two blocks from the Biscuit Mill"]].map(([t,d])=>(
+              <div key={t} className="rounded-2xl border border-white/10 bg-white/5 p-4"><p className="break-words text-sm font-bold text-[#f5ead8]">{t}</p><p className="mt-1 break-words text-xs leading-relaxed text-[#f5ead8]/55">{d}</p></div>
+            ))}</div></Up>
+            <Up delay={0.12} className="min-w-0"><div className="grid grid-cols-2 gap-3 sm:gap-4"><div className="col-span-2 overflow-hidden rounded-[1.5rem]">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={gallery[0] ?? hero} alt={`${site.businessName} interior`} className="aspect-[16/10] w-full object-cover" loading="lazy" /></div><div className="overflow-hidden rounded-2xl">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={gallery[1] ?? gallery[0] ?? hero} alt="Coffee detail" className="aspect-square w-full object-cover" loading="lazy" /></div><div className="overflow-hidden rounded-2xl">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={gallery[2] ?? gallery[1] ?? hero} alt="Pastries" className="aspect-square w-full object-cover" loading="lazy" /></div></div></Up>
+          </div>
+        </section>
+        {gallery.length > 0 && (
+          <section id="gallery" className="mx-auto max-w-6xl px-4 py-12 sm:px-5 bp-md:py-16">
+            <Up className="flex flex-wrap items-end justify-between gap-4"><div className="min-w-0"><p className="text-[11px] font-bold tracking-[0.3em] text-[#d97b2b] uppercase">Inside</p><h2 className="mt-2 break-words font-serif text-2xl sm:text-3xl">{site.galleryHeading ?? "Warm corners, quiet craft"}</h2></div><SocialRow site={site} iconClassName="text-[#1d241a]/40" /></Up>
+            <div className="mt-6 flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-3 sm:overflow-visible">
+              {gallery.map((url,idx)=>(
+                <div key={`${url}-${idx}`} className="h-[54vw] max-h-[360px] w-[78vw] max-w-[360px] shrink-0 snap-start overflow-hidden rounded-2xl sm:h-auto sm:w-auto sm:aspect-square sm:max-h-none sm:max-w-none">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={url} alt={`${site.businessName} photo ${idx+1}`} className="h-full w-full object-cover" loading="lazy" />
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-center text-[11px] tracking-wide text-[#1d241a]/40 sm:hidden">Swipe to browse →</p>
+          </section>
+        )}
+        <section id="visit" className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 py-10 sm:px-5 bp-md:grid-cols-[1.1fr_0.9fr] bp-md:py-16">
+          <Up className="min-w-0 rounded-[1.75rem] border border-[#1d241a]/10 bg-white p-6 sm:p-8"><p className="text-[11px] font-bold tracking-[0.3em] text-[#d97b2b] uppercase">Visit</p><h2 className="mt-3 break-words font-serif text-2xl">{site.area}</h2>
+            <div className="mt-6 space-y-4">
+              <div className="flex gap-3 border-b border-[#1d241a]/10 pb-4"><Clock className="mt-0.5 h-5 w-5 shrink-0 text-[#8a9a6b]" /><div className="min-w-0"><p className="text-[11px] font-bold tracking-[0.16em] text-[#1d241a]/40 uppercase">Hours</p><p className="mt-1 break-words font-medium">{site.hours}</p></div></div>
+              <div className="flex gap-3 border-b border-[#1d241a]/10 pb-4"><Phone className="mt-0.5 h-5 w-5 shrink-0 text-[#8a9a6b]" /><div className="min-w-0"><p className="text-[11px] font-bold tracking-[0.16em] text-[#1d241a]/40 uppercase">WhatsApp</p><p className="mt-1 break-words font-medium">{displayPhone(site.whatsapp)}</p></div></div>
+              <div className="flex gap-3"><MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[#8a9a6b]" /><div className="min-w-0"><p className="text-[11px] font-bold tracking-[0.16em] text-[#1d241a]/40 uppercase">Find us</p><p className="mt-1 break-words text-sm leading-relaxed text-[#1d241a]/65">Pin shared on WhatsApp after you order — 2-minute walk from Woodstock Exchange.</p></div></div>
+            </div>
+            {site.guarantee && <p className="mt-6 rounded-xl bg-[#f5ead8] px-4 py-3 text-xs leading-relaxed text-[#1d241a]/65">{site.guarantee}</p>}
+          </Up>
+          <Up delay={0.1} className="flex min-w-0 flex-col justify-center rounded-[1.75rem] bg-[#1d241a] p-8 text-center text-[#f5ead8] sm:p-10"><h3 className="break-words font-serif text-2xl leading-tight">Craving something now?</h3><p className="mx-auto mt-3 max-w-[32ch] break-words text-sm leading-relaxed text-[#f5ead8]/65">Message us on WhatsApp — we confirm your order, total and collection time within minutes during trading hours.</p><a href={orderLink} target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex max-w-full items-center justify-center gap-2 rounded-full bg-[#d97b2b] px-7 py-4 text-[13px] font-bold tracking-[0.12em] text-white uppercase transition-all duration-300 hover:-translate-y-0.5"><span className="min-w-0 truncate">WhatsApp {site.businessName}</span> <ArrowRight className="h-4 w-4 shrink-0" /></a></Up>
+        </section>
+        <footer className="border-t border-[#1d241a]/10 px-4 py-8 sm:px-5"><div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-center bp-md:flex-row bp-md:text-left"><div className="flex min-w-0 flex-wrap items-center justify-center gap-3 bp-md:justify-start"><LogoBlock site={site} className="shrink-0 rounded-full bg-[#1d241a] text-[#f5ead8] font-display" /><span className="min-w-0 max-w-[18ch] break-words font-serif text-base sm:max-w-none">{site.businessName}</span></div><SocialRow site={site} iconClassName="text-[#1d241a]/40" /><p className="text-[11px] font-bold tracking-[0.16em] text-[#1d241a]/40 uppercase">Powered by <span className="text-[#d97b2b]">MzansiSite</span></p></div></footer>
       </div>
     </>
   );
