@@ -68,8 +68,8 @@ export const INDUSTRIES: Record<string, { label: string; templateId: string }> =
   lawyer: { label: "Lawyer / Legal Firm", templateId: "praxis" },
   accountant: { label: "Accountant / Tax Practitioner", templateId: "praxis" },
   realEstate: { label: "Real Estate Agency", templateId: "praxis" },
-  security: { label: "Security Company", templateId: "forge" },
-  storage: { label: "Self-Storage Facility", templateId: "forge" },
+  securityCompany: { label: "Security Company", templateId: "forge" },
+  selfStorage: { label: "Self-Storage Facility", templateId: "forge" },
 
   // ——— Education ———
   daycare: { label: "Daycare / Crèche", templateId: "velvet" },

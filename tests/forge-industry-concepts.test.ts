@@ -12,7 +12,7 @@ import ForgeTemplate from "@/templates/forge/Template";
 import SavannaTemplate from "@/templates/savanna/Template";
 import MarketTemplate from "@/templates/market/Template";
 import VelvetTemplate from "@/templates/velvet/Template";
-import { getDemoSiteData } from "@/templates/demo-data";
+import { getDemoSiteData, demoIndustriesForTemplate } from "@/templates/demo-data";
 
 function render(industry: string, overrides: Record<string, unknown> = {}) {
   const site = getDemoSiteData({ industry, ...overrides }, { isDemo: true }) as any;
@@ -93,8 +93,211 @@ describe("Forge — industry concept routing", () => {
     expect(html).not.toContain("Sorted.");
   });
 
-  it("falls back to legacy Forge for non-priority industries (handyman, painter, etc.)", () => {
-    for (const industry of ["handyman", "painter", "roofer", "solar", "security", "storage"]) {
+  /* ——— Stage 2: remaining 13 dedicated Forge designs ——— */
+
+  it("routes handyman to the Toolbelt design (amber + slate, sharp fix-it layout)", () => {
+    const html = render("handyman");
+    // Distinctive Toolbelt palette
+    expect(html).toContain("#d97706"); // industrial amber
+    expect(html).toContain("#1f2937"); // slate
+    // Hourly-rate focused copy
+    expect(html).toContain("One call.");
+    expect(html).toContain("Everything fixed.");
+    // Rounded-full CTA buttons
+    expect(html).toContain("rounded-full");
+    expect(html).toContain("Book by the hour");
+    // Not legacy Forge hazard stripes
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes painter to the Swatch design (terracotta + cream, colour-chip gallery)", () => {
+    const html = render("painter");
+    // Distinctive Swatch palette
+    expect(html).toContain("#c2410c"); // terracotta
+    expect(html).toContain("#fff7ed"); // cream
+    // Colour-chip / swatch gallery nav
+    expect(html).toContain("Before &amp; after");
+    expect(html).toContain("Get a quote");
+    // Rounded soft shapes
+    expect(html).toContain("rounded-full");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes roofer to the Shingle design (slate + orange diagonal, storm-ready)", () => {
+    const html = render("roofer");
+    // Distinctive Shingle palette
+    expect(html).toContain("#1e293b"); // slate
+    expect(html).toContain("#ea580c"); // storm orange
+    // Storm-ready hero copy
+    expect(html).toContain("Leaking roof.");
+    expect(html).toContain("Fixed same day.");
+    // Sharp angled look — rounded-none on primary cards
+    expect(html).toContain("rounded-none");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes solar to the Panel design (blue + yellow, ROI-focused energy)", () => {
+    const html = render("solar");
+    // Distinctive Panel palette
+    expect(html).toContain("#14532d"); // deep green slate
+    expect(html).toContain("#f59e0b"); // solar yellow
+    // Energy / ROI copy
+    expect(html).toContain("Power your.");
+    expect(html).toContain("home with the sun.");
+    // Rounded pill shapes
+    expect(html).toContain("rounded-full");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes applianceRepair to the Workbench design (charcoal + industrial amber, diagnosis-first)", () => {
+    const html = render("applianceRepair");
+    // Distinctive Workbench palette
+    expect(html).toContain("#0f172a"); // charcoal
+    expect(html).toContain("#b45309"); // industrial amber
+    // Diagnosis-first copy (ampersand is HTML-escaped in renderToString)
+    expect(html).toContain("Broken appliance.");
+    expect(html).toContain("Diagnosed &amp; fixed.");
+    expect(html).toContain("Book diagnosis");
+    // Rounded-full workshop buttons
+    expect(html).toContain("rounded-full");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes aircon to the Climate design (cool blue, cooling-focused)", () => {
+    const html = render("aircon");
+    // Distinctive Climate palette
+    expect(html).toContain("#06b6d4"); // cool cyan
+    expect(html).toContain("#bae6fd"); // light blue
+    // Cooling-focused copy
+    expect(html).toContain("Cool comfort.");
+    expect(html).toContain("Installed &amp; serviced.");
+    // Rounded-soft shapes
+    expect(html).toContain("rounded-full");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes landscaper to the Garden design (sage green organic, soft plant shapes)", () => {
+    const html = render("landscaper");
+    // Distinctive Garden palette
+    expect(html).toContain("#15803d"); // sage green
+    expect(html).toContain("#f0fdf4"); // light green cream
+    // Organic / garden copy
+    expect(html).toContain("Neat gardens.");
+    expect(html).toContain("Never late.");
+    // Soft rounded shapes
+    expect(html).toContain("rounded-full");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes waste to the Bin design (blocky green/grey, waste-focused)", () => {
+    const html = render("waste");
+    // Distinctive Bin palette
+    expect(html).toContain("#15803d"); // waste green
+    expect(html).toContain("#f3f4f6"); // light grey
+    // Waste-focused copy
+    expect(html).toContain("Rubbish gone.");
+    expect(html).toContain("Same day.");
+    // Blocky rounded-xl containers
+    expect(html).toContain("rounded-xl");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes mechanic to the Garage design (dark grey + chrome, bay-door imagery)", () => {
+    const html = render("mechanic");
+    // Distinctive Garage palette
+    expect(html).toContain("#d97706"); // amber accent
+    expect(html).toContain("#111827"); // dark text
+    expect(html).toContain("#f3f4f6"); // chrome light
+    // Workshop copy
+    expect(html).toContain("In the workshop.");
+    expect(html).toContain("Serviced right.");
+    // Rounded-lg industrial containers
+    expect(html).toContain("rounded-lg");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes carWash to the Shine design (water blue, wet-look reflection)", () => {
+    const html = render("carWash");
+    // Distinctive Shine palette
+    expect(html).toContain("#0c4a6e"); // water blue
+    expect(html).toContain("#bae6fd"); // light water
+    // Wet-look / shine copy (ampersand is HTML-escaped in renderToString)
+    expect(html).toContain("Showroom clean.");
+    expect(html).toContain("Inside &amp; out.");
+    // Reflection overlay
+    expect(html).toContain("group-hover:bg");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes towing to the Flatbed design (emergency red + white, breakdown recovery)", () => {
+    const html = render("towing");
+    // Distinctive Flatbed palette
+    expect(html).toContain("#ef4444"); // emergency red
+    expect(html).toContain("#fafafa"); // white
+    // Breakdown recovery copy
+    expect(html).toContain("Breakdown.");
+    expect(html).toContain("We\u2019re on the way.");
+    expect(html).toContain("Request tow");
+    // Sharp angular corners
+    expect(html).toContain("rounded-lg");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes securityCompany to the Sentinel design (dark navy + amber alert, CCTV monitoring)", () => {
+    const html = render("securityCompany");
+    // Distinctive Sentinel palette
+    expect(html).toContain("#0f172a"); // dark navy
+    expect(html).toContain("#d97706"); // amber alert
+    // CCTV monitoring copy
+    expect(html).toContain("Protected.");
+    expect(html).toContain("24/7 monitoring.");
+    expect(html).toContain("Get a quote");
+    // Sharp monitoring-centre corners
+    expect(html).toContain("rounded-none");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("routes selfStorage to the Unit design (purple + grey, storage unit grid)", () => {
+    const html = render("selfStorage");
+    // Distinctive Unit palette
+    expect(html).toContain("#7c3aed"); // purple
+    expect(html).toContain("#fafafa"); // light grey
+    // Storage unit copy
+    expect(html).toContain("Store it safe.");
+    expect(html).toContain("Access 7 days.");
+    expect(html).toContain("Get a quote");
+    // Rounded-xl unit cards
+    expect(html).toContain("rounded-xl");
+    // Not legacy Forge
+    expect(html).not.toContain("#ffc400");
+    expect(html).not.toContain("Sorted.");
+  });
+
+  it("falls back to legacy Forge for Forge industries without a dedicated design (cleaning, pestControl, hardware)", () => {
+    for (const industry of ["cleaning", "pestControl", "hardware"]) {
       const html = render(industry);
       // Legacy Forge hazard stripes
       expect(html).toContain("#ffc400"); // safety yellow
@@ -103,7 +306,7 @@ describe("Forge — industry concept routing", () => {
       // Legacy Forge section structure
       expect(html).toContain("Services &");
       expect(html).toContain("Recent work");
-      // Not any of the four new concepts
+      // Not any of the dedicated concepts
       expect(html).not.toContain("#0f172a"); // electrician slate
       expect(html).not.toContain("#0f4c5c"); // plumber blue
       expect(html).not.toContain("#a67c52"); // carpenter wood
@@ -241,6 +444,58 @@ describe("Forge — mobile safeguards present in all four concepts", () => {
       expect(html).toContain("from R1,200.00");
       expect(html).toContain("break-words");
       expect(html).toContain("min-w-0");
+    }
+  });
+});
+
+describe("Forge — demo industry selection (all 17 industries previewable)", () => {
+  const FORGE_INDUSTRIES = [
+    "plumber",
+    "electrician",
+    "handyman",
+    "painter",
+    "carpenter",
+    "roofer",
+    "solar",
+    "applianceRepair",
+    "aircon",
+    "landscaper",
+    "waste",
+    "mechanic",
+    "carWash",
+    "towing",
+    "securityCompany",
+    "selfStorage",
+    "construction",
+  ];
+
+  it("demoIndustriesForTemplate('forge') returns all 17 Forge industries", () => {
+    const industries = demoIndustriesForTemplate("forge");
+    expect(industries.length).toBe(17);
+    for (const key of FORGE_INDUSTRIES) {
+      expect(industries).toContain(key);
+    }
+  });
+
+  it("every Forge industry key in demo list maps to its dedicated component (not LegacyForge)", () => {
+    for (const industry of FORGE_INDUSTRIES) {
+      const html = render(industry);
+      // Not LegacyForge hazard stripes
+      expect(html).not.toContain("#ffc400");
+      expect(html).not.toContain("Sorted.");
+    }
+  });
+
+  it("demo site data preserves industry-specific business name, services, WhatsApp for all 17", () => {
+    for (const industry of FORGE_INDUSTRIES) {
+      const site = getDemoSiteData({ industry }, { isDemo: true }) as any;
+      expect(site.industry).toBe(industry);
+      expect(site.businessName).toBeTruthy();
+      expect(site.whatsapp).toBeTruthy();
+      expect(site.services.length).toBeGreaterThan(0);
+      // WhatsApp link should be renderable
+      const html = render(industry);
+      expect(html).toContain("wa.me");
     }
   });
 });

@@ -27,7 +27,7 @@ export const TEMPLATES: TemplateMeta[] = [
       "Rugged, high-trust design for plumbers, electricians, builders and heavy industry. Big numbers, bold promises, 24/7 call-out energy.",
     status: "live",
     statusLabel: "Live now",
-    industries: ["plumber", "electrician", "handyman", "painter", "carpenter", "roofer", "solar", "mechanic", "construction", "security"],
+    industries: ["plumber", "electrician", "handyman", "painter", "carpenter", "roofer", "solar", "applianceRepair", "aircon", "landscaper", "waste", "mechanic", "carWash", "towing", "securityCompany", "selfStorage", "construction"],
     previewIndustry: "plumber",
     accent: "#ffc400",
     palette: ["#16181a", "#ffc400", "#eceae3", "#5b6570"],

@@ -885,7 +885,41 @@ const BASE: Record<string, SiteData> = {
     rating: "4.8", reviews: 112, yearsInBusiness: 8,
   },
 
-  /* ════════ EDUCATION ════════ */
+  securityCompany: {
+    businessName: "Sentinel Security Company",
+    tagline: "Armed response, CCTV monitoring and access control for homes and business.",
+    industry: "securityCompany", area: "Johannesburg South",
+    hours: "24/7 Monitoring Centre", whatsapp: "0117776655",
+    heroImageUrl: pxT(SEC_IDS[0]), galleryUrls: gallery(SEC_IDS),
+    services: [
+      { name: "Armed response (monthly)", price: "R450/m" },
+      { name: "CCTV monitoring (4 cam)", price: "R650/m" },
+      { name: "Alarm installation", price: "from R4,500" },
+      { name: "CCTV installation (4 cam)", price: "from R5,500" },
+      { name: "Electric fence", price: "from R185/m" },
+      { name: "Access control system", price: "from R3,800" },
+    ],
+    socials: { facebook: "https://facebook.com" },
+    rating: "4.8", reviews: 234, yearsInBusiness: 14,
+  },
+
+  selfStorage: {
+    businessName: "SafeStore Self Storage",
+    tagline: "Clean, dry and secure self-storage units — access 7 days a week.",
+    industry: "selfStorage", area: "Brackenfell, Cape Town",
+    hours: "Mon – Sat · 07:00 – 18:00 · Sun 08:00 – 14:00", whatsapp: "0218883322",
+    heroImageUrl: pxT(TRADE_IDS[2]), galleryUrls: gallery(TRADE_IDS),
+    services: [
+      { name: "Locker (1m³)", price: "R350/m" },
+      { name: "Small unit (4m³)", price: "R650/m" },
+      { name: "Medium unit (10m³)", price: "R1,100/m" },
+      { name: "Large unit (20m³)", price: "R1,850/m" },
+      { name: "Vehicle / caravan storage", price: "R950/m" },
+      { name: "Padlock purchase", price: "R120" },
+    ],
+    socials: { facebook: "https://facebook.com" },
+    rating: "4.8", reviews: 112, yearsInBusiness: 8,
+  },
   daycare: {
     businessName: "Sunshine Crèche & Daycare",
     tagline: "Safe, nurturing care for ages 3 months – 5 years — fully registered with DSD.",
@@ -1102,7 +1136,7 @@ const FALLBACK: Record<string, string> = {
   guestHouse: "guestHouse", lodge: "lodge", tourGuide: "tourGuide",
   vet: "vet", dogTraining: "dogTraining", petBoarding: "petBoarding", grocery: "grocery",
   lawyer: "lawyer", accountant: "accountant", realEstate: "realEstate",
-  security: "security", storage: "storage",
+  security: "security", securityCompany: "securityCompany", storage: "storage", selfStorage: "selfStorage",
   daycare: "daycare", preSchool: "preSchool", tutor: "tutor",
   eventPlanner: "eventPlanner", florist: "florist", funeralHome: "funeralHome",
   gym: "gym", sportsAcademy: "sportsAcademy",
@@ -1405,6 +1439,26 @@ const COPY: Record<string, IndustryCopy> = {
       { quote: "Three years, zero incidents. That's the best review a security company can get.", name: "S. Govender", label: "Prevention" },
     ],
   },
+  securityCompany: {
+    serviceNoun: "solutions", galleryHeading: "Installations",
+    aboutQuote: "Your family's safety isn't something you should have to worry about. That's our job.",
+    reviewHeading: "Protected clients", guarantee: "Response time under 5 minutes or your monthly fee is waived.",
+    reviewItems: [
+      { quote: "Alarm triggered at 2am. Armed response was at our gate in 4 minutes flat.", name: "D. van Tonder", label: "Response" },
+      { quote: "The CCTV footage helped police arrest the suspect the same week. Worth every cent.", name: "N. Mthembu", label: "CCTV" },
+      { quote: "Three years, zero incidents. That's the best review a security company can get.", name: "S. Govender", label: "Prevention" },
+    ],
+  },
+  selfStorage: {
+    serviceNoun: "units", galleryHeading: "Storage units",
+    aboutQuote: "Your belongings deserve clean, dry and secure space — not a damp garage or a crowded spare room.",
+    reviewHeading: "Happy customers", guarantee: "24/7 CCTV monitoring, PIN-code access and individual unit alarms.",
+    reviewItems: [
+      { quote: "Found the perfect unit for my business stock. Access any day, secure and dry.", name: "M. Botha", label: "Business storage" },
+      { quote: "Unit was clean and ready same day. The staff were helpful and professional.", name: "T. Naidoo", label: "Household storage" },
+      { quote: "PIN-code access means I can drop off tools at 6am before a job. No fuss.", name: "R. Williams", label: "Trades storage" },
+    ],
+  },
   daycare: {
     serviceNoun: "programmes", galleryHeading: "A day with us",
     aboutQuote: "Your child's first classroom should feel like a second home.",
@@ -1497,7 +1551,7 @@ export function getDemoSiteData(input: DemoInput, opts?: { isDemo?: boolean }): 
 
 export function demoIndustriesForTemplate(templateId: string): string[] {
   if (templateId === "velvet")  return ["hairSalon", "barber", "spa", "eventPlanner", "florist"];
-  if (templateId === "forge")   return ["plumber", "electrician", "mechanic", "construction", "solar"];
+  if (templateId === "forge")   return ["plumber", "electrician", "handyman", "painter", "carpenter", "roofer", "solar", "applianceRepair", "aircon", "landscaper", "waste", "mechanic", "carWash", "towing", "securityCompany", "selfStorage", "construction"];
   if (templateId === "savanna") return ["guestHouse", "lodge", "restaurant", "coffeeShop", "tourGuide"];
   if (templateId === "praxis")  return ["lawyer", "accountant", "doctor", "dentist", "realEstate"];
   if (templateId === "market")  return ["bakery", "grocery", "hardware", "pharmacy", "catering"];
