@@ -40,7 +40,7 @@ const VET_IDS       = [1805168, 7469231, 28644631, 1805168, 7469231, 28644631];
 // Food & Tourism — dishes/ingredients/flat-lays, building exteriors, landscapes (no diners)
 const REST_IDS      = [958545, 1640777, 958545, 1099680, 958545, 1640777];
 const CAFE_IDS      = [1307698, 1695052, 585752, 1307698, 1695052, 585752];
-const BAKERY_IDS    = [1070850, 2915282, 2915282, 1070850, 461428, 2915282];
+const BAKERY_IDS    = [1571075, 1079020, 4881596, 1571075, 1079020, 4881596];
 const CATER_IDS     = [7245469, 38742724, 38549538, 7245469, 38742724, 38549538];
 const LODGE_IDS     = [258154, 417074, 258154, 417074, 338504, 338504];
 // Pet — pet accessories, kennel interiors, nature (no owner faces)
