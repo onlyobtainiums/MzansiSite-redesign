@@ -205,7 +205,7 @@ export default function Landscaper({ site }: { site: SiteData }) {
                     <span className="font-display text-4xl font-extrabold text-[#dcfce7]/40 transition-colors group-hover:text-[#15803d]/30">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="bb-[#dcfce7] px-3 py-1.5 rounded-full font-display text-xs font-bold tracking-[0.14em] text-[#14532d] uppercase">
+                    <span className="bg-[#dcfce7] px-3 py-1.5 rounded-full font-display text-xs font-bold tracking-[0.14em] text-[#14532d] uppercase">
                       {service.price}
                     </span>
                   </div>
