@@ -4,6 +4,7 @@ import { ACCEPTABLE_USE_POLICY_TEXT, MERCHANT_DECLARATION_TEXT } from "@/lib/con
 export const metadata = {
   title: "Acceptable Use Policy — MzansiSite",
   description: "MzansiSite Acceptable Use Policy — what businesses can and cannot publish.",
+  alternates: { canonical: "/acceptable-use" },
 };
 
 export default function AcceptableUsePage() {

@@ -8,7 +8,7 @@ export default function Footer() {
   return (
     <footer className="relative overflow-hidden bg-ink pt-20 text-bone">
       <div className="mx-auto max-w-[1440px] px-5 md:px-10">
-        <div className="grid grid-cols-1 gap-12 pb-16 md:grid-cols-[1.4fr_1fr_1fr_auto]">
+        <div className="grid grid-cols-1 gap-12 pb-10 md:grid-cols-[1.4fr_1fr_1fr_auto]">
           <div>
           <MzansiLogo size={40} wordmark className="[&_span]:text-bone [&_span]:text-2xl" />
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-bone/50">
@@ -53,6 +53,19 @@ export default function Footer() {
             <ArrowUp className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-0.5" />
           </button>
         </div>
+
+        <nav aria-label="MzansiSite guides" className="border-t border-bone/10 py-6">
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-bone/40">Guides for Mzansi businesses</p>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold">
+            <li><a href="/website-builder-south-africa" className="text-bone/70 hover:text-bone hover:underline">Website builder South Africa</a></li>
+            <li><a href="/website-for-small-businesses" className="text-bone/70 hover:text-bone hover:underline">For small businesses</a></li>
+            <li><a href="/whatsapp-booking-website" className="text-bone/70 hover:text-bone hover:underline">WhatsApp booking</a></li>
+            <li><a href="/website-for-salons" className="text-bone/70 hover:text-bone hover:underline">For salons</a></li>
+            <li><a href="/website-for-barbers" className="text-bone/70 hover:text-bone hover:underline">For barbers</a></li>
+            <li><a href="/website-for-braiders" className="text-bone/70 hover:text-bone hover:underline">For braiders</a></li>
+            <li><a href="/website-for-nail-technicians" className="text-bone/70 hover:text-bone hover:underline">For nail techs</a></li>
+          </ul>
+        </nav>
 
         <div className="flex flex-col items-start justify-between gap-4 border-t border-bone/10 py-7 text-xs font-medium text-bone/40 md:flex-row md:items-center">
           <p>© {new Date().getFullYear()} MzansiSite. Made with <Heart className="inline h-3.5 w-3.5 fill-flame text-flame" /> for Mzansi&apos;s hustlers.</p>
