@@ -52,14 +52,14 @@ export const metadata: Metadata = {
     title: "MzansiSite — Turn WhatsApp into your online storefront",
     description:
       "Services, prices, location and a big WhatsApp booking button — built in about 60 seconds for South African salons, barbers, braiders, nail techs and small businesses.",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "MzansiSite — Websites for Mzansi businesses" }],
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "MzansiSite — Websites for Mzansi businesses" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "MzansiSite — Turn WhatsApp into your online storefront",
     description:
       "Website builder for South African small businesses. Free to build, preview first, R149.99/month to publish.",
-    images: ["/opengraph-image"],
+    images: ["/opengraph-image.png"],
   },
   robots: {
     index: true,
