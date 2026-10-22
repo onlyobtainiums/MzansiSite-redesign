@@ -53,6 +53,7 @@ export async function PATCH(request: Request, ctx: Ctx) {
       logoUrl: string | null;
       heroImageUrl: string;
       galleryUrls: string[];
+      designVariant: number;
       updatedAt: Date;
     }> = { updatedAt: new Date() };
 
@@ -77,6 +78,19 @@ export async function PATCH(request: Request, ctx: Ctx) {
     }
     if (updates.businessName !== undefined && updates.businessName.length < 2) {
       return NextResponse.json({ ok: false, error: "Business name is required." }, { status: 400 });
+    }
+
+    if (body.designVariant !== undefined) {
+      const parsed = typeof body.designVariant === "string" ? Number(body.designVariant) : body.designVariant;
+      if (!Number.isInteger(parsed) || parsed < 1 || parsed > 6) {
+        return NextResponse.json({ ok: false, error: "Invalid design variant. Choose 1 to 6." }, { status: 400 });
+      }
+      // Only barber supports variants; other industries are forced to 1
+      if (site.industry !== "barber" && parsed !== 1) {
+        updates.designVariant = 1;
+      } else {
+        updates.designVariant = parsed;
+      }
     }
 
     // Content policy validation for updated fields — block prohibited, flag ambiguous

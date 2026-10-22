@@ -11,6 +11,11 @@ interface TemplatePhonePreviewProps {
   area?: string;
   whatsapp?: string;
   className?: string;
+  // Design variant (1..6) for velvet/barber pilot — additive, defaults to 1
+  designVariant?: number;
+  variantId?: string;
+  variant?: string | number;
+  scale?: number;
 }
 
 /**
@@ -25,9 +30,14 @@ export default function TemplatePhonePreview({
   area,
   whatsapp,
   className = "",
+  designVariant,
+  variantId,
+  variant,
+  scale: scaleProp,
 }: TemplatePhonePreviewProps) {
+  const resolvedVariant = designVariant ?? (variantId ? Number(variantId) : variant ? Number(variant) : undefined);
   const site = useMemo(() => {
-    const overrides: Record<string, string> = { industry };
+    const overrides: Record<string, unknown> = { industry } as Record<string, unknown>;
 
     const cleanName = businessName?.trim();
     const cleanArea = area?.trim();
@@ -36,9 +46,12 @@ export default function TemplatePhonePreview({
     if (cleanName) overrides.businessName = cleanName;
     if (cleanArea) overrides.area = cleanArea;
     if (cleanWhatsapp) overrides.whatsapp = cleanWhatsapp;
+    if (resolvedVariant && Number.isInteger(resolvedVariant) && resolvedVariant >= 1 && resolvedVariant <= 6) {
+      (overrides as Record<string, unknown>).designVariant = resolvedVariant as unknown as number;
+    }
 
-    return getDemoSiteData(overrides as { industry: string; businessName?: string; area?: string; whatsapp?: string }, { isDemo: true });
-  }, [industry, businessName, area, whatsapp]);
+    return getDemoSiteData(overrides as unknown as { industry: string; businessName?: string; area?: string; whatsapp?: string; designVariant?: import("@/templates/types").DesignVariant }, { isDemo: true });
+  }, [industry, businessName, area, whatsapp, resolvedVariant]);
 
   /**
    * Templates are designed responsively. We render them at a real mobile width
@@ -47,7 +60,7 @@ export default function TemplatePhonePreview({
   const previewWidth = 390;
   const previewHeight = 700;
   const shellWidth = 308;
-  const scale = shellWidth / previewWidth;
+  const scale = scaleProp ?? shellWidth / previewWidth;
   const scaledHeight = Math.round(previewHeight * scale);
 
   return (

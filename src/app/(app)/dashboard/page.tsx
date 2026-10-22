@@ -25,6 +25,8 @@ import { apiFetch } from "@/lib/api-fetch";
 import type { Site } from "@/db/schema";
 import { TEMPLATES } from "@/templates/registry";
 import { industryLabel } from "@/templates/industries";
+import { BARBER_VARIANTS } from "@/templates/velvet/barberVariants";
+import { isValidDesignVariant } from "@/templates/types";
 import AccountImageUploader, { type LocalImage } from "@/components/AccountImageUploader";
 import ShareLink from "@/components/ShareLink";
 import { formatRand, PLAN } from "@/lib/billing";
@@ -46,6 +48,7 @@ export default function DashboardPage() {
   const [managingSite, setManagingSite] = useState<Site | null>(null);
   const [logoState, setLogoState] = useState<LocalImage[]>([]);
   const [galleryState, setGalleryState] = useState<LocalImage[]>([]);
+  const [designVariantState, setDesignVariantState] = useState<number>(1);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [publishingId, setPublishingId] = useState<number | null>(null);
@@ -185,6 +188,7 @@ export default function DashboardPage() {
     setManagingSite(site);
     setLogoState(site.logoUrl ? [{ url: site.logoUrl, isLocal: false }] : []);
     setGalleryState(site.galleryUrls.map((u) => ({ url: u, isLocal: false })));
+    setDesignVariantState((site as unknown as { designVariant?: number }).designVariant ?? 1);
     setSaveMsg(null);
   };
 
@@ -204,6 +208,8 @@ export default function DashboardPage() {
             logoUrl: logoState.find((l) => !l.isLocal)?.url ?? null,
             galleryUrls: galleryState.filter((g) => !g.isLocal).map((g) => g.url),
             heroImageUrl: galleryState.find((g) => !g.isLocal)?.url,
+            // Persist barber design variant; non-barber stays on 1 via API guard
+            designVariant: managingSite.industry === "barber" ? designVariantState : 1,
           }),
         },
       );
@@ -598,6 +604,35 @@ export default function DashboardPage() {
                   onActivity={setSaveMsg}
                 />
               </div>
+
+              {/* Barber design variant — appears only for barber sites */}
+              {managingSite.industry === "barber" && (
+                <div className="mt-5 rounded-2xl border-2 border-ink/12 bg-white/60 p-5">
+                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.18em] text-ink/50">Barber design — 6 looks</p>
+                  <p className="mb-3 text-xs text-ink/45">Pick a different layout. Each is a genuinely distinct design, not a recolor. Save to update preview & live site.</p>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {BARBER_VARIANTS.map((v) => {
+                      const active = designVariantState === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          onClick={() => setDesignVariantState(v.id)}
+                          className={"flex flex-col gap-1 rounded-xl border-2 px-3 py-2.5 text-left transition-all " + (active ? "border-ink bg-ink text-bone shadow-[3px_3px_0_#ff4d00]" : "border-ink/12 bg-white hover:border-ink/30")}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: v.accent }} />
+                            <span className={"text-xs font-extrabold " + (active ? "text-bone" : "text-ink")}>{v.name}</span>
+                            {active && <span className="ml-auto text-[10px] font-bold uppercase tracking-wide text-gold">●</span>}
+                          </span>
+                          <span className={"text-[10px] leading-tight " + (active ? "text-bone/60" : "text-ink/45")}>{v.tagline}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="mt-2 text-[11px] text-ink/40">Current: Variant {designVariantState} · restores on reopen, renders on preview & published.</p>
+                </div>
+              )}
 
               <div className="mt-6 flex gap-3">
                 <button

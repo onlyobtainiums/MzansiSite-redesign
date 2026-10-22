@@ -116,6 +116,7 @@ export default async function SitePreviewPage({ params }: PageProps) {
     galleryUrls: site.galleryUrls.length ? site.galleryUrls : undefined,
     services: site.services.length ? site.services : undefined,
     socials: site.socials,
+    designVariant: (((site as unknown as { designVariant?: number }).designVariant ?? 1) as import("@/templates/types").DesignVariant),
   }, { isDemo: false });
 
   /* ——— Live subdomain: the real, public website ——— */

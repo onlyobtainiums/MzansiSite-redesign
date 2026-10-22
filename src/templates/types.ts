@@ -7,6 +7,13 @@ export interface ReviewItem {
   label?: string; // e.g. "Property transfer" or "Repeat client"
 }
 
+/** Design variant for industry-specific selectable designs (1..6). Default 1 preserves legacy appearance. */
+export type DesignVariant = 1 | 2 | 3 | 4 | 5 | 6;
+export const DESIGN_VARIANTS: DesignVariant[] = [1, 2, 3, 4, 5, 6];
+export function isValidDesignVariant(v: unknown): v is DesignVariant {
+  return typeof v === "number" && Number.isInteger(v) && v >= 1 && v <= 6;
+}
+
 /** Everything a template needs to render a finished storefront. */
 export interface SiteData {
   businessName: string;
@@ -40,6 +47,9 @@ export interface SiteData {
   reviewItems?: ReviewItem[];
   /** Guarantee or trust banner text */
   guarantee?: string;
+
+  /** Design variant (1..6) — persisted as sites.design_variant, defaults to 1 */
+  designVariant?: DesignVariant;
 }
 
 export type TemplateStatus = "live" | "phase-2" | "phase-3";

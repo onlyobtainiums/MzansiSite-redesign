@@ -8,6 +8,13 @@
       "when": 1791727774009,
       "tag": "0000_military_firestar",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791727774010,
+      "tag": "0001_add_design_variant",
+      "breakpoints": true
     }
   ]
 }

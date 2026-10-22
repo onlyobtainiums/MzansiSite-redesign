@@ -66,6 +66,20 @@ export async function POST(request: Request) {
     if (phone && phone.replace(/\D/g, "").length < 9)
       return jsonError("That phone number looks too short.", 400);
 
+    // Design variant (1..6) — additive, backward-compatible, defaults to 1
+    let designVariant: number = 1;
+    if (body.designVariant !== undefined) {
+      const parsed = typeof body.designVariant === "string" ? Number(body.designVariant) : body.designVariant;
+      if (!Number.isInteger(parsed) || parsed < 1 || parsed > 6) {
+        return jsonError("Invalid design variant. Choose 1 to 6.", 400);
+      }
+      designVariant = parsed;
+    }
+    // Only barber supports variants today; other industries stay on variant 1
+    if (industry !== "barber" && designVariant !== 1) {
+      designVariant = 1;
+    }
+
     const templateId = INDUSTRIES[industry].templateId;
     const starter = getDemoSiteData({ industry }, { isDemo: false });
 
@@ -118,6 +132,7 @@ export async function POST(request: Request) {
             userId: user.id,
             slug: makeSlug(businessName),
             templateId,
+            designVariant,
             status: "draft",
             businessName,
             tagline: sanitise(body.tagline, 140) || starter.tagline,

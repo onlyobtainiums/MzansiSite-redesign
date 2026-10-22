@@ -68,6 +68,7 @@ export const sites = pgTable(
     userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
     slug: text("slug").notNull(),
     templateId: text("template_id").notNull(),
+    designVariant: integer("design_variant").notNull().default(1),
     status: text("status").notNull().default("draft"), // draft | active | suspended | deleted
 
     businessName: text("business_name").notNull(),
