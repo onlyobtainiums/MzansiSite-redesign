@@ -92,6 +92,15 @@ export function LogoBlock({
   );
 }
 
+/** Demo label — shown next to illustrative data, not just in footer */
+export function DemoBadge({ className = "" }: { className?: string }) {
+  return (
+    <span className={`inline-flex items-center rounded-full border border-amber-600 bg-amber-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-amber-800 ${className}`}>
+      DEMO CONTENT — NOT A REAL BUSINESS
+    </span>
+  );
+}
+
 /** Social icon row — only renders networks the owner filled in. */
 export function SocialRow({
   site,
