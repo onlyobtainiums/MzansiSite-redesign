@@ -75,7 +75,6 @@ export default function HairSalonVariant3({ site }: { site: SiteData }) {
           <div className="mt-8 flex flex-wrap gap-4">
             <WhatsAppActionForSite
               site={site}
-              message={`Hi ${name}, I'm planning my first visit.`}
               className="rounded-full bg-[#3d6650] px-6 py-3 text-sm font-bold text-white shadow-sm transition-transform hover:-translate-y-0.5"
             />
             <a href="#hsv-visit" className="inline-flex items-center gap-2 rounded-full border-2 border-[#234034]/60 px-6 py-3 text-sm font-bold transition-colors hover:bg-[#234034] hover:text-[#edf3ec]">

@@ -44,7 +44,6 @@ export default function HairSalonVariant5({ site }: { site: SiteData }) {
           </div>
           <WhatsAppActionForSite
             site={site}
-            message={`Hi ${name}, I'd love to talk about my hair.`}
             className="rounded-full bg-[#3b2417] px-5 py-2.5 text-sm font-semibold text-[#faf1ea] transition-transform hover:-translate-y-0.5"
             label="Say hello"
           />
