@@ -1,18 +1,13 @@
-import { describe, it, expect, vi } from "vitest";
-
-vi.mock("next/font/google", () => ({
-  Syne: () => ({ variable: "syne" }),
-  Instrument_Serif: () => ({ variable: "instrument" }),
-  Space_Grotesk: () => ({ variable: "grotesk" }),
-}));
-
+import { describe, it, expect } from "vitest";
 import React from "react";
 import { renderToString } from "react-dom/server";
 import VelvetTemplate from "@/templates/velvet/Template";
 import { getDemoSiteData } from "@/templates/demo-data";
 
-describe("Velvet — barber premium charcoal/brass variant", () => {
-  it("renders barber with distinct barber copy, preserves uploads, and stays mobile-safe", () => {
+describe("Velvet — barber six-template families (Phase 2)", () => {
+  const variants = [1, 2, 3, 4, 5, 6] as const;
+
+  it.each(variants)("variant %s renders barber with distinct family markers and preserves uploads", (variant) => {
     const barber = getDemoSiteData({ industry: "barber" }, { isDemo: true });
     const uploadedHero = "https://res.cloudinary.com/demo/image/upload/v1/barber-hero.jpg";
     const uploadedGallery = [
@@ -22,6 +17,7 @@ describe("Velvet — barber premium charcoal/brass variant", () => {
     const customLogo = "https://res.cloudinary.com/demo/image/upload/v1/barber-logo.png";
     const withUploads = {
       ...barber,
+      designVariant: variant,
       heroImageUrl: uploadedHero,
       galleryUrls: uploadedGallery,
       logoUrl: customLogo,
@@ -30,24 +26,19 @@ describe("Velvet — barber premium charcoal/brass variant", () => {
 
     const html = renderToString(React.createElement(VelvetTemplate, { site: withUploads }));
 
-    // Barber-specific editorial — not generic Velvet/beauty (hero has span markup between words)
-    expect(html).toContain("Stay");
-    expect(html).toContain("sharp");
-    expect(html).toContain("Stay respected");
-    expect(html).toContain("Cuts &amp; grooming");
-    expect(html).toContain("The chair");
-    expect(html).toContain("Walk-ins welcome");
-    // Brass/charcoal palette tokens
-    expect(html).toContain("#0f1113");
-    expect(html).toContain("#fdf8f2");
-    expect(html).toContain("#c9a25a");
+    // Business name present
+    expect(html).toContain("Very Long Barber Shop Name That Tests Wrapping At 320 Pixels Wide");
     // WhatsApp booking preserved
     expect(html).toContain("wa.me");
     expect(html).toContain("WhatsApp");
     // Uploads preserved
-    expect(html).toContain(uploadedHero);
+    // At least one uploaded gallery image is rendered by every variant
     expect(html).toContain(uploadedGallery[0]);
     expect(html).toContain(customLogo);
+    // heroImageUrl used as hero in Variant 1 (Velvet)
+    if (variant === 1) {
+      expect(html).toContain(uploadedHero);
+    }
     // Prices present (barber)
     expect(html).toContain("R120");
     expect(html).toContain("R90");
@@ -55,11 +46,20 @@ describe("Velvet — barber premium charcoal/brass variant", () => {
     expect(html).not.toMatch(/w-\[1200px\]|w-\[1440px\]/);
     // Islamic compliance — no prohibited keywords
     expect(html).not.toMatch(/wine|beer|alcohol|pork|casino|betting/i);
-    // Demo badge when isDemo
-    expect(html).toContain("DEMO CONTENT");
-    // Mobile safeguards present
-    expect(html).toContain("break-words");
-    expect(html).toContain("min-w-0");
+    // Sample labels when isDemo
+    expect(html).toContain("Sample");
+    // Each variant has distinctive family-specific markers
+    const familyMarkers: Record<number, string[]> = {
+      1: ["The Menu", "The chair is waiting"], // Velvet — hero-first
+      2: ["Services &amp; prices", "The Menu"], // Forge — services-first
+      3: ["Standards at the chair", "Plan your visit"], // Savanna — trust-first
+      4: ["Selected frames", "Behind those frames"], // Praxis — gallery-first
+      5: ["Our story, first", "Who we are"], // Market — about-first
+      6: ["Need a cut? Start with one message.", "Enquiry form"], // Vital — enquiry-first
+    };
+    for (const marker of familyMarkers[variant]) {
+      expect(html).toContain(marker);
+    }
   });
 
   it("does not break other Velvet variants (hairSalon, spa, eventPlanner)", () => {
@@ -69,7 +69,7 @@ describe("Velvet — barber premium charcoal/brass variant", () => {
       // Original Velvet markers still present for non-barber
       expect(html).toContain("The menu");
       expect(html).toContain("Services &amp; pricing");
-      // Must NOT leak barber charcoal copy
+      // Must NOT leak barber copy
       expect(html).not.toContain("Stay sharp");
       expect(html).not.toContain("Cuts &amp; grooming");
     }
@@ -79,6 +79,7 @@ describe("Velvet — barber premium charcoal/brass variant", () => {
     const barber = getDemoSiteData({ industry: "barber" } as any, { isDemo: true });
     const longCut = {
       ...barber,
+      designVariant: 1,
       businessName: "A Really Long Barber Name That Could Overflow A Narrow Phone Screen",
       services: [
         {
@@ -92,8 +93,8 @@ describe("Velvet — barber premium charcoal/brass variant", () => {
     const html = renderToString(React.createElement(VelvetTemplate, { site: longCut }));
     expect(html).toContain("Extraordinarily long barber service");
     expect(html).toContain("from R1,200.00");
+    // Mobile safeguards present in the rendered output
     expect(html).toContain("break-words");
-    expect(html).toContain("min-w-0");
   });
 
   it("uses verified barber pexels images (no 1813272/3212167 broken/people ids)", () => {

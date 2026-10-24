@@ -83,3 +83,13 @@ export function displayPhone(phone: string): string {
   if (digits.length === 10) return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
   return phone;
 }
+
+/** Build a mailto: link. */
+export function mailLink(email: string): string {
+  return `mailto:${email.trim()}`;
+}
+
+/** Build a tel: link. */
+export function telLink(phone: string): string {
+  return `tel:${phone.replace(/[^\d+]/g, "")}`;
+}

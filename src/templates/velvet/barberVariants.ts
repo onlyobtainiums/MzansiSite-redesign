@@ -6,15 +6,58 @@ export interface BarberVariantMeta {
   tagline: string;
   accent: string;
   previewLabel: string;
+  strategy: string;
 }
 
 export const BARBER_VARIANTS: BarberVariantMeta[] = [
-  { id: 1, name: "Executive", tagline: "Charcoal & brass — sharp, trusted", accent: "#c9a25a", previewLabel: "Stay sharp" },
-  { id: 2, name: "Minimalist", tagline: "Ivory & ink — calm, modern", accent: "#0f1113", previewLabel: "Clean cut" },
-  { id: 3, name: "Classic", tagline: "Wood & cream — timeless heritage", accent: "#8b5a2b", previewLabel: "Heritage" },
-  { id: 4, name: "Urban", tagline: "Concrete & neon — street energy", accent: "#ff3b30", previewLabel: "Urban edge" },
-  { id: 5, name: "Studio", tagline: "Light & glass — modern studio", accent: "#0ea5e9", previewLabel: "Studio" },
-  { id: 6, name: "Bold", tagline: "Black & gold — loud, proud", accent: "#facc15", previewLabel: "Bold" },
+  {
+    id: 1,
+    name: "Velvet",
+    tagline: "Hero-first editorial — your name in the lights, then menu, frames and visiting details.",
+    accent: "#c8a05c",
+    previewLabel: "Hero first",
+    strategy: "Hero-first",
+  },
+  {
+    id: 2,
+    name: "Forge",
+    tagline: "Services-first industrial — your price list leads with category tabs, dotted leaders and plain numbers.",
+    accent: "#ff4d00",
+    previewLabel: "Services first",
+    strategy: "Services-first",
+  },
+  {
+    id: 3,
+    name: "Savanna",
+    tagline: "Trust-first — hours, location and house standards upfront. Credentials only when they’re real.",
+    accent: "#b65b2e",
+    previewLabel: "Trust first",
+    strategy: "Trust-first",
+  },
+  {
+    id: 4,
+    name: "Praxis",
+    tagline: "Gallery-first portfolio — big featured frame, loose grid, honest empty states.",
+    accent: "#2e4bff",
+    previewLabel: "Gallery first",
+    strategy: "Gallery-first",
+  },
+  {
+    id: 5,
+    name: "Market",
+    tagline: "About-first — your story in chapters with drop-cap, then services and where to find you.",
+    accent: "#1f3d2b",
+    previewLabel: "About first",
+    strategy: "About-first",
+  },
+  {
+    id: 6,
+    name: "Vital",
+    tagline: "Enquiry-first — contact is the homepage. WhatsApp front and centre plus a clear enquiry form.",
+    accent: "#0c3226",
+    previewLabel: "Enquiry first",
+    strategy: "Enquiry-first",
+  },
 ];
 
 export function getBarberVariant(id: number): BarberVariantMeta | undefined {

@@ -1,157 +1,317 @@
 "use client";
 
-import { ArrowRight, Clock, MapPin, Menu, Phone, ShieldCheck, Star, X } from "lucide-react";
-import { useState } from "react";
-import type { SiteData } from "../../types";
-import { displayPhone, waLink } from "../../types";
-import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../../shared";
-import { Up } from "../../Reveal";
+import { useMemo, useState } from "react";
+import { Check, Clock, Copy, Info, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck } from "lucide-react";
+import type { SiteData } from "@/templates/types";
+import { mailLink, telLink, waLink } from "@/templates/types";
+import { cn } from "./shared/cn";
+import { SmartImage } from "./shared/SmartImage";
+import { BrandMark, SamplePill } from "./shared/kit";
 
-/* Velvet Barber Variant 6 — Bold (black & gold) — maximal, proud, loud */
+const GREEN = "#0c3226";
+const WA = "#1faf57";
+
+const SAMPLE_PHOTOS = [
+  { id: "s1", src: "/images/barber-pack/hero-chair.jpg", alt: "Empty leather barber chair in a moody shop interior", sample: true },
+  { id: "s2", src: "/images/barber-pack/tools-flatlay.jpg", alt: "Flat lay of clippers, scissors, comb and straight razor", sample: true },
+  { id: "s3", src: "/images/barber-pack/interior-warm.jpg", alt: "Sunlit barbershop interior with chairs and mirrors", sample: true },
+  { id: "s4", src: "/images/barber-pack/razor-detail.jpg", alt: "Straight razor and shaving brush on a folded towel", sample: true },
+  { id: "s5", src: "/images/barber-pack/products-shelf.jpg", alt: "Shelf of grooming products and folded towels", sample: true },
+  { id: "s6", src: "/images/barber-pack/pole-street.jpg", alt: "Barber pole on a shopfront wall at golden hour", sample: true },
+];
+
 export default function BarberVariant6({ site }: { site: SiteData }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const gallery = site.galleryUrls.slice(0, 6);
-  const bookLink = waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to book.`);
+  const name = site.businessName || "Your Barbershop";
+  const photos = site.galleryUrls.length
+    ? site.galleryUrls.map((url, i) => ({ id: `p${i}`, src: url, alt: `${name} photo ${i + 1}`, sample: false }))
+    : SAMPLE_PHOTOS;
+  const digits = site.whatsapp.replace(/\D/g, "");
+  const hasWa = digits.length >= 10;
+
+  const [clientName, setClientName] = useState("");
+  const [service, setService] = useState("");
+  const [when, setWhen] = useState("");
+  const [note, setNote] = useState("");
+  const [errors, setErrors] = useState<{ name?: string; service?: string }>({});
+  const [drafted, setDrafted] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const serviceOptions = useMemo(() => site.services.map((s) => s.name).filter(Boolean), [site.services]);
+
+  const composed = useMemo(() => {
+    const lines = [
+      `Hi ${name}, new enquiry from the website:`,
+      `• Name: ${clientName || "—"}`,
+      service ? `• Service: ${service}` : null,
+      when ? `• Preferred time: ${when}` : null,
+      note ? `• Notes: ${note}` : null,
+      "(This is an enquiry — please reply to confirm availability.)",
+    ].filter(Boolean);
+    return lines.join("\n");
+  }, [clientName, service, when, note, name]);
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const errs: typeof errors = {};
+    if (!clientName.trim()) errs.name = "Please add your name so the shop knows who is asking.";
+    if (!service) errs.service = "Choose a service, or “Not sure yet”.";
+    setErrors(errs);
+    if (Object.keys(errs).length) return;
+    window.open(waLink(site.whatsapp, composed), "_blank", "noopener");
+    setDrafted(true);
+  }
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(composed);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt("Copy your enquiry:", composed);
+    }
+  }
 
   return (
-    <>
-      <WhatsAppFab site={site} accent="#facc15" />
-      <div className="@container/page min-h-screen bg-[#0a0a0a] font-sans text-[#fafafa]">
-        <div className="bg-[#facc15] px-4 py-2 text-center text-[11px] font-black tracking-[0.2em] uppercase break-words text-[#0a0a0a]">Bold cuts · {site.hours} · {site.area} · GOLD STANDARD</div>
-
-        <header className="sticky top-0 z-40 border-b-2 border-[#facc15] bg-[#0a0a0a]/90 backdrop-blur">
-          <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-            <a href="#top" className="flex min-w-0 items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-[#facc15] font-display text-sm font-black text-[#0a0a0a]">{site.businessName.slice(0,1)}</span>
-              <span className="font-display break-words text-[16px] font-black uppercase tracking-[0.08em] text-[#facc15]">{site.businessName}</span>
+    <div className="@container/page min-h-screen bg-[#f4f6f1] font-vital text-[#0c3226]">
+      {/* top bar */ }
+      <header className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 @md:px-10">
+        <p className="flex items-center gap-2.5 text-[15px] font-extrabold tracking-tight">
+          <BrandMark logo={site.logoUrl ?? null} name={name} className="h-9 w-9 text-[10px]" />
+          {name}
+        </p>
+        <div className="flex items-center gap-4 text-[12px] font-semibold text-[#0c3226]/70">
+          <span className="hidden @sm:inline">{site.hours ? `${site.hours}` : "Add opening hours"}</span>
+          {site.phone && (
+            <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="grid h-9 w-9 place-items-center rounded-full border border-[#0c3226]/25" aria-label="Phone the shop">
+              <Phone className="h-4 w-4" />
             </a>
-            <div className="hidden items-center gap-6 text-xs font-black tracking-[0.14em] uppercase text-white/70 bp-md:flex">
-              <a href="#services" className="hover:text-[#facc15]">Menu</a>
-              <a href="#gallery" className="hover:text-[#facc15]">Gallery</a>
-              <a href="#visit" className="hover:text-[#facc15]">Visit</a>
-            </div>
-            <div className="flex items-center gap-2">
-              <a href={bookLink} target="_blank" rel="noopener noreferrer" className="hidden rounded-full bg-[#facc15] px-6 py-2.5 text-xs font-black uppercase text-[#0a0a0a] hover:bg-white bp-sm:block">Book now</a>
-              <button onClick={()=>setMenuOpen(!menuOpen)} className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#facc15] bg-[#0a0a0a] text-[#facc15] bp-md:hidden" aria-label="Menu">{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
-            </div>
-          </nav>
-          {menuOpen && (
-            <div className="border-t-2 border-[#facc15] bg-[#0a0a0a] px-5 py-4 bp-md:hidden">
-              {["services","gallery","visit"].map(id=> (
-                <a key={id} href={`#${id}`} onClick={()=>setMenuOpen(false)} className="block py-2 text-xs font-black uppercase tracking-wide text-white/70">{id}</a>
-              ))}
-            </div>
           )}
-        </header>
+        </div>
+      </header>
 
-        {/* Hero — full bleed big type */}
-        <section id="top" className="relative overflow-hidden border-b-2 border-[#facc15] bg-[#0a0a0a] text-white">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(250,204,21,0.18),transparent_45%)]" />
-          <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-8 px-5 py-12 bp-md:grid-cols-[1.1fr_0.9fr] bp-md:items-center bp-md:py-16">
-            <Up className="min-w-0 @container">
-              <p className="inline-flex items-center gap-2 text-[11px] font-black tracking-[0.2em] uppercase text-[#facc15]">— {site.area} — GOLD</p>
-              <h1 className="mt-3 font-display text-[2.8rem] font-black uppercase leading-[0.85] tracking-[-0.03em] break-words bp-md:text-[4rem]">We<br/>don’t<br/><span className="text-[#facc15]">play.</span></h1>
-              <div className="mt-4 h-1 w-20 bg-[#facc15]" aria-hidden />
-              <p className="mt-5 max-w-[44ch] text-sm leading-relaxed text-white/60">{site.tagline}</p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a href={bookLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#facc15] px-7 py-3.5 text-xs font-black uppercase text-[#0a0a0a] hover:bg-white">Book on WhatsApp <ArrowRight className="h-4 w-4" /></a>
-                <a href="#services" className="inline-flex items-center rounded-full border border-white/20 px-6 py-3 text-xs font-black uppercase">Prices</a>
-              </div>
-              <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#facc15]/30 bg-[#facc15]/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#facc15]">Walk-ins welcome · Every day</div>
-            </Up>
-            <Up delay={0.1}>
-              <div className="relative overflow-hidden rounded-[1.5rem] border-2 border-[#facc15] bg-[#111] p-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[4/5] w-full rounded-[1.1rem] object-cover" />
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 rounded-xl bg-[#facc15] px-4 py-3 text-[#0a0a0a]">
-                  <span className="font-display break-words text-sm font-black uppercase">{site.services[0]?.name}</span>
-                  <span className="rounded-full bg-[#0a0a0a] px-3 py-1 text-sm font-black text-[#facc15]">{site.services[0]?.price}</span>
-                </div>
-              </div>
-            </Up>
-          </div>
-        </section>
+      <main className="px-5 pb-14 pt-6 @md:px-10 @md:pt-10">
+        <div className="grid gap-10 @lg:grid-cols-[1.05fr_1fr] @lg:items-start">
+          {/* contact panel */ }
+          <div>
+            <p className="mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white" style={{ background: GREEN }}>
+              <MessageCircle className="h-3.5 w-3.5" aria-hidden /> Barbershop · {site.area || "your area"}
+            </p>
+            <h1 className="text-[clamp(2.1rem,5.6cqw,4rem)] font-extrabold leading-[1.02] tracking-[-0.02em]">Need a cut? Start with one message.</h1>
+            <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-[#0c3226]/70">
+              {site.tagline || "Add your one-liner in the editor."} Send us a WhatsApp enquiry and we’ll reply during shop hours to sort out a time that works.
+            </p>
 
-        {/* Services — bold stacked blocks */}
-        <section id="services" className="bg-[#0a0a0a]">
-          <div className="mx-auto max-w-6xl px-5 py-12 bp-md:py-16">
-            <Up className="text-center"><p className="text-[11px] font-black tracking-[0.3em] uppercase text-[#facc15]">The price is the price</p><h2 className="mt-2 font-display text-3xl font-black uppercase tracking-tight text-white bp-md:text-4xl">Cuts & finishes</h2></Up>
-            <div className="mt-8 space-y-3">
-              {site.services.map((s,i)=>(
-                <Up key={s.name} delay={i*0.04}>
-                  <a href={waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to book: ${s.name} (${s.price})`)} target="_blank" rel="noopener noreferrer" className="group flex flex-col gap-3 rounded-2xl border-2 border-white/10 bg-white/[0.06] p-5 hover:border-[#facc15]/50 bp-sm:flex-row bp-sm:items-center bp-sm:justify-between">
-                    <div className="min-w-0"><h3 className="font-display text-[16px] font-black uppercase tracking-tight text-white break-words group-hover:text-[#facc15]">{s.name}</h3>{s.description && <p className="mt-1 text-xs text-white/50">{s.description}</p>}</div>
-                    <span className="inline-flex items-center gap-2 self-start rounded-full bg-[#facc15] px-4 py-2 font-black text-[#0a0a0a] bp-sm:shrink-0">{s.price} <ArrowRight className="h-3.5 w-3.5" /></span>
+            <div className="mt-8 max-w-md space-y-3">
+              {hasWa ? (
+                <a
+                  href={waLink(site.whatsapp, `Hi ${name}, I'd like to enquire about a cut.`)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-2xl px-5 py-4 text-white shadow-lg shadow-[#1faf57]/30 transition-transform hover:-translate-y-0.5" style={{ background: WA }}
+                >
+                  <MessageCircle className="h-6 w-6 shrink-0" aria-hidden />
+                  <span>
+                    <span className="block text-[15px] font-extrabold">WhatsApp us · {site.whatsapp}</span>
+                    <span className="block text-[12px] font-medium text-white/80">Usually the fastest way to reach the chair</span>
+                  </span>
+                </a>
+              ) : (
+                <p className="rounded-2xl border-2 border-dashed border-[#0c3226]/30 px-5 py-4 text-sm font-semibold text-[#0c3226]/60">
+                  Add your WhatsApp number in the editor to switch this button live.
+                </p>
+              )}
+              <div className="grid grid-cols-2 gap-3">
+                {site.phone ? (
+                  <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="flex items-center gap-2.5 rounded-2xl border border-[#0c3226]/25 bg-white px-4 py-3.5 text-[13px] font-bold transition-colors hover:border-[#0c3226]">
+                    <Phone className="h-4 w-4 shrink-0" aria-hidden /> {site.phone}
                   </a>
-                </Up>
-              ))}
+                ) : (
+                  <span className="flex items-center gap-2.5 rounded-2xl border border-dashed border-[#0c3226]/25 px-4 py-3.5 text-[13px] font-semibold text-[#0c3226]/50">
+                    <Phone className="h-4 w-4" /> Phone not added
+                  </span>
+                )}
+                {site.email ? (
+                  <a href={`mailto:${site.email.trim()}`} className="flex items-center gap-2.5 rounded-2xl border border-[#0c3226]/25 bg-white px-4 py-3.5 text-[13px] font-bold transition-colors hover:border-[#0c3226]">
+                    <Mail className="h-4 w-4 shrink-0" aria-hidden /> Email us
+                  </a>
+                ) : (
+                  <span className="flex items-center gap-2.5 rounded-2xl border border-dashed border-[#0c3226]/25 px-4 py-3.5 text-[13px] font-semibold text-[#0c3226]/50">
+                    <Mail className="h-4 w-4" /> Email not added
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
-        </section>
 
-        {/* Statement */}
-        <section className="border-y-2 border-[#facc15] bg-[#facc15] text-[#0a0a0a]">
-          <div className="mx-auto max-w-6xl px-5 py-10 text-center bp-md:py-14">
-            <Up><p className="text-[11px] font-black uppercase tracking-[0.2em]">Why we last</p><blockquote className="mx-auto mt-3 max-w-3xl font-display text-2xl font-black uppercase leading-tight break-words bp-md:text-3xl">“{site.aboutQuote ?? "Real prices. Real skill. No stories."}”</blockquote><p className="mx-auto mt-4 max-w-xl text-sm font-medium">{site.businessName} · {site.area}. {site.tagline}</p></Up>
-            <Up delay={0.1}><div className="mt-6 grid grid-cols-3 gap-4 border-t-2 border-[#0a0a0a]/10 pt-5">
-              {[[site.area.split(",")[0]||site.area,"based"],[site.services.length+" cuts","board"],[site.hours.split("·")[0].trim()||site.hours,"hours"]].map(([b,s])=>(
-                <div key={s} className="min-w-0"><p className="break-words font-display font-black">{b}</p><p className="text-[10px] font-black uppercase tracking-wide text-[#0a0a0a]/60">{s}</p></div>
-              ))}
-            </div></Up>
+            <ul className="mt-7 space-y-2.5 text-[13px] font-semibold text-[#0c3226]/75">
+              <li className="flex items-center gap-2.5"><ShieldCheck className="h-4 w-4" style={{ color: WA }} /> An enquiry is not a booking — we confirm by reply.</li>
+              <li className="flex items-center gap-2.5"><Clock className="h-4 w-4" style={{ color: WA }} /> We answer during shop hours (listed below).</li>
+              <li className="flex items-center gap-2.5"><Info className="h-4 w-4" style={{ color: WA }} /> No payment is ever taken through this page.</li>
+            </ul>
           </div>
-        </section>
 
-        {/* Gallery — offset */}
-        <section id="gallery" className="bg-[#0a0a0a]">
-          <div className="mx-auto max-w-6xl px-5 py-12 bp-md:py-16">
-            <Up className="mb-6 flex flex-wrap items-end justify-between gap-4"><div><p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#facc15]">Inside</p><h2 className="font-display text-2xl font-black uppercase text-white">{site.galleryHeading ?? "Built bold"}</h2></div><SocialRow site={site} iconClassName="text-white/40" /></Up>
-            <div className="grid grid-cols-2 gap-3 bp-md:grid-cols-3 bp-md:gap-4">
-              {gallery.map((url,i)=>(
-                <Up key={`${url}-${i}`} delay={i*0.05}><div className={`overflow-hidden rounded-2xl border-2 ${i%2===0?"border-[#facc15]":"border-white/10"} bg-[#111]`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt={`${site.businessName} ${i+1}`} className="aspect-[4/3] w-full object-cover" loading="lazy" />
-                </div></Up>
-              ))}
-            </div>
-          </div>
-        </section>
+          {/* enquiry form */ }
+          <form onSubmit={submit} noValidate className="rounded-2xl border border-[#0c3226]/15 bg-white p-6 shadow-[0_24px_60px_-30px_rgba(12,50,38,0.4)] @md:p-8">
+            <h2 className="text-xl font-extrabold tracking-tight">Enquiry form</h2>
+            <p className="mt-1 text-[12.5px] text-[#0c3226]/60">Fill this in and we’ll open WhatsApp with your message drafted. Nothing sends until you press send.</p>
 
-        {site.isDemo && site.reviewItems ? (
-          <section className="border-y-2 border-[#facc15] bg-[#111]">
-            <div className="mx-auto max-w-6xl px-5 py-12 bp-md:py-14">
-              <Up className="text-center"><p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#facc15]">Reviews</p><h2 className="mt-2 font-display text-2xl font-black uppercase text-white">{site.reviewHeading}</h2><DemoBadge className="mt-3 bg-[#facc15] text-[#0a0a0a]" /></Up>
-              <div className="mt-6 grid grid-cols-1 gap-4 bp-md:grid-cols-3">
-                {site.reviewItems.map((r,i)=>(
-                  <Up key={r.name} delay={i*0.08}><figure className="rounded-2xl border-2 border-[#facc15] bg-white p-6"><div className="mb-2 flex gap-1">{Array.from({length:5}).map((_,s)=><Star key={s} className="h-3 w-3 fill-[#facc15] text-[#facc15]" />)}</div><blockquote className="font-serif text-[15px] text-[#0a0a0a] break-words">“{r.quote}”</blockquote><figcaption className="mt-3 text-[11px] font-black uppercase text-[#0a0a0a]/40">{r.name} — DEMO</figcaption></figure></Up>
+            <label className="mt-6 block">
+              <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0c3226]/70">Your name *</span>
+              <input
+                value={clientName}
+                onChange={(e) => {
+                  setClientName(e.target.value);
+                  if (errors.name) setErrors({ ...errors, name: undefined });
+                }}
+                placeholder="e.g. Sipho M."
+                className={cn(
+                  "w-full rounded-xl border bg-[#f4f6f1] px-4 py-3 text-sm outline-none transition-colors focus:border-[#1faf57]",
+                  errors.name ? "border-red-400" : "border-[#0c3226]/20",
+                )}
+                aria-invalid={!!errors.name}
+              />
+              {errors.name && <span className="mt-1 block text-[12px] font-semibold text-red-600">{errors.name}</span>}
+            </label>
+
+            <fieldset className="mt-5">
+              <legend className="mb-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0c3226]/70">Service *</legend>
+              <div className="flex flex-wrap gap-2">
+                {[...serviceOptions, "Not sure yet"].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    aria-pressed={service === s}
+                    onClick={() => {
+                      setService(s);
+                      if (errors.service) setErrors({ ...errors, service: undefined });
+                    }}
+                    className={cn(
+                      "rounded-full border px-3.5 py-1.5 text-[12.5px] font-bold transition-colors",
+                      service === s ? "border-transparent text-white" : "border-[#0c3226]/25 text-[#0c3226]/75 hover:border-[#0c3226]",
+                    )}
+                    style={service === s ? { background: GREEN } : undefined}
+                  >
+                    {s}
+                  </button>
                 ))}
               </div>
+              {errors.service && <span className="mt-1 block text-[12px] font-semibold text-red-600">{errors.service}</span>}
+            </fieldset>
+
+            <label className="mt-5 block">
+              <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0c3226]/70">Preferred day & time (optional)</span>
+              <input
+                value={when}
+                onChange={(e) => setWhen(e.target.value)}
+                placeholder="e.g. Saturday morning, after 10"
+                className="w-full rounded-xl border border-[#0c3226]/20 bg-[#f4f6f1] px-4 py-3 text-sm outline-none transition-colors focus:border-[#1faf57]"
+              />
+            </label>
+
+            <label className="mt-5 block">
+              <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0c3226]/70">Anything else? (optional)</span>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                rows={3}
+                placeholder="Reference photo? Questions about the kids cut?"
+                className="w-full resize-none rounded-xl border border-[#0c3226]/20 bg-[#f4f6f1] px-4 py-3 text-sm outline-none transition-colors focus:border-[#1faf57]"
+              />
+            </label>
+
+            {hasWa ? (
+              <button type="submit" className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-4 text-[15px] font-extrabold text-white transition-transform hover:-translate-y-0.5" style={{ background: WA }}>
+                <Send className="h-4 w-4" aria-hidden /> Draft my WhatsApp enquiry
+              </button>
+            ) : (
+              <p className="mt-6 rounded-xl border-2 border-dashed border-[#0c3226]/30 px-4 py-3.5 text-center text-[13px] font-semibold text-[#0c3226]/60">
+                The shop needs a WhatsApp number before this form can send — add one in the editor.
+              </p>
+            )}
+            <button type="button" onClick={copy} className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-[#0c3226]/20 px-5 py-3 text-[13px] font-bold text-[#0c3226]/75 transition-colors hover:border-[#0c3226]">
+              {copied ? <Check className="h-4 w-4 text-[#1faf57]" /> : <Copy className="h-4 w-4" />}
+              {copied ? "Copied to clipboard" : "Copy enquiry text instead"}
+            </button>
+
+            {drafted && (
+              <p role="status" className="mt-4 flex items-start gap-2.5 rounded-xl bg-[#1faf57]/12 px-4 py-3 text-[12.5px] font-semibold leading-relaxed text-[#0c3226]">
+                <Check className="mt-0.5 h-4 w-4 shrink-0" style={{ color: WA }} />
+                WhatsApp opened with your enquiry drafted. Press send there — and remember, the shop confirms your time by reply. Nothing is booked yet.
+              </p>
+            )}
+          </form>
+        </div>
+
+        {/* proof band */ }
+        {photos.length > 0 && (
+          <div className="mt-14">
+            <div className="mb-4 flex items-center gap-3">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#0c3226]/60">Inside the shop</p>
+              {photos.some((p) => p.sample) && <SamplePill label="Sample photos" />}
             </div>
-          </section>
-        ) : (
-          <section className="border-y-2 border-[#facc15] bg-[#111] py-12 text-center text-white"><div className="mx-auto max-w-xl px-5"><Up><p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#facc15]">Straight up</p><h2 className="mt-2 font-display font-black uppercase">No fake reviews</h2><p className="mt-3 text-sm text-white/60">Prices above are real. WhatsApp for availability.</p><a href={waLink(site.whatsapp, `Hi ${site.businessName}!`)} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex rounded-full bg-[#facc15] px-6 py-3 text-xs font-black uppercase text-[#0a0a0a]">Ask</a></Up></div></section>
+            <div className="grid grid-cols-2 gap-3 @md:grid-cols-4">
+              {photos.slice(0, 4).map((p) => (
+                <SmartImage key={p.id} src={p.src} alt={p.alt} className="aspect-[4/3] w-full rounded-xl" />
+              ))}
+            </div>
+          </div>
         )}
 
-        <section id="visit" className="bg-white text-[#0a0a0a]">
-          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-5 py-12 bp-md:grid-cols-2 bp-md:py-16">
-            <Up className="@container min-w-0"><p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#0a0a0a]/40">Visit</p><h2 className="mt-2 break-words font-display text-2xl font-black uppercase">{site.area}</h2>
-              <div className="mt-5 space-y-3 text-sm">
-                <p className="flex gap-2 break-words"><Clock className="h-4 w-4 shrink-0" /> {site.hours}</p>
-                <p className="flex gap-2 break-words"><Phone className="h-4 w-4 shrink-0" /> {displayPhone(site.whatsapp)}</p>
-                <p className="flex gap-2 break-words"><MapPin className="h-4 w-4 shrink-0" /> {site.area}</p>
-              </div>
-            </Up>
-            <Up delay={0.08}><div className="rounded-2xl bg-[#0a0a0a] p-8 text-center text-white"><p className="font-display text-xl font-black uppercase">Walk in or book.</p><p className="mt-2 text-sm text-white/60">One WhatsApp secures your chair.</p><a href={bookLink} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#facc15] px-6 py-3 text-xs font-black uppercase text-[#0a0a0a]">Book <ArrowRight className="h-4 w-4" /></a></div></Up>
+        {/* info tiles */ }
+        <div className="mt-14 grid gap-4 @md:grid-cols-3">
+          <div className="rounded-2xl bg-white p-6 shadow-sm">
+            <p className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#0c3226]/60">
+              <Clock className="h-4 w-4" /> Shop hours
+            </p>
+            <ul className="space-y-2">
+              {hoursRows(site.hours).map((h) => (
+                <li key={h.id} className="flex justify-between gap-4 text-sm">
+                  <span className="font-bold">{h.label}</span>
+                  <span className="text-[#0c3226]/70">{h.value}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        </section>
+          <div className="rounded-2xl bg-white p-6 shadow-sm">
+            <p className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#0c3226]/60">
+              <MapPin className="h-4 w-4" /> Where to sit
+            </p>
+            <p className="text-sm font-bold">{site.area || "Add your address"}</p>
+            <p className="text-sm text-[#0c3226]/70">{site.area || "Your area"}</p>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.area} ${site.area}`)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-extrabold underline decoration-[#1faf57] decoration-2 underline-offset-4"
+            >
+              Get directions
+            </a>
+          </div>
+          <div className="rounded-2xl bg-white p-6 shadow-sm">
+            <p className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#0c3226]/60">
+              Services <SamplePill label="Sample prices" />
+            </p>
+            <ul className="space-y-2">
+              {site.services.slice(0, 4).map((s) => (
+                <li key={s.name} className="flex justify-between gap-4 text-sm">
+                  <span className="font-bold">{s.name}</span>
+                  <span className="text-[#0c3226]/70">{s.price}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-[12px] text-[#0c3226]/55">Full menu shared on enquiry.</p>
+          </div>
+        </div>
+      </main>
 
-        <footer className="border-t-2 border-[#0a0a0a] bg-[#0a0a0a] px-5 py-8 text-white">
-          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 bp-md:flex-row">
-            <div className="flex flex-wrap items-center gap-3"><LogoBlock site={site} className="rounded-full bg-[#facc15] text-[#0a0a0a]" /><span className="break-words font-display font-black uppercase tracking-tight text-[#facc15]">{site.businessName}</span></div>
-            <SocialRow site={site} iconClassName="text-white/40" />
-            <p className="text-[11px] font-black uppercase tracking-wide text-white/30">MzansiSite · R149.99</p>
-          </div>
-        </footer>
-      </div>
-    </>
+      <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#0c3226]/12 px-5 py-6 text-[11px] font-bold uppercase tracking-[0.2em] text-[#0c3226]/50 @md:px-10">
+        <span>{name}</span>
+        <span>Design: Vital · MzansiSite demo — enquiries are not confirmed bookings</span>
+      </footer>
+    </div>
   );
+}
+
+function hoursRows(hours: string | undefined) {
+  if (!hours) return [];
+  return [{ id: "h1", label: "Hours", value: hours }];
 }

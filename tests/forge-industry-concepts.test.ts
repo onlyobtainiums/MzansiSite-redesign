@@ -408,12 +408,13 @@ describe("Forge — regression: non-Forge templates unchanged", () => {
   it("Barber (Velvet) still renders with its own design", () => {
     const barber = getDemoSiteData({ industry: "barber" }, { isDemo: true }) as any;
     const html = renderToString(React.createElement(VelvetTemplate, { site: barber }));
-    // Barber variant copy (check existing velvet-barber.test.ts for reference)
-    expect(html).toContain("Stay");
-    expect(html).toContain("respected");
-    expect(html).toContain("Cuts &amp; grooming");
-    expect(html).toContain("#0f1113"); // charcoal
-    expect(html).toContain("#c9a25a"); // brass
+    // New Velvet variant (Phase 2 barber template pack)
+    expect(html).toContain("Barbershop ·");
+    expect(html).toContain("Cuts &amp; shaves, priced plainly.");
+    expect(html).toContain("The chair is waiting.");
+    expect(html).toContain("#131009"); // deep charcoal background
+    expect(html).toContain("#c8a05c"); // brass accent
+    expect(html).toContain("Design: Velvet");
   });
 });
 
