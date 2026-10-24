@@ -197,7 +197,7 @@ export default function NewSiteWizard() {
   const labelCls = "mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-ink/50";
 
   return (
-    <div className="grain relative min-h-screen bg-bone text-ink">
+    <div className="grain relative min-h-[100dvh] overflow-y-auto bg-bone text-ink">
       {/* Header */}
       <header className="border-b-2 border-ink/10">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-4">
