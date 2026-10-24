@@ -76,8 +76,9 @@ export default function HairSalonVariant4({ site }: { site: SiteData }) {
 
       {/* featured plate */ }
       {featured && (
-        <figure className="px-5 @md:px-10">
-          <div className="relative">
+        <section className="px-5 @md:px-10">
+          <figure>
+            <div className="relative">
             <SmartImage src={featured.src} alt={featured.alt} eager className="aspect-[16/10] w-full rounded-xl @md:aspect-[21/10]" />
             <span className="absolute left-4 top-4 rounded-full bg-[#141414]/85 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: CHAMPAGNE }}>
               Frame 01
@@ -90,6 +91,7 @@ export default function HairSalonVariant4({ site }: { site: SiteData }) {
           </figcaption>
         </figure>
       </section>
+      )}
 
       {/* the grid */ }
       <section id="hpx-work" className="px-5 py-12 @md:px-10 @md:py-16">
