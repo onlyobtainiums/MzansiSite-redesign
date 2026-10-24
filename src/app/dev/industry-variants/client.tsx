@@ -152,7 +152,7 @@ export function VariantClient() {
           </p>
           <p className="mt-3 text-[10px] font-bold tracking-[0.2em] text-[#ea580c] uppercase">
             Business data: {site.businessName} · {site.area} · {site.hours} ·
-            WhatsApp: {site.whatsapp} · isDemo: {String(site.isDemo)}
+            WhatsApp: {site.whatsapp}
           </p>
           <p className="mt-2 text-[10px] text-[#64748b]">
             Variant {variant} selected. V1 is the default fallback when
