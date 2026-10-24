@@ -24,6 +24,7 @@ import { displayPhone, waLink } from "../types";
 import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
 import BarberVariant5 from "../velvet/barber-variants/Variant5";
+import HairSalonVariant5 from "../velvet/hair-salon-variants/V5AboutFirst";
 
 /* Market — product-led storefront for retail, wholesale & manufacturing.
    Palette: paper #fbf7ef · ink #191406 · red #e0402a · green #2f7d4f */

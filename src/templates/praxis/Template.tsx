@@ -29,6 +29,7 @@ import HairSalonVariant4 from "../velvet/hair-salon-variants/V4GalleryFirst";
 
 export default function PraxisTemplate({ site }: { site: SiteData }) {
   if (site.industry === "barber") return <BarberVariant4 site={site} />;
+  if (site.industry === "hairSalon") return <HairSalonVariant4 site={site} />;
   const [menuOpen, setMenuOpen] = useState(false);
   const gallery = site.galleryUrls.slice(0, 6);
   const consultLink = waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to book a consultation.`);
