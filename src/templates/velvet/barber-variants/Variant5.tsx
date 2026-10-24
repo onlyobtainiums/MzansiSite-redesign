@@ -17,13 +17,13 @@ export default function BarberVariant5({ site }: { site: SiteData }) {
     <>
       <WhatsAppFab site={site} accent="#0ea5e9" />
       <div className="@container/page min-h-screen bg-[#f8fafc] font-sans text-[#0f172a]">
-        <div className="bg-white border-b border-[#0f172a]/10 px-4 py-2 text-center text-[11px] tracking-[0.18em] uppercase text-[#0f172a]/50"><Clock className="mr-1.5 inline h-3 w-3 text-[#0ea5e9]" /> {site.hours} · {site.area}</div>
+        <div className="bg-white border-b border-[#0f172a]/10 px-4 py-2 text-center text-[11px] tracking-[0.18em] uppercase break-words text-[#0f172a]/50"><Clock className="mr-1.5 inline h-3 w-3 text-[#0ea5e9]" /> {site.hours} · {site.area}</div>
 
         <header className="sticky top-0 z-40 border-b border-[#0f172a]/10 bg-white/80 backdrop-blur">
           <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
             <a href="#top" className="flex min-w-0 items-center gap-3">
               <LogoBlock site={site} className="shrink-0 rounded-full bg-[#0ea5e9] text-white border border-[#0ea5e9]" />
-              <span className="truncate font-display text-[15px] font-extrabold tracking-tight">{site.businessName}</span>
+              <span className="font-display break-words text-[15px] font-extrabold tracking-tight">{site.businessName}</span>
             </a>
             <div className="hidden items-center gap-6 text-xs font-semibold tracking-[0.14em] uppercase text-[#0f172a]/60 bp-md:flex">
               <a href="#services" className="hover:text-[#0ea5e9]">Services</a>
@@ -65,7 +65,7 @@ export default function BarberVariant5({ site }: { site: SiteData }) {
               <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[4/5] w-full rounded-[1.1rem] object-cover" />
               <div className="absolute bottom-4 left-4 max-w-[70%] rounded-xl border border-[#0f172a]/10 bg-white/95 px-3 py-2 backdrop-blur">
                 <p className="text-[10px] tracking-[0.14em] uppercase text-[#0ea5e9]">Next chair</p>
-                <p className="truncate font-semibold text-sm">{site.services[0]?.name} · {site.services[0]?.price}</p>
+                <p className="break-words font-semibold text-sm">{site.services[0]?.name} · {site.services[0]?.price}</p>
               </div>
             </div>
           </Up>

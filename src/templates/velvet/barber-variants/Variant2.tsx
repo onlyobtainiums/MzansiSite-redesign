@@ -27,7 +27,7 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
           <nav className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
             <a href="#top" className="flex min-w-0 items-center gap-3">
               <LogoBlock site={site} className="shrink-0 rounded-full bg-white border border-[#0f1113] font-display text-[#0f1113]" />
-              <span className="truncate font-serif text-lg tracking-wide">{site.businessName}</span>
+              <span className="font-serif break-words text-lg tracking-wide">{site.businessName}</span>
             </a>
             <div className="hidden items-center gap-8 text-[10px] tracking-[0.2em] uppercase bp-md:flex">
               <a href="#services" className="text-[#0f1113]/60 hover:text-[#0f1113]">Menu</a>
@@ -62,7 +62,7 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[4/3] w-full rounded-[0.9rem] object-cover" />
             <div className="flex items-center justify-between px-3 py-3 text-left">
-              <div className="min-w-0"><p className="text-[10px] tracking-[0.18em] uppercase text-[#0f1113]/40">Today</p><p className="truncate font-serif text-sm">{site.services[0]?.name}</p></div>
+              <div className="min-w-0"><p className="text-[10px] tracking-[0.18em] uppercase text-[#0f1113]/40">Today</p><p className="break-words font-serif text-sm">{site.services[0]?.name}</p></div>
               <span className="shrink-0 text-sm font-semibold">{site.services[0]?.price}</span>
             </div>
           </div></Up>

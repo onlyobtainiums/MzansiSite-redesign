@@ -18,13 +18,13 @@ export default function BarberVariant4({ site }: { site: SiteData }) {
       <WhatsAppFab site={site} accent="#ff3b30" />
       <div className="@container/page min-h-screen bg-[#f4f4f5] font-sans text-[#0a0a0a]">
         {/* Neon top */}
-        <div className="bg-[#0a0a0a] px-4 py-2 text-center text-[11px] font-bold tracking-[0.22em] uppercase text-[#ff3b30]">● Walk-ins welcome · {site.hours} · {site.area}</div>
+        <div className="bg-[#0a0a0a] px-4 py-2 text-center text-[11px] font-bold tracking-[0.22em] uppercase break-words text-[#ff3b30]">● Walk-ins welcome · {site.hours} · {site.area}</div>
 
         <header className="sticky top-0 z-40 border-b-2 border-[#0a0a0a] bg-white/90 backdrop-blur">
           <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
             <a href="#top" className="flex min-w-0 items-center gap-3">
               <span className="grid h-9 w-9 place-items-center rounded-lg bg-[#ff3b30] font-display text-sm font-black uppercase text-white">{site.businessName.slice(0,2)}</span>
-              <span className="truncate font-display text-[15px] font-black uppercase tracking-tight">{site.businessName}</span>
+              <span className="font-display break-words text-[15px] font-black uppercase tracking-tight">{site.businessName}</span>
             </a>
             <div className="hidden items-center gap-6 text-xs font-black tracking-[0.14em] uppercase bp-md:flex">
               <a href="#services" className="hover:text-[#ff3b30]">Cuts</a>
@@ -64,7 +64,7 @@ export default function BarberVariant4({ site }: { site: SiteData }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[4/3] w-full rounded-xl object-cover" />
                 <div className="flex items-center justify-between px-2 pt-3">
-                  <span className="rounded-full bg-[#0a0a0a] px-3 py-1 text-xs font-black uppercase text-white">{site.services[0]?.name}</span>
+                  <span className="rounded-full bg-[#0a0a0a] px-3 py-1 text-xs font-black uppercase text-white break-words">{site.services[0]?.name}</span>
                   <span className="font-black text-[#ff3b30]">{site.services[0]?.price}</span>
                 </div>
               </div>

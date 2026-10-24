@@ -17,13 +17,13 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
     <>
       <WhatsAppFab site={site} accent="#facc15" />
       <div className="@container/page min-h-screen bg-[#0a0a0a] font-sans text-[#fafafa]">
-        <div className="bg-[#facc15] px-4 py-2 text-center text-[11px] font-black tracking-[0.2em] uppercase text-[#0a0a0a]">Bold cuts · {site.hours} · {site.area} · GOLD STANDARD</div>
+        <div className="bg-[#facc15] px-4 py-2 text-center text-[11px] font-black tracking-[0.2em] uppercase break-words text-[#0a0a0a]">Bold cuts · {site.hours} · {site.area} · GOLD STANDARD</div>
 
         <header className="sticky top-0 z-40 border-b-2 border-[#facc15] bg-[#0a0a0a]/90 backdrop-blur">
           <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
             <a href="#top" className="flex min-w-0 items-center gap-3">
               <span className="grid h-9 w-9 place-items-center rounded-full bg-[#facc15] font-display text-sm font-black text-[#0a0a0a]">{site.businessName.slice(0,1)}</span>
-              <span className="truncate font-display text-[16px] font-black uppercase tracking-[0.08em] text-[#facc15]">{site.businessName}</span>
+              <span className="font-display break-words text-[16px] font-black uppercase tracking-[0.08em] text-[#facc15]">{site.businessName}</span>
             </a>
             <div className="hidden items-center gap-6 text-xs font-black tracking-[0.14em] uppercase text-white/70 bp-md:flex">
               <a href="#services" className="hover:text-[#facc15]">Menu</a>
@@ -64,7 +64,7 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[4/5] w-full rounded-[1.1rem] object-cover" />
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 rounded-xl bg-[#facc15] px-4 py-3 text-[#0a0a0a]">
-                  <span className="font-display text-sm font-black uppercase">{site.services[0]?.name}</span>
+                  <span className="font-display break-words text-sm font-black uppercase">{site.services[0]?.name}</span>
                   <span className="rounded-full bg-[#0a0a0a] px-3 py-1 text-sm font-black text-[#facc15]">{site.services[0]?.price}</span>
                 </div>
               </div>

@@ -30,7 +30,7 @@ export default function BarberVariant1({ site }: { site: SiteData }) {
           <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
             <a href="#top" className="flex min-w-0 items-center gap-3">
               <LogoBlock site={site} className="shrink-0 rounded-full border-2 border-[#0f1113] bg-[#0f1113] font-display text-[#c9a25a]" />
-              <span className="truncate font-display text-[15px] font-extrabold tracking-[0.08em] uppercase bp-md:text-lg">{site.businessName}</span>
+              <span className="font-display break-words text-[15px] font-extrabold tracking-[0.08em] uppercase bp-md:text-lg">{site.businessName}</span>
             </a>
             <div className="hidden items-center gap-7 text-[11px] font-bold tracking-[0.18em] uppercase bp-md:flex">
               <a href="#services" className="text-[#0f1113]/60 hover:text-[#0f1113]">Cuts</a>
@@ -83,14 +83,14 @@ export default function BarberVariant1({ site }: { site: SiteData }) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[4/5] w-full object-cover" />
                   <div className="flex items-center justify-between gap-3 border-t border-[#c9a25a]/20 bg-[#0f1113] px-4 py-3">
-                    <div className="min-w-0"><p className="text-[10px] font-bold tracking-[0.18em] text-[#c9a25a] uppercase">Next chair</p><p className="truncate font-display text-sm font-extrabold text-[#fdf8f2]">{site.services[0]?.name}</p></div>
+                    <div className="min-w-0"><p className="text-[10px] font-bold tracking-[0.18em] text-[#c9a25a] uppercase">Next chair</p><p className="break-words font-display text-sm font-extrabold text-[#fdf8f2]">{site.services[0]?.name}</p></div>
                     <span className="shrink-0 rounded-full bg-[#c9a25a] px-3 py-1 font-display text-sm font-extrabold text-[#0f1113]">{site.services[0]?.price}</span>
                   </div>
                 </div>
                 <div className="absolute -right-2 top-6 max-w-[calc(100%+0.5rem)] break-words rounded-xl border-2 border-[#0f1113] bg-[#fdf8f2] px-3.5 py-2 font-display text-sm font-extrabold text-[#0f1113] shadow-[4px_4px_0_rgba(0,0,0,0.2)] bp-md:-right-4">{site.services[2]?.price ?? site.services[0]?.price}</div>
                 <div className="absolute -bottom-3 -left-2 flex max-w-[calc(100%+0.5rem)] items-center gap-2 rounded-xl border-2 border-[#0f1113] bg-[#c9a25a] px-3 py-2.5 shadow-[4px_4px_0_rgba(0,0,0,0.2)] bp-md:-left-4">
                   <span className="grid h-8 w-8 place-items-center rounded-full bg-[#0f1113] text-[#c9a25a]"><Scissors className="h-4 w-4" /></span>
-                  <div className="min-w-0"><p className="text-[9px] font-bold tracking-[0.18em] text-[#0f1113]/70 uppercase">House special</p><p className="truncate font-display text-xs font-extrabold text-[#0f1113]">{site.services[1]?.name ?? "Cut + beard"}</p></div>
+                  <div className="min-w-0"><p className="text-[9px] font-bold tracking-[0.18em] text-[#0f1113]/70 uppercase">House special</p><p className="break-words font-display text-xs font-extrabold text-[#0f1113]">{site.services[1]?.name ?? "Cut + beard"}</p></div>
                 </div>
               </div>
             </Up>
@@ -150,7 +150,7 @@ export default function BarberVariant1({ site }: { site: SiteData }) {
               <p className="mt-3 text-center text-[11px] font-medium tracking-[0.14em] text-[#fdf8f2]/40 uppercase">No faces in our shop shots — just tools, chairs and craft.</p>
             </Up>
             <div>
-              <Up><p className="mb-3 flex items-center gap-2 text-[11px] font-bold tracking-[0.28em] text-[#c9a25a] uppercase"><Sparkles className="h-4 w-4" /> The chair</p><h2 className="font-display text-3xl font-extrabold uppercase leading-tight tracking-tight bp-md:text-4xl">Built for the neighbourhood — <span className="text-[#c9a25a]">sharp every time.</span></h2></Up>
+              <Up><p className="mb-3 flex items-center gap-2 text-[11px] font-bold tracking-[0.28em] text-[#c9a25a] uppercase"><Sparkles className="h-4 w-4" /> The chair</p><h2 className="font-display text-3xl font-extrabold uppercase leading-tight tracking-tight break-words bp-md:text-4xl">Built for the neighbourhood — <span className="text-[#c9a25a]">sharp every time.</span></h2></Up>
               <Up delay={0.08}><blockquote className="mt-6 border-l-2 border-[#c9a25a] pl-4 font-serif text-[17px] leading-relaxed text-[#fdf8f2]/85 break-words">“{site.aboutQuote ?? "A fresh fade shouldn't cost you an hour of back-and-forth messages."}”</blockquote><p className="mt-6 max-w-[54ch] text-sm leading-relaxed text-[#fdf8f2]/60">{site.businessName} · {site.area}. Every price on the board, every booking on WhatsApp, every fade finished with a clean line-up. {site.tagline} {site.guarantee && `${site.guarantee}`}</p></Up>
               <Up delay={0.14}><div className="mt-8 grid grid-cols-3 gap-6 border-t border-[#fdf8f2]/10 pt-7">
                 {[[site.area.split(",")[0]||site.area,"based in"],[site.services.length+" cuts","on the board"],[site.hours.split("·")[0].trim()||site.hours,"hours"]].map(([big,small])=>(
@@ -211,7 +211,7 @@ export default function BarberVariant1({ site }: { site: SiteData }) {
                 <div className="flex items-center gap-4"><MapPin className="h-5 w-5 text-[#b58a3a]" /><div className="min-w-0"><p className="text-[10px] font-bold tracking-[0.18em] text-[#0f1113]/40 uppercase">Find us</p><p className="break-words font-medium">{site.area}</p></div></div>
               </div>
             </Up>
-            <Up delay={0.1}><div className="flex h-full min-h-[320px] flex-col items-center justify-center rounded-[1.5rem] border-2 border-[#0f1113] bg-[#0f1113] p-8 text-center text-[#fdf8f2] shadow-[8px_8px_0_#0f1113] bp-md:p-10"><p className="font-display text-3xl font-extrabold uppercase leading-tight tracking-tight bp-md:text-4xl">Walk in or book ahead.</p><p className="mt-4 max-w-xs text-sm leading-relaxed text-[#fdf8f2]/60">One WhatsApp message secures your chair — we confirm your time in minutes, every day.</p><a href={bookLink} target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex items-center gap-2.5 rounded-full bg-[#c9a25a] px-7 py-3.5 text-[13px] font-bold tracking-[0.14em] text-[#0f1113] uppercase hover:-translate-y-0.5 hover:bg-[#b58a3a]">Book on WhatsApp <ArrowRight className="h-4 w-4" /></a></div></Up>
+            <Up delay={0.1}><div className="flex h-full min-h-[320px] flex-col items-center justify-center rounded-[1.5rem] border-2 border-[#0f1113] bg-[#0f1113] p-8 text-center text-[#fdf8f2] shadow-[8px_8px_0_#0f1113] bp-md:p-10"><p className="font-display text-3xl font-extrabold uppercase leading-tight tracking-tight break-words bp-md:text-4xl">Walk in or book ahead.</p><p className="mt-4 max-w-xs text-sm leading-relaxed text-[#fdf8f2]/60">One WhatsApp message secures your chair — we confirm your time in minutes, every day.</p><a href={bookLink} target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex items-center gap-2.5 rounded-full bg-[#c9a25a] px-7 py-3.5 text-[13px] font-bold tracking-[0.14em] text-[#0f1113] uppercase hover:-translate-y-0.5 hover:bg-[#b58a3a]">Book on WhatsApp <ArrowRight className="h-4 w-4" /></a></div></Up>
           </div>
         </section>
 

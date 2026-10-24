@@ -68,7 +68,7 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
           */}
           <a href="#top" className="flex min-w-0 items-center gap-3">
             <LogoBlock site={site} className="shrink-0 rounded-full border border-[#b98a2f]/40 bg-[#241a12] font-display text-[#e8ce9a]" />
-            <span className="truncate font-serif text-xl leading-none">{site.businessName}</span>
+            <span className="font-serif break-words text-xl leading-none">{site.businessName}</span>
           </a>
             <div className="hidden items-center gap-8 text-[12px] font-semibold tracking-[0.18em] uppercase bp-md:flex">
               <a href="#services" className="text-[#241a12]/60 transition-colors hover:text-[#241a12]">Services</a>

@@ -42,7 +42,7 @@ export default function Plumber({ site }: { site: SiteData }) {
           <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
             <a href="#top" className="flex min-w-0 items-center gap-3">
               <LogoBlock site={site} className="shrink-0 border-2 border-[#2dd4bf] bg-[#2dd4bf] font-display text-[#0f4c5c]" />
-              <span className="truncate font-display text-lg font-extrabold tracking-tight uppercase">{site.businessName}</span>
+              <span className="font-display break-words text-lg font-extrabold tracking-tight uppercase">{site.businessName}</span>
             </a>
             <div className="hidden items-center gap-7 text-[11px] font-bold tracking-[0.2em] uppercase bp-md:flex">
               <a href="#services" className="text-[#0f4c5c]/60 transition-colors hover:text-[#2dd4bf]">Services</a>

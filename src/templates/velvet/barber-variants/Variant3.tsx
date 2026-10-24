@@ -20,7 +20,7 @@ export default function BarberVariant3({ site }: { site: SiteData }) {
         {/* Striped bar — classic barber pole simplified */}
         <div className="h-2 bg-[repeating-linear-gradient(90deg,#b42318_0_14px,white_14px_28px,#0f2a5a_28px_42px)]" aria-hidden />
         <div className="bg-[#2b1a0e] px-4 py-2 text-center text-[11px] tracking-[0.18em] text-[#fdf3e6]/80 uppercase">
-          <span className="inline-flex flex-wrap items-center justify-center gap-2">Est. chair · {site.hours} · {site.area}</span>
+          <span className="inline-flex flex-wrap items-center justify-center gap-2 break-words">Est. chair · {site.hours} · {site.area}</span>
         </div>
 
         <header className="sticky top-0 z-40 border-b-2 border-[#2b1a0e] bg-[#fdf3e6]/95 backdrop-blur">
@@ -28,7 +28,7 @@ export default function BarberVariant3({ site }: { site: SiteData }) {
             <a href="#top" className="flex min-w-0 items-center gap-3">
               <span className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#2b1a0e] bg-[#fdf3e6] font-display text-sm font-extrabold text-[#2b1a0e]">{site.businessName.slice(0,1)}</span>
               <span className="hidden bp-sm:block"><LogoBlock site={site} className="shrink-0 rounded-full border border-[#8b5a2b]/40 bg-[#2b1a0e] text-[#e8c99a]" /></span>
-              <span className="truncate font-display text-[15px] font-extrabold tracking-[0.06em] uppercase">{site.businessName}</span>
+              <span className="font-display break-words text-[15px] font-extrabold tracking-[0.06em] uppercase">{site.businessName}</span>
             </a>
             <div className="hidden items-center gap-6 text-[11px] font-bold tracking-[0.16em] uppercase bp-md:flex">
               <a href="#services" className="text-[#2b1a0e]/60 hover:text-[#2b1a0e]">Cuts</a>
