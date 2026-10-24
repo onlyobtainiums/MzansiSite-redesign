@@ -1,24 +1,19 @@
 "use client";
 
-import { BadgeCheck, Clock, ImagePlus, Mail, MapPin, MessageCircle, Navigation, Phone, Scissors, Sparkles, ShieldCheck } from "lucide-react";
+import {
+  BadgeCheck, Clock, ImagePlus, Mail, MapPin, MessageCircle, Navigation,
+  Phone, Scissors, ShieldCheck, Sparkles,
+} from "lucide-react";
 import type { SiteData } from "@/templates/types";
-import type { ServiceItem } from "@/db/schema";
-
-type ServiceWithCategory = ServiceItem & { category?: string };
-import { mailLink, waLink } from "@/templates/types";
+import { mailLink, telLink } from "@/templates/types";
 import { cn } from "./shared/cn";
 import { SmartImage } from "./shared/SmartImage";
 import { BrandMark, SamplePill, WhatsAppActionForSite } from "./shared/kit";
 
+type ServiceWithCategory = { name: string; price: string; description?: string; category?: string };
+
 const CLAY = "#b65b2e";
 const OLIVE = "#55602f";
-
-const STANDARDS = [
-  { icon: ShieldCheck, text: "Fresh blades and sanitised tools for every client" },
-  { icon: Scissors, text: "One client in the chair at a time — never rushed" },
-  { icon: Sparkles, text: "Price agreed before the cape goes on" },
-  { icon: Clock, text: "Walk-ins welcome whenever the “open” board is up" },
-];
 
 const SAMPLE_PHOTOS = [
   { id: "s1", src: "/images/barber-pack/hero-chair.jpg", alt: "Empty leather barber chair in a moody shop interior", sample: true },
@@ -29,16 +24,35 @@ const SAMPLE_PHOTOS = [
   { id: "s6", src: "/images/barber-pack/pole-street.jpg", alt: "Barber pole on a shopfront wall at golden hour", sample: true },
 ];
 
+const STANDARDS = [
+  { icon: ShieldCheck, text: "Fresh blades and sanitised tools for every client" },
+  { icon: Scissors, text: "One client in the chair at a time — never rushed" },
+  { icon: Sparkles, text: "Price agreed before the cape goes on" },
+  { icon: Clock, text: 'Walk-ins welcome whenever the "open" board is up' },
+];
+
+function parseHoursRows(hours: string | undefined): { label: string; value: string }[] {
+  if (!hours) return [];
+  const rows = hours.split(/ · |\n/).filter(Boolean);
+  return rows.map((row, i) => {
+    const parts = row.trim().split(/\s{2,}|(?<=[a-zA-Z])\s+(?=\d)/);
+    if (parts.length >= 2) {
+      return { id: `hour-${i}`, label: parts[0].trim(), value: parts.slice(1).join(" ").trim() };
+    }
+    return { id: `hour-${i}`, label: row.trim(), value: "" };
+  });
+}
+
 export default function BarberVariant3({ site }: { site: SiteData }) {
   const name = site.businessName || "Your Barbershop";
   const photos = site.galleryUrls.length
     ? site.galleryUrls.map((url, i) => ({ id: `p${i}`, src: url, alt: `${name} photo ${i + 1}`, sample: false }))
     : SAMPLE_PHOTOS;
   const feature = photos[2] ?? photos[0];
-  const hoursRows = site.hours ? [{ id: "h1", label: "Hours", value: site.hours }] : [];
+  const hoursRows = parseHoursRows(site.hours);
 
   return (
-    <div className="@container/page min-h-screen bg-[#f4ecdc] font-savanna-sans text-[#2c2118]">
+    <div className="@container bg-[#f4ecdc] font-savanna-sans text-[#2c2118]">
       {/* header */ }
       <header className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 pt-7 @md:px-8">
         <div className="flex items-center gap-3">
@@ -67,7 +81,7 @@ export default function BarberVariant3({ site }: { site: SiteData }) {
             Dependable cuts, the same warm welcome, every visit.
           </h1>
           <p className="mt-5 max-w-[52ch] text-[15px] leading-relaxed text-[#2c2118]/75">
-            {site.tagline || "Add a line about how you run your shop."} Here’s everything you need to plan a visit — hours, directions and how to reach us.
+            {site.tagline || "Add a line about how you run your shop."} Here's everything you need to plan a visit — hours, directions and how to reach us.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <WhatsAppActionForSite
@@ -110,7 +124,7 @@ export default function BarberVariant3({ site }: { site: SiteData }) {
                 <dt className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#2c2118]/50">Phone</dt>
                 <dd className="text-[15px] font-semibold">
                   {site.phone ? (
-                    <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="underline-offset-2 hover:underline">
+                    <a href={telLink(site.phone)} className="underline-offset-2 hover:underline">
                       {site.phone}
                     </a>
                   ) : (
@@ -125,7 +139,7 @@ export default function BarberVariant3({ site }: { site: SiteData }) {
                 <dt className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#2c2118]/50">Email</dt>
                 <dd className="text-[15px] font-semibold">
                   {site.email ? (
-                    <a href={`mailto:${site.email.trim()}`} className="underline-offset-2 hover:underline">
+                    <a href={mailLink(site.email)} className="underline-offset-2 hover:underline">
                       {site.email}
                     </a>
                   ) : (
@@ -138,9 +152,7 @@ export default function BarberVariant3({ site }: { site: SiteData }) {
               <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#b65b2e]" aria-hidden />
               <div>
                 <dt className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#2c2118]/50">WhatsApp</dt>
-                <dd className="text-[15px] font-semibold">
-                  {site.whatsapp || "Not added yet"}
-                </dd>
+                <dd className="text-[15px] font-semibold">{site.whatsapp || "Not added yet"}</dd>
               </div>
             </div>
           </dl>
@@ -160,12 +172,19 @@ export default function BarberVariant3({ site }: { site: SiteData }) {
                 <Clock className="h-4 w-4" /> Opening hours
               </p>
               <ul className="space-y-3">
-                {hoursRows.map((h) => (
-                  <li key={h.id} className="flex justify-between gap-4 border-b border-[#2c2118]/8 pb-3 text-sm last:border-0 last:pb-0">
-                    <span className="font-semibold">{h.label}</span>
-                    <span className="text-[#2c2118]/70">{h.value}</span>
+                {hoursRows.length ? (
+                  hoursRows.map((h, idx) => (
+                    <li key={idx} className="flex justify-between gap-4 border-b border-[#2c2118]/8 pb-3 text-sm last:border-0 last:pb-0">
+                      <span className="font-semibold">{h.label}</span>
+                      <span className="text-[#2c2118]/70">{h.value}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="flex justify-between gap-4 text-sm">
+                    <span className="font-bold">Hours</span>
+                    <span className="text-[#2c2118]/70">{site.hours || "—"}</span>
                   </li>
-                ))}
+                )}
               </ul>
             </div>
             <div className="rounded-2xl bg-white p-6 shadow-sm">
@@ -218,14 +237,16 @@ export default function BarberVariant3({ site }: { site: SiteData }) {
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-[12px] text-[#2c2118]/55">Replace this sample list with your own house rules in the editor.</p>
+          <p className="mt-4 text-[12px] text-[#2c2118]/55">
+            Replace this sample list with your own house rules in the editor.
+          </p>
         </div>
 
         <div>
-          <h2 className="mb-6 font-savanna text-[clamp(1.5rem,3.2cqw,2.2rem)] font-semibold">Credentials & memberships</h2>
+          <h2 className="mb-6 font-savanna text-[clamp(1.5rem,3.2cqw,2.2rem)] font-semibold">Credentials &amp; memberships</h2>
           <div className="rounded-2xl border-2 border-dashed border-[#55602f]/40 bg-white/60 p-8">
             <BadgeCheck className="h-8 w-8" style={{ color: CLAY }} aria-hidden />
-            <p className="mt-3 font-savanna text-lg font-semibold">Nothing added yet — and that’s honest.</p>
+            <p className="mt-3 font-savanna text-lg font-semibold">Nothing added yet — and that's honest.</p>
             <p className="mt-2 text-sm leading-relaxed text-[#2c2118]/70">
               This design only shows real qualifications, certificates or memberships that you add yourself. It will never invent years of experience, awards or five-star reviews.
             </p>

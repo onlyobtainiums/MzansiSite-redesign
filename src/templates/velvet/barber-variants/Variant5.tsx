@@ -2,7 +2,7 @@
 
 import { ArrowRight, BookOpen, Clock, MapPin, MessageCircle, PenLine, Phone, Mail } from "lucide-react";
 import type { SiteData } from "@/templates/types";
-import { mailLink, waLink } from "@/templates/types";
+import { mailLink, telLink } from "@/templates/types";
 import { cn } from "./shared/cn";
 import { SmartImage } from "./shared/SmartImage";
 import { BrandMark, SamplePill, WhatsAppActionForSite } from "./shared/kit";
@@ -17,8 +17,8 @@ const SAMPLE_PHOTOS = [
   { id: "s4", src: "/images/barber-pack/razor-detail.jpg", alt: "Straight razor and shaving brush on a folded towel", sample: true },
   { id: "s5", src: "/images/barber-pack/products-shelf.jpg", alt: "Shelf of grooming products and folded towels", sample: true },
   { id: "s6", src: "/images/barber-pack/pole-street.jpg", alt: "Barber pole on a shopfront wall at golden hour", sample: true },
-  { id: "s7", src: "/images/barber-pack/sink-station.jpg", alt: "Wash basin with rolled towels and eucalyptus", sample: true },
-  { id: "s8", src: "/images/barber-pack/cape-hooks.jpg", alt: "Barber capes and clippers hanging in a tidy station", sample: true },
+  { id: "s7", src: "/images/barber-pack/cape-hooks.jpg", alt: "Barber capes and clippers hanging in a tidy station", sample: true },
+  { id: "s8", src: "/images/barber-pack/sink-station.jpg", alt: "Wash basin with rolled towels and eucalyptus", sample: true },
 ];
 
 function paragraphs(text: string): string[] {
@@ -34,7 +34,7 @@ export default function BarberVariant5({ site }: { site: SiteData }) {
   const picture = photos[6] ?? photos[2] ?? photos[0];
 
   return (
-    <div className="@container/page min-h-screen bg-[#fbf6ea] font-market-sans text-[#1f3d2b]">
+    <div className="@container bg-[#fbf6ea] font-market-sans text-[#1f3d2b]">
       {/* masthead */ }
       <header className="border-b border-[#1f3d2b]/15 px-5 py-6 @md:px-10">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
@@ -64,7 +64,8 @@ export default function BarberVariant5({ site }: { site: SiteData }) {
             {site.tagline || "Every barbershop has a story. This one starts with yours."}
           </h1>
           <p className="mt-5 max-w-[58ch] text-[15px] leading-relaxed text-[#1f3d2b]/75">
-            {name} — {site.area || "your area"}. Scroll our chapters: who we are, what we do at the chair, and exactly where and when to find us.
+            {name} — {site.area || "your area"}. Scroll our chapters: who we are, what we do at the chair,
+            and exactly where and when to find us.
           </p>
         </section>
 
@@ -76,12 +77,16 @@ export default function BarberVariant5({ site }: { site: SiteData }) {
           </div>
           <div>
             {paras.length === 0 ? (
-              <button type="button" className="w-full rounded-xl border-2 border-dashed border-[#1f3d2b]/30 bg-white/60 px-6 py-12 text-left">
+              <button
+                type="button"
+                className="w-full rounded-xl border-2 border-dashed border-[#1f3d2b]/30 bg-white/60 px-6 py-12 text-left"
+              >
                 <p className="flex items-center gap-2 font-market text-xl font-semibold" style={{ color: TOMATO }}>
                   <PenLine className="h-5 w-5" /> Tell your story here
                 </p>
                 <p className="mt-2 max-w-[56ch] text-sm leading-relaxed text-[#1f3d2b]/70">
-                  Where did the shop start? What do regulars know you for? What should a first-time client expect? Add it in the editor — this space is reserved for the real thing.
+                  Where did the shop start? What do regulars know you for? What should a first-time
+                  client expect? Add it in the editor — this space is reserved for the real thing.
                 </p>
               </button>
             ) : (
@@ -175,22 +180,29 @@ export default function BarberVariant5({ site }: { site: SiteData }) {
               <p className="mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1f3d2b]/60">
                 <Clock className="h-3.5 w-3.5" /> Shop hours
               </p>
-              <ul className="space-y-2.5">
-                {(site.hours ? [{ label: "Hours", value: site.hours }] : []).map((h) => (
-                  <li key={h.label} className="flex justify-between gap-4 text-sm">
-                    <span className="font-semibold">{h.label}</span>
-                    <span>{h.value}</span>
-                  </li>
-                ))}
+              <ul className="space-y-2">
+                {site.hours ? (
+                  site.hours.split(/ · |\n/).map((row, i) => {
+                    const parts = row.trim().split(/\s{2,}|(?<=[a-zA-Z])\s+(?=\d)/);
+                    const label = parts.length >= 2 ? parts[0].trim() : row.trim();
+                    const value = parts.length >= 2 ? parts.slice(1).join(" ").trim() : "";
+                    return (
+                      <li key={i} className="flex justify-between gap-4 text-sm">
+                        <span className="font-semibold">{label}</span>
+                        <span>{value || "—"}</span>
+                      </li>
+                    );
+                  })
+                ) : null}
               </ul>
               <div className="mt-5 space-y-2 border-t border-dashed border-[#1f3d2b]/20 pt-4 text-sm">
                 {site.phone && (
-                  <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="flex items-center gap-2 font-semibold hover:underline">
+                  <a href={telLink(site.phone)} className="flex items-center gap-2 font-semibold hover:underline">
                     <Phone className="h-3.5 w-3.5" /> {site.phone}
                   </a>
                 )}
                 {site.email && (
-                  <a href={`mailto:${site.email.trim()}`} className="flex items-center gap-2 font-semibold hover:underline">
+                  <a href={mailLink(site.email)} className="flex items-center gap-2 font-semibold hover:underline">
                     <Mail className="h-3.5 w-3.5" /> {site.email}
                   </a>
                 )}
@@ -202,7 +214,7 @@ export default function BarberVariant5({ site }: { site: SiteData }) {
         {/* closing note */ }
         <section className="mb-14 rounded-xl px-6 py-10 text-center text-[#fbf6ea] @md:px-12" style={{ background: GREEN }}>
           <p className="font-market text-[clamp(1.5rem,3.6cqw,2.4rem)] font-semibold leading-snug">
-            &ldquo;{site.tagline || "Walk in a stranger, leave a regular."}&rdquo;
+            “{site.tagline || "Walk in a stranger, leave a regular."}”
           </p>
           <WhatsAppActionForSite
             site={site}

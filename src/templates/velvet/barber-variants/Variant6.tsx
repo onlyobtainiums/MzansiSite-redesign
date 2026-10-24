@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, Clock, Copy, Info, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck } from "lucide-react";
+import {
+  Check, Clock, Copy, Info, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck,
+} from "lucide-react";
 import type { SiteData } from "@/templates/types";
 import { mailLink, telLink, waLink } from "@/templates/types";
 import { cn } from "./shared/cn";
@@ -25,8 +27,8 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
   const photos = site.galleryUrls.length
     ? site.galleryUrls.map((url, i) => ({ id: `p${i}`, src: url, alt: `${name} photo ${i + 1}`, sample: false }))
     : SAMPLE_PHOTOS;
-  const digits = site.whatsapp.replace(/\D/g, "");
-  const hasWa = digits.length >= 10;
+  const waDigits = site.whatsapp.replace(/\D/g, "");
+  const hasWa = waDigits.length >= 10;
 
   const [clientName, setClientName] = useState("");
   const [service, setService] = useState("");
@@ -72,7 +74,7 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
   }
 
   return (
-    <div className="@container/page min-h-screen bg-[#f4f6f1] font-vital text-[#0c3226]">
+    <div className="@container bg-[#f4f6f1] font-vital text-[#0c3226]">
       {/* top bar */ }
       <header className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 @md:px-10">
         <p className="flex items-center gap-2.5 text-[15px] font-extrabold tracking-tight">
@@ -80,9 +82,9 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
           {name}
         </p>
         <div className="flex items-center gap-4 text-[12px] font-semibold text-[#0c3226]/70">
-          <span className="hidden @sm:inline">{site.hours ? `${site.hours}` : "Add opening hours"}</span>
+          <span className="hidden @sm:inline">{site.hours || "Add opening hours"}</span>
           {site.phone && (
-            <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="grid h-9 w-9 place-items-center rounded-full border border-[#0c3226]/25" aria-label="Phone the shop">
+            <a href={telLink(site.phone)} className="grid h-9 w-9 place-items-center rounded-full border border-[#0c3226]/25" aria-label="Phone the shop">
               <Phone className="h-4 w-4" />
             </a>
           )}
@@ -96,9 +98,12 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
             <p className="mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white" style={{ background: GREEN }}>
               <MessageCircle className="h-3.5 w-3.5" aria-hidden /> Barbershop · {site.area || "your area"}
             </p>
-            <h1 className="text-[clamp(2.1rem,5.6cqw,4rem)] font-extrabold leading-[1.02] tracking-[-0.02em]">Need a cut? Start with one message.</h1>
+            <h1 className="text-[clamp(2.1rem,5.6cqw,4rem)] font-extrabold leading-[1.02] tracking-[-0.02em]">
+              Need a cut? Start with one message.
+            </h1>
             <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-[#0c3226]/70">
-              {site.tagline || "Add your one-liner in the editor."} Send us a WhatsApp enquiry and we’ll reply during shop hours to sort out a time that works.
+              {site.tagline || "Add your one-liner in the editor."} Send us a WhatsApp enquiry and we&apos;ll
+              reply during shop hours to sort out a time that works.
             </p>
 
             <div className="mt-8 max-w-md space-y-3">
@@ -107,7 +112,8 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
                   href={waLink(site.whatsapp, `Hi ${name}, I'd like to enquire about a cut.`)}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-3 rounded-2xl px-5 py-4 text-white shadow-lg shadow-[#1faf57]/30 transition-transform hover:-translate-y-0.5" style={{ background: WA }}
+                  className="flex items-center gap-3 rounded-2xl px-5 py-4 text-white shadow-lg shadow-[#1faf57]/30 transition-transform hover:-translate-y-0.5"
+                  style={{ background: WA }}
                 >
                   <MessageCircle className="h-6 w-6 shrink-0" aria-hidden />
                   <span>
@@ -122,7 +128,7 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
               )}
               <div className="grid grid-cols-2 gap-3">
                 {site.phone ? (
-                  <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="flex items-center gap-2.5 rounded-2xl border border-[#0c3226]/25 bg-white px-4 py-3.5 text-[13px] font-bold transition-colors hover:border-[#0c3226]">
+                  <a href={telLink(site.phone)} className="flex items-center gap-2.5 rounded-2xl border border-[#0c3226]/25 bg-white px-4 py-3.5 text-[13px] font-bold transition-colors hover:border-[#0c3226]">
                     <Phone className="h-4 w-4 shrink-0" aria-hidden /> {site.phone}
                   </a>
                 ) : (
@@ -131,7 +137,7 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
                   </span>
                 )}
                 {site.email ? (
-                  <a href={`mailto:${site.email.trim()}`} className="flex items-center gap-2.5 rounded-2xl border border-[#0c3226]/25 bg-white px-4 py-3.5 text-[13px] font-bold transition-colors hover:border-[#0c3226]">
+                  <a href={mailLink(site.email)} className="flex items-center gap-2.5 rounded-2xl border border-[#0c3226]/25 bg-white px-4 py-3.5 text-[13px] font-bold transition-colors hover:border-[#0c3226]">
                     <Mail className="h-4 w-4 shrink-0" aria-hidden /> Email us
                   </a>
                 ) : (
@@ -152,21 +158,17 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
           {/* enquiry form */ }
           <form onSubmit={submit} noValidate className="rounded-2xl border border-[#0c3226]/15 bg-white p-6 shadow-[0_24px_60px_-30px_rgba(12,50,38,0.4)] @md:p-8">
             <h2 className="text-xl font-extrabold tracking-tight">Enquiry form</h2>
-            <p className="mt-1 text-[12.5px] text-[#0c3226]/60">Fill this in and we’ll open WhatsApp with your message drafted. Nothing sends until you press send.</p>
+            <p className="mt-1 text-[12.5px] text-[#0c3226]/60">
+              Fill this in and we&apos;ll open WhatsApp with your message drafted. Nothing sends until you press send.
+            </p>
 
             <label className="mt-6 block">
               <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0c3226]/70">Your name *</span>
               <input
                 value={clientName}
-                onChange={(e) => {
-                  setClientName(e.target.value);
-                  if (errors.name) setErrors({ ...errors, name: undefined });
-                }}
+                onChange={(e) => { setClientName(e.target.value); if (errors.name) setErrors({ ...errors, name: undefined }); }}
                 placeholder="e.g. Sipho M."
-                className={cn(
-                  "w-full rounded-xl border bg-[#f4f6f1] px-4 py-3 text-sm outline-none transition-colors focus:border-[#1faf57]",
-                  errors.name ? "border-red-400" : "border-[#0c3226]/20",
-                )}
+                className={cn("w-full rounded-xl border bg-[#f4f6f1] px-4 py-3 text-sm outline-none transition-colors focus:border-[#1faf57]", errors.name ? "border-red-400" : "border-[#0c3226]/20")}
                 aria-invalid={!!errors.name}
               />
               {errors.name && <span className="mt-1 block text-[12px] font-semibold text-red-600">{errors.name}</span>}
@@ -180,10 +182,7 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
                     key={s}
                     type="button"
                     aria-pressed={service === s}
-                    onClick={() => {
-                      setService(s);
-                      if (errors.service) setErrors({ ...errors, service: undefined });
-                    }}
+                    onClick={() => { setService(s); if (errors.service) setErrors({ ...errors, service: undefined }); }}
                     className={cn(
                       "rounded-full border px-3.5 py-1.5 text-[12.5px] font-bold transition-colors",
                       service === s ? "border-transparent text-white" : "border-[#0c3226]/25 text-[#0c3226]/75 hover:border-[#0c3226]",
@@ -198,7 +197,7 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
             </fieldset>
 
             <label className="mt-5 block">
-              <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0c3226]/70">Preferred day & time (optional)</span>
+              <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0c3226]/70">Preferred day &amp; time (optional)</span>
               <input
                 value={when}
                 onChange={(e) => setWhen(e.target.value)}
@@ -219,7 +218,11 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
             </label>
 
             {hasWa ? (
-              <button type="submit" className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-4 text-[15px] font-extrabold text-white transition-transform hover:-translate-y-0.5" style={{ background: WA }}>
+              <button
+                type="submit"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-4 text-[15px] font-extrabold text-white transition-transform hover:-translate-y-0.5"
+                style={{ background: WA }}
+              >
                 <Send className="h-4 w-4" aria-hidden /> Draft my WhatsApp enquiry
               </button>
             ) : (
@@ -235,7 +238,8 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
             {drafted && (
               <p role="status" className="mt-4 flex items-start gap-2.5 rounded-xl bg-[#1faf57]/12 px-4 py-3 text-[12.5px] font-semibold leading-relaxed text-[#0c3226]">
                 <Check className="mt-0.5 h-4 w-4 shrink-0" style={{ color: WA }} />
-                WhatsApp opened with your enquiry drafted. Press send there — and remember, the shop confirms your time by reply. Nothing is booked yet.
+                WhatsApp opened with your enquiry drafted. Press send there — and remember, the shop
+                confirms your time by reply. Nothing is booked yet.
               </p>
             )}
           </form>
@@ -263,12 +267,19 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
               <Clock className="h-4 w-4" /> Shop hours
             </p>
             <ul className="space-y-2">
-              {hoursRows(site.hours).map((h) => (
-                <li key={h.id} className="flex justify-between gap-4 text-sm">
-                  <span className="font-bold">{h.label}</span>
-                  <span className="text-[#0c3226]/70">{h.value}</span>
-                </li>
-              ))}
+              {site.hours ? (
+                site.hours.split(/ · |\n/).map((row, i) => {
+                  const parts = row.trim().split(/\s{2,}|(?<=[a-zA-Z])\s+(?=\d)/);
+                  const label = parts.length >= 2 ? parts[0].trim() : row.trim();
+                  const value = parts.length >= 2 ? parts.slice(1).join(" ").trim() : "";
+                  return (
+                    <li key={i} className="flex justify-between gap-4 text-sm">
+                      <span className="font-bold">{label}</span>
+                      <span className="text-[#0c3226]/70">{value || "—"}</span>
+                    </li>
+                  );
+                })
+              ) : null}
             </ul>
           </div>
           <div className="rounded-2xl bg-white p-6 shadow-sm">
@@ -293,8 +304,7 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
             <ul className="space-y-2">
               {site.services.slice(0, 4).map((s) => (
                 <li key={s.name} className="flex justify-between gap-4 text-sm">
-                  <span className="font-bold">{s.name}</span>
-                  <span className="text-[#0c3226]/70">{s.price}</span>
+                  <span className="font-bold">{s.name}</span><span className="text-[#0c3226]/70">{s.price}</span>
                 </li>
               ))}
             </ul>
@@ -309,9 +319,4 @@ export default function BarberVariant6({ site }: { site: SiteData }) {
       </footer>
     </div>
   );
-}
-
-function hoursRows(hours: string | undefined) {
-  if (!hours) return [];
-  return [{ id: "h1", label: "Hours", value: hours }];
 }

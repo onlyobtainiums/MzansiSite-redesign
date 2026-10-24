@@ -3,13 +3,12 @@
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Clock3, Mail, MapPin, Phone, Scissors } from "lucide-react";
 import type { SiteData } from "@/templates/types";
-import type { ServiceItem } from "@/db/schema";
-
-type ServiceWithCategory = ServiceItem & { category?: string };
-import { waLink } from "@/templates/types";
+import { waLink, telLink, mailLink } from "@/templates/types";
 import { cn } from "./shared/cn";
 import { SmartImage } from "./shared/SmartImage";
 import { BrandMark, SamplePill, WhatsAppActionForSite } from "./shared/kit";
+
+type ServiceWithCategory = { name: string; price: string; description?: string; category?: string };
 
 const ORANGE = "#ff4d00";
 
@@ -27,23 +26,23 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
   const photos = site.galleryUrls.length
     ? site.galleryUrls.map((url, i) => ({ id: `p${i}`, src: url, alt: `${name} photo ${i + 1}`, sample: false }))
     : SAMPLE_PHOTOS;
+  const services = (site.services as ServiceWithCategory[]).slice(0, 10);
   const categories = useMemo(
-    () => ["All", ...Array.from(new Set((site.services as ServiceWithCategory[]).map((s) => s.category || "Other")))],
-    [site.services],
+    () => ["All", ...Array.from(new Set(services.map((s) => s.category || "Other")))],
+    [services],
   );
   const [cat, setCat] = useState("All");
-  const shown = cat === "All" ? site.services : (site.services as ServiceWithCategory[]).filter((s) => (s.category || "Other") === cat);
+  const shown = cat === "All" ? services : services.filter((s) => (s.category || "Other") === cat);
   const half = Math.ceil(shown.length / 2);
   const cols = [shown.slice(0, half), shown.slice(half)].filter((c) => c.length);
-  const bookLink = waLink(site.whatsapp, `Hi ${name}! I'd like to enquire about a cut.`);
 
   return (
-    <div className="@container/page bg-[#ece9e2] font-forge text-[#17191d] min-h-screen">
+    <div className="@container bg-[#ece9e2] font-forge text-[#17191d]">
       {/* utility bar */ }
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 bg-[#17191d] px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.18em] text-[#ece9e2]/85 @md:px-10">
         <span className="flex items-center gap-2">
           <span className="inline-block h-2 w-2 rounded-full" style={{ background: ORANGE }} />
-          Walk-ins & enquiries
+          Walk-ins &amp; enquiries
         </span>
         <span className="hidden @sm:inline">{site.hours || "Add opening hours"}</span>
         <a href="#forge-menu" className="underline decoration-[#ff4d00] decoration-2 underline-offset-4 hover:text-white">
@@ -64,7 +63,7 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
           </div>
           <div className="flex items-center gap-4">
             <p className="max-w-[26ch] text-right text-sm font-medium leading-snug text-[#17191d]/70 @max-md:text-left">
-              {site.tagline || "Add your shop’s one-liner in the editor."}
+              {site.tagline || "Add your shop's one-liner in the editor."}
             </p>
             <BrandMark logo={site.logoUrl ?? null} name={name} className="h-14 w-14 rounded-none border-2 text-sm" />
           </div>
@@ -76,11 +75,11 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="font-prices text-[12px] font-semibold uppercase tracking-[0.3em]" style={{ color: ORANGE }}>
-              Services & prices
+              Services &amp; prices
             </p>
             <h2 className="mt-2 text-[clamp(1.7rem,4cqw,2.8rem)] font-extrabold uppercase leading-none">The Menu</h2>
           </div>
-          <SamplePill label="Sample menu & prices" />
+          <SamplePill label="Sample menu &amp; prices" />
         </div>
 
         {/* category tabs */ }
@@ -106,14 +105,14 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
             type="button"
             className="w-full border-2 border-dashed border-[#17191d]/40 px-6 py-14 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#17191d]/60 hover:border-[#ff4d00] hover:text-[#ff4d00]"
           >
-            No services in this category yet
+            No services in this category yet — add some in the editor
           </button>
         ) : (
           <div className="grid gap-x-16 @lg:grid-cols-2">
             {cols.map((col, ci) => (
               <ol key={ci}>
-                {col.map((s, i) => (
-                  <li key={s.name || String(i)} className="border-b border-[#17191d]/15 py-5 first:border-t-2 first:border-[#17191d]">
+                {col.map((s) => (
+                  <li key={s.name} className="border-b border-[#17191d]/15 py-5 first:border-t-2 first:border-[#17191d]">
                     <div className="flex items-baseline gap-3">
                       <h3 className="text-[15px] font-bold uppercase tracking-[0.06em]">{s.name || "Untitled service"}</h3>
                       <span className="mz-leader mx-1 flex-1" aria-hidden />
@@ -121,9 +120,7 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
                         {s.price || "—"}
                       </span>
                     </div>
-                    {s.description && (
-                      <p className="mt-1.5 max-w-[52ch] text-[13px] leading-relaxed text-[#17191d]/65">{s.description}</p>
-                    )}
+                    {s.description && <p className="mt-1.5 max-w-[52ch] text-[13px] leading-relaxed text-[#17191d]/65">{s.description}</p>}
                   </li>
                 ))}
               </ol>
@@ -136,7 +133,7 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
           <div>
             <p className="font-prices text-[11px] uppercase tracking-[0.3em] text-[#ece9e2]/60">Found your cut?</p>
             <p className="mt-1 text-xl font-extrabold uppercase">Send an enquiry — we reply to confirm.</p>
-            <p className="mt-1 text-[12px] text-[#ece9e2]/55">An enquiry isn’t a booking until the shop confirms it with you.</p>
+            <p className="mt-1 text-[12px] text-[#ece9e2]/55">An enquiry isn't a booking until the shop confirms it with you.</p>
           </div>
           <WhatsAppActionForSite
             site={site}
@@ -153,12 +150,24 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
             <Clock3 className="h-4 w-4" aria-hidden /> Hours
           </p>
           <ul className="space-y-2">
-            {(site.hours ? [{ label: "Hours", value: site.hours }] : []).map((h) => (
-              <li key={h.label} className="flex justify-between gap-4 font-prices text-[13px]">
-                <span className="text-[#17191d]/60">{h.label}</span>
-                <span className="font-semibold">{h.value}</span>
+            {site.hours ? (
+              site.hours.split(/ · |\n/).map((row, i) => {
+                const parts = row.trim().split(/\s{2,}|(?<=[a-zA-Z])\s+(?=\d)/);
+                const label = parts.length >= 2 ? parts[0].trim() : row.trim();
+                const value = parts.length >= 2 ? parts.slice(1).join(" ").trim() : "";
+                return (
+                  <li key={i} className="flex justify-between gap-4 font-prices text-[13px]">
+                    <span className="text-[#17191d]/60">{label}</span>
+                    <span className="font-semibold">{value || "—"}</span>
+                  </li>
+                );
+              })
+            ) : (
+              <li className="flex justify-between gap-4 font-prices text-[13px]">
+                <span className="text-[#17191d]/60">Hours</span>
+                <span className="font-semibold">—</span>
               </li>
-            ))}
+            )}
           </ul>
         </div>
         <div className="bg-[#ece9e2] p-6 @md:p-8">
@@ -166,8 +175,9 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
             <MapPin className="h-4 w-4" aria-hidden /> Find us
           </p>
           <p className="text-sm font-semibold">{site.area || "Add your address"}</p>
+          <p className="text-sm text-[#17191d]/60">{site.area || "Your area"}</p>
           {site.phone && (
-            <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="mt-3 inline-flex items-center gap-2 text-sm font-bold underline decoration-[#ff4d00] decoration-2 underline-offset-4">
+            <a href={telLink(site.phone)} className="mt-3 inline-flex items-center gap-2 text-sm font-bold underline decoration-[#ff4d00] decoration-2 underline-offset-4">
               <Phone className="h-3.5 w-3.5" /> {site.phone}
             </a>
           )}
@@ -180,7 +190,7 @@ export default function BarberVariant2({ site }: { site: SiteData }) {
             Message the shop on WhatsApp or email us about cuts, beard work and group bookings.
           </p>
           {site.email && (
-            <a href={`mailto:${site.email.trim()}`} className="mt-3 inline-flex items-center gap-2 text-sm font-bold underline decoration-[#ff4d00] decoration-2 underline-offset-4">
+            <a href={mailLink(site.email)} className="mt-3 inline-flex items-center gap-2 text-sm font-bold underline decoration-[#ff4d00] decoration-2 underline-offset-4">
               {site.email} <ArrowUpRight className="h-3.5 w-3.5" />
             </a>
           )}

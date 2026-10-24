@@ -2,7 +2,7 @@
 
 import { ArrowDownRight, ImagePlus, Images, MessageCircle, Phone } from "lucide-react";
 import type { SiteData } from "@/templates/types";
-import { waLink } from "@/templates/types";
+import { telLink } from "@/templates/types";
 import { cn } from "./shared/cn";
 import { SmartImage } from "./shared/SmartImage";
 import { SamplePill, WhatsAppActionForSite } from "./shared/kit";
@@ -17,6 +17,8 @@ const SAMPLE_PHOTOS = [
   { id: "s4", src: "/images/barber-pack/razor-detail.jpg", alt: "Straight razor and shaving brush on a folded towel", sample: true },
   { id: "s5", src: "/images/barber-pack/products-shelf.jpg", alt: "Shelf of grooming products and folded towels", sample: true },
   { id: "s6", src: "/images/barber-pack/pole-street.jpg", alt: "Barber pole on a shopfront wall at golden hour", sample: true },
+  { id: "s7", src: "/images/barber-pack/cape-hooks.jpg", alt: "Barber capes and clippers hanging in a tidy station", sample: true },
+  { id: "s8", src: "/images/barber-pack/sink-station.jpg", alt: "Wash basin with rolled towels and eucalyptus", sample: true },
 ];
 
 export default function BarberVariant4({ site }: { site: SiteData }) {
@@ -28,7 +30,7 @@ export default function BarberVariant4({ site }: { site: SiteData }) {
   const hasOnlySamples = photos.length > 0 && photos.every((p) => p.sample);
 
   return (
-    <div className="@container/page min-h-screen bg-[#faf9f6] font-praxis text-[#121212]">
+    <div className="@container bg-[#faf9f6] font-praxis text-[#121212]">
       {/* slim header */ }
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-[#121212]/10 bg-[#faf9f6]/90 px-5 py-4 backdrop-blur @md:px-10">
         <p className="flex items-center gap-3 text-sm font-semibold tracking-tight">
@@ -39,7 +41,7 @@ export default function BarberVariant4({ site }: { site: SiteData }) {
           <a href="#praxis-work" className="hidden hover:underline @sm:inline">Work</a>
           <a href="#praxis-details" className="hidden hover:underline @sm:inline">Details</a>
           {site.phone && (
-            <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="grid h-9 w-9 place-items-center rounded-full border border-[#121212]/20" aria-label="Call the shop">
+            <a href={telLink(site.phone)} className="grid h-9 w-9 place-items-center rounded-full border border-[#121212]/20" aria-label="Call the shop">
               <Phone className="h-4 w-4" />
             </a>
           )}
@@ -58,7 +60,10 @@ export default function BarberVariant4({ site }: { site: SiteData }) {
           {site.tagline || "Add your one-liner in the editor."}
         </p>
         {hasOnlySamples && (
-          <button type="button" className="mt-6 inline-flex items-center gap-2 rounded-full border border-dashed border-[#121212]/35 px-4 py-2 text-[12px] font-semibold text-[#121212]/70 transition-colors hover:border-[#2e4bff] hover:text-[#2e4bff]">
+          <button
+            type="button"
+            className="mt-6 inline-flex items-center gap-2 rounded-full border border-dashed border-[#121212]/35 px-4 py-2 text-[12px] font-semibold text-[#121212]/70 transition-colors hover:border-[#2e4bff] hover:text-[#2e4bff]"
+          >
             <Images className="h-3.5 w-3.5" /> These are sample photos — upload your own to replace them
           </button>
         )}
@@ -85,9 +90,14 @@ export default function BarberVariant4({ site }: { site: SiteData }) {
             </span>
             <h2 className="mt-5 text-2xl font-semibold tracking-tight">Your work goes here.</h2>
             <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[#121212]/60">
-              This design is built around your photographs: fades, chairs, tools, the shop itself. Add up to six photos in the free preview — more once you publish.
+              This design is built around your photographs: fades, chairs, tools, the shop itself.
+              Add up to six photos in the free preview — more once you publish.
             </p>
-            <button type="button" className="mt-6 rounded-full px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5" style={{ background: ACCENT }}>
+            <button
+              type="button"
+              className="mt-6 rounded-full px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+              style={{ background: ACCENT }}
+            >
               Open photo uploads
             </button>
           </div>
@@ -95,7 +105,9 @@ export default function BarberVariant4({ site }: { site: SiteData }) {
           <>
             <div className="mb-6 flex items-end justify-between">
               <h2 className="text-lg font-semibold tracking-tight">Selected frames</h2>
-              <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#121212]/50">{photos.length} / 6 preview slots</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#121212]/50">
+                {photos.length} / 6 preview slots
+              </p>
             </div>
             <div className="columns-2 gap-4 @md:columns-3">
               {rest.map((p, i) => (
@@ -120,7 +132,7 @@ export default function BarberVariant4({ site }: { site: SiteData }) {
           <SamplePill label="Sample prices" />
         </div>
         <ul className="grid gap-x-12 @md:grid-cols-2 @lg:grid-cols-3">
-          {site.services.map((s) => (
+          {site.services.map((s, i) => (
             <li key={s.name} className="border-b border-[#121212]/10 py-4">
               <div className="flex items-baseline justify-between gap-4">
                 <p className="text-[14px] font-semibold">{s.name}</p>
@@ -137,7 +149,9 @@ export default function BarberVariant4({ site }: { site: SiteData }) {
         <div className="flex flex-wrap items-center gap-x-10 gap-y-6 text-sm">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#121212]/45">Hours</p>
-            <p className="mt-1 font-medium">{site.hours || "Add opening hours"}</p>
+            <p className="mt-1 font-medium">
+              {site.hours || "Add opening hours"}
+            </p>
           </div>
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#121212]/45">Where</p>
@@ -156,9 +170,7 @@ export default function BarberVariant4({ site }: { site: SiteData }) {
       </section>
 
       <footer className="flex flex-wrap items-center justify-between gap-3 px-5 py-6 text-[11px] font-medium uppercase tracking-[0.18em] text-[#121212]/45 @md:px-10">
-        <span className="flex items-center gap-2">
-          <MessageCircle className="h-3.5 w-3.5" style={{ color: ACCENT }} /> {name}
-        </span>
+        <span className="flex items-center gap-2"><MessageCircle className="h-3.5 w-3.5" style={{ color: ACCENT }} />{name}</span>
         <span>Design: Praxis · MzansiSite demo</span>
       </footer>
     </div>
