@@ -1,16 +1,49 @@
 "use client";
 
-import { ArrowRight, Clock, MapPin, Menu, Phone, Star, X } from "lucide-react";
+import { ArrowRight, Award, Clock, MapPin, Menu, Phone, Scissors, ShieldCheck, Sparkles, Star, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
-import { LogoBlock, SocialRow, WhatsAppFab } from "../shared";
+import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
+
+import BarberVariant1 from "./barber-variants/Variant1";
+import BarberVariant2 from "./barber-variants/Variant2";
+import BarberVariant3 from "./barber-variants/Variant3";
+import BarberVariant4 from "./barber-variants/Variant4";
+import BarberVariant5 from "./barber-variants/Variant5";
+import BarberVariant6 from "./barber-variants/Variant6";
+import HairSalonV1HeroFirst from "./hair-salon-variants/V1HeroFirst";
+import HairSalonV2ServicesFirst from "./hair-salon-variants/V2ServicesFirst";
+import HairSalonV3TrustFirst from "./hair-salon-variants/V3TrustFirst";
+import HairSalonV4GalleryFirst from "./hair-salon-variants/V4GalleryFirst";
+import HairSalonV5AboutFirst from "./hair-salon-variants/V5AboutFirst";
+import HairSalonV6BookingFirst from "./hair-salon-variants/V6BookingFirst";
 
 /* Velvet — editorial luxe for beauty & wellness.
    Palette: cream #f6efe6 · espresso #241a12 · gold #b98a2f · clay #c17857 */
 
 export default function VelvetTemplate({ site }: { site: SiteData }) {
+  if (site.industry === "hairSalon") {
+    const v = (site.designVariant ?? 1) as number;
+    if (v === 2) return <HairSalonV2ServicesFirst site={site} />;
+    if (v === 3) return <HairSalonV3TrustFirst site={site} />;
+    if (v === 4) return <HairSalonV4GalleryFirst site={site} />;
+    if (v === 5) return <HairSalonV5AboutFirst site={site} />;
+    if (v === 6) return <HairSalonV6BookingFirst site={site} />;
+    return <HairSalonV1HeroFirst site={site} />;
+  }
+
+  if (site.industry === "barber") {
+    const v = (site.designVariant ?? 1) as number;
+    if (v === 2) return <BarberVariant2 site={site} />;
+    if (v === 3) return <BarberVariant3 site={site} />;
+    if (v === 4) return <BarberVariant4 site={site} />;
+    if (v === 5) return <BarberVariant5 site={site} />;
+    if (v === 6) return <BarberVariant6 site={site} />;
+    return <BarberVariant1 site={site} />;
+  }
+
   const [menuOpen, setMenuOpen] = useState(false);
   const gallery = site.galleryUrls.slice(0, 6);
   const bookLink = waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to make a booking.`);
@@ -123,18 +156,27 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
                   {site.tagline.split("—")[0]}
                 </h1>
               </Up>
-              <Up delay={0.16}>
-                <div className="mt-6 flex items-center gap-3">
-                  <span className="flex items-center gap-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-[#b98a2f] text-[#b98a2f]" />
-                    ))}
-                  </span>
-                  <span className="text-sm font-medium text-[#241a12]/60">
-                    {site.rating} · loved by {site.reviews}+ clients
-                  </span>
-                </div>
-              </Up>
+              {site.isDemo && site.rating ? (
+                <Up delay={0.16}>
+                  <div className="mt-6 flex items-center gap-3 flex-wrap">
+                    <span className="flex items-center gap-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-[#b98a2f] text-[#b98a2f]" />
+                      ))}
+                    </span>
+                    <span className="text-sm font-medium text-[#241a12]/60">
+                      {site.rating} · loved by {site.reviews}+ clients
+                    </span>
+                    <DemoBadge />
+                  </div>
+                </Up>
+              ) : (
+                <Up delay={0.16}>
+                  <p className="mt-6 text-sm font-medium text-[#241a12]/60">
+                    {site.area} · {site.hours} — enquire on WhatsApp for availability
+                  </p>
+                </Up>
+              )}
               <Up delay={0.24}>
                 <div className="mt-9 flex flex-wrap items-center gap-4">
                   <a
@@ -163,11 +205,9 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={site.heroImageUrl} alt={site.businessName} className="aspect-[3/4] w-full object-cover" />
                 </div>
-                <div
-                  className="mz-bob absolute -right-8 bottom-10 rounded-2xl border border-[#241a12]/10 bg-[#f6efe6]/95 px-4 py-3 shadow-xl backdrop-blur"
-                >
-                  <p className="text-[10px] font-bold tracking-[0.2em] text-[#b98a2f] uppercase">Walk-ins welcome</p>
-                  <p className="font-serif text-lg leading-tight">{site.yearsInBusiness} yrs of craft</p>
+                <div className="mz-bob absolute -right-8 bottom-10 rounded-2xl border border-[#241a12]/10 bg-[#f6efe6]/95 px-4 py-3 shadow-xl backdrop-blur">
+                  <p className="text-[10px] font-bold tracking-[0.2em] text-[#b98a2f] uppercase">Enquire on WhatsApp</p>
+                  <p className="font-serif text-lg leading-tight">View our services</p>
                 </div>
               </div>
             </Up>
@@ -264,12 +304,12 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
               <Up delay={0.3}>
                 <div className="mt-9 grid grid-cols-3 gap-6 border-t border-[#f6efe6]/10 pt-8">
                   {[
-                    [`${site.yearsInBusiness}+`, "years of craft"],
-                    [`${site.reviews}+`, "five-star reviews"],
-                    [`${site.rating}`, "average rating"],
+                    [site.area.split(",")[0] || site.area, "based in"],
+                    [site.services.length + " services", "on the menu"],
+                    [site.hours.split("·")[0].trim() || site.hours, "hours"],
                   ].map(([big, small]) => (
                     <div key={small}>
-                      <p className="font-serif text-3xl text-[#e8ce9a] bp-md:text-4xl">{big}</p>
+                      <p className="font-serif text-xl text-[#e8ce9a] break-words bp-md:text-2xl">{big}</p>
                       <p className="mt-1 text-[10px] font-bold tracking-[0.18em] text-[#f6efe6]/45 uppercase">{small}</p>
                     </div>
                   ))}
@@ -318,37 +358,47 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
         </section>
 
         {/* ——— Reviews ——— */}
-        <section id="reviews" className="bg-[#efe4d2] py-20 bp-md:py-28">
-          <div className="mx-auto max-w-6xl px-5">
-            <Up className="mb-12 @container text-center">
-              <p className="mb-4 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">Word of mouth</p>
-              {/* Owner copy — or, with no heading set, the owner's town, which
-                  is 7.25em for the widest place name in the catalogue. */}
-              <h2 className="font-serif text-[min(2.25rem,calc(100cqw/7.5))] break-words bp-md:text-[min(3.75rem,calc(100cqw/7.5))]">{site.reviewHeading ?? `What ${site.area.split(",")[0]} says`}</h2>
-            </Up>
-            <div className="grid grid-cols-1 gap-5 bp-md:grid-cols-3">
-              {(site.reviewItems ?? [
-                { quote: "Booked on WhatsApp at 8am, in the chair by 10. My braids have never lasted this long.", name: "Tebogo M." },
-                { quote: "Prices are right there on the site — no 'DM for price' games. That's why I trust them.", name: "Lerato K." },
-                { quote: "Send my whole family here now. Professional, on time, and the results speak for themselves.", name: "Ayesha P." },
-              ]).map((review, i) => (
-                <Up key={review.name} delay={i * 0.1}>
-                  <div className="flex h-full flex-col justify-between rounded-3xl border border-[#241a12]/10 bg-[#f6efe6] p-7">
-                    <div>
-                      <div className="mb-4 flex gap-1">
-                        {Array.from({ length: 5 }).map((_, s) => (
-                          <Star key={s} className="h-3.5 w-3.5 fill-[#b98a2f] text-[#b98a2f]" />
-                        ))}
+        {site.isDemo && site.reviewItems ? (
+          <section id="reviews" className="bg-[#efe4d2] py-20 bp-md:py-28">
+            <div className="mx-auto max-w-6xl px-5">
+              <Up className="mb-12 @container text-center">
+                <p className="mb-4 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">Word of mouth</p>
+                <h2 className="font-serif text-[min(2.25rem,calc(100cqw/7.5))] break-words bp-md:text-[min(3.75rem,calc(100cqw/7.5))]">{site.reviewHeading}</h2>
+                <DemoBadge className="mt-3" />
+              </Up>
+              <div className="grid grid-cols-1 gap-5 bp-md:grid-cols-3">
+                {site.reviewItems.map((review, i) => (
+                  <Up key={review.name} delay={i * 0.1}>
+                    <div className="flex h-full flex-col justify-between rounded-3xl border border-[#241a12]/10 bg-[#f6efe6] p-7">
+                      <div>
+                        <div className="mb-4 flex gap-1">
+                          {Array.from({ length: 5 }).map((_, s) => (
+                            <Star key={s} className="h-3.5 w-3.5 fill-[#b98a2f] text-[#b98a2f]" />
+                          ))}
+                        </div>
+                        <p className="font-serif text-xl leading-snug">&ldquo;{review.quote}&rdquo;</p>
                       </div>
-                      <p className="font-serif text-xl leading-snug">&ldquo;{review.quote}&rdquo;</p>
+                      <p className="mt-6 text-xs font-bold tracking-[0.18em] text-[#241a12]/45 uppercase">{review.name} — DEMO</p>
                     </div>
-                    <p className="mt-6 text-xs font-bold tracking-[0.18em] text-[#241a12]/45 uppercase">{review.name}</p>
-                  </div>
-                </Up>
-              ))}
+                  </Up>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        ) : (
+          <section id="reviews" className="bg-[#efe4d2] py-20 bp-md:py-28">
+            <div className="mx-auto max-w-6xl px-5 text-center">
+              <Up className="mx-auto max-w-2xl">
+                <p className="mb-4 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">What to expect</p>
+                <h2 className="font-serif text-3xl break-words bp-md:text-4xl">Honest pricing, clear communication</h2>
+                <p className="mt-4 text-sm leading-relaxed text-[#241a12]/60">
+                  Prices are listed above — enquire on WhatsApp for availability and to ask any questions before you book. No invented reviews are shown; references available on request.
+                </p>
+                <a href={waLink(site.whatsapp, `Hi ${site.businessName}! I\'d like to ask about your services.`)} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#241a12] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-[#f6efe6]">Ask a question on WhatsApp</a>
+              </Up>
+            </div>
+          </section>
+        )}
 
         {/* ——— Visit ——— */}
         <section id="visit" className="mx-auto max-w-6xl px-5 py-20 bp-md:py-28">
@@ -420,3 +470,4 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
     </>
   );
 }
+
