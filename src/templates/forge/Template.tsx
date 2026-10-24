@@ -4,6 +4,11 @@ import type { SiteData } from "../types";
 import LegacyForge from "./legacy";
 import Electrician from "./electrician";
 import Plumber from "./plumber";
+import PlumberV2ServicesFirst from "./variants/plumber/V2ServicesFirst";
+import PlumberV3TrustFirst from "./variants/plumber/V3TrustFirst";
+import PlumberV4GalleryFirst from "./variants/plumber/V4GalleryFirst";
+import PlumberV5AboutFirst from "./variants/plumber/V5AboutFirst";
+import PlumberV6BookingFirst from "./variants/plumber/V6BookingFirst";
 import Carpenter from "./carpenter";
 import Construction from "./construction";
 import Handyman from "./handyman";
@@ -53,8 +58,15 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
   switch (site.industry) {
     case "electrician":
       return <Electrician site={site} />;
-    case "plumber":
+    case "plumber": {
+      const v = (site.designVariant ?? 1) as number;
+      if (v === 2) return <PlumberV2ServicesFirst site={site} />;
+      if (v === 3) return <PlumberV3TrustFirst site={site} />;
+      if (v === 4) return <PlumberV4GalleryFirst site={site} />;
+      if (v === 5) return <PlumberV5AboutFirst site={site} />;
+      if (v === 6) return <PlumberV6BookingFirst site={site} />;
       return <Plumber site={site} />;
+    }
     case "carpenter":
       return <Carpenter site={site} />;
     case "construction":

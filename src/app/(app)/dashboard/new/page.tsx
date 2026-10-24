@@ -23,6 +23,8 @@ import { apiFetch } from "@/lib/api-fetch";
 import { INDUSTRY_LIST } from "@/templates/industries";
 import { TEMPLATES } from "@/templates/registry";
 import { BARBER_VARIANTS } from "@/templates/velvet/barberVariants";
+import { PLUMBER_VARIANTS } from "@/templates/forge/plumberVariants";
+import { HAIR_SALON_VARIANTS } from "@/templates/velvet/hairSalonVariants";
 import TemplatePhonePreview from "@/components/TemplatePhonePreview";
 import AccountImageUploader, { type LocalImage } from "@/components/AccountImageUploader";
 import { ACCEPTABLE_USE_POLICY_TEXT, MERCHANT_DECLARATION_TEXT, validateForPublish } from "@/lib/content-policy";
@@ -113,9 +115,9 @@ export default function NewSiteWizard() {
 
   const pickIndustry = (key: string) => {
     setIndustry(key);
-    if (key === "barber" && designVariant === 1) {
+    if (key === "barber" || key === "plumber" || key === "hairSalon") {
       // keep current variant; user can change via selector
-    } else if (key !== "barber") {
+    } else {
       setDesignVariant(1);
     }
     // Wait for the selection state to paint before measuring where to land.
@@ -170,7 +172,7 @@ export default function NewSiteWizard() {
             galleryUrls: gallery.filter((g) => !g.isLocal).map((g) => g.url),
             heroImageUrl: gallery.find((g) => !g.isLocal)?.url,
             socials: { instagram, facebook, tiktok, website },
-            designVariant: industry === "barber" ? designVariant : 1,
+            designVariant: industry === "barber" || industry === "plumber" || industry === "hairSalon" ? designVariant : 1,
           }),
         },
       );
@@ -300,6 +302,90 @@ export default function NewSiteWizard() {
                           <div className={`mx-2 mb-2 overflow-hidden rounded-lg border ${active ? "border-bone/15 bg-bone/10" : "border-ink/10 bg-white"}`}>
                             <div className="h-16 bg-ink/5 p-1">
                               <TemplatePhonePreview templateId="velvet" industry="barber" variantId={String(v.id)} className="h-full w-full" scale={0.32} />
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="mt-3 text-[11px] leading-relaxed text-ink/40">Your choice saves with the site and appears in preview and published pages. You can change it anytime from the editor.</p>
+                </div>
+              )}
+
+              {/* Plumber design variant selector — 6 genuinely distinct layouts */}
+              {industry === "plumber" && (
+                <div className="mt-8 rounded-2xl border-2 border-ink/12 bg-white p-5 md:p-6">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink/60">Choose your plumber design — 6 looks</h2>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink/40">Variant {designVariant} of 6</span>
+                  </div>
+                  <p className="mt-1 text-xs text-ink/50">Each variant is a different layout, not just a recolor. Preview persists to your live site.</p>
+                  <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {PLUMBER_VARIANTS.map((v) => {
+                      const active = designVariant === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          onClick={() => setDesignVariant(v.id)}
+                          className={`group relative overflow-hidden rounded-xl border-2 text-left transition-all ${
+                            active ? "border-ink bg-ink text-bone shadow-[4px_4px_0_#ff4d00]" : "border-ink/12 bg-bone hover:border-ink/30"
+                          }`}
+                        >
+                          <div className="p-3">
+                            <div className="flex items-center gap-2">
+                              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: v.accent }} />
+                              <span className={`text-xs font-extrabold tracking-tight ${active ? "text-bone" : "text-ink"}`}>{v.name}</span>
+                              {active && <Check className="ml-auto h-3.5 w-3.5 text-gold" />}
+                            </div>
+                            <p className={`mt-1 text-[10px] leading-tight ${active ? "text-bone/60" : "text-ink/45"}`}>{v.tagline}</p>
+                            <div className={`mt-2 rounded-lg px-2 py-1 text-[10px] font-bold uppercase tracking-[0.10em] ${active ? "bg-bone/15 text-bone" : "bg-ink/5 text-ink/60"}`}>{v.previewLabel}</div>
+                          </div>
+                          <div className={`mx-2 mb-2 overflow-hidden rounded-lg border ${active ? "border-bone/15 bg-bone/10" : "border-ink/10 bg-white"}`}>
+                            <div className="h-16 bg-ink/5 p-1">
+                              <TemplatePhonePreview templateId="forge" industry="plumber" variantId={String(v.id)} className="h-full w-full" scale={0.32} />
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="mt-3 text-[11px] leading-relaxed text-ink/40">Your choice saves with the site and appears in preview and published pages. You can change it anytime from the editor.</p>
+                </div>
+              )}
+
+              {/* Hair Salon design variant selector — 6 genuinely distinct layouts */}
+              {industry === "hairSalon" && (
+                <div className="mt-8 rounded-2xl border-2 border-ink/12 bg-white p-5 md:p-6">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink/60">Choose your salon design — 6 looks</h2>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink/40">Variant {designVariant} of 6</span>
+                  </div>
+                  <p className="mt-1 text-xs text-ink/50">Each variant is a different layout, not just a recolor. Preview persists to your live site.</p>
+                  <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {HAIR_SALON_VARIANTS.map((v) => {
+                      const active = designVariant === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          onClick={() => setDesignVariant(v.id)}
+                          className={`group relative overflow-hidden rounded-xl border-2 text-left transition-all ${
+                            active ? "border-ink bg-ink text-bone shadow-[4px_4px_0_#ff4d00]" : "border-ink/12 bg-bone hover:border-ink/30"
+                          }`}
+                        >
+                          <div className="p-3">
+                            <div className="flex items-center gap-2">
+                              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: v.accent }} />
+                              <span className={`text-xs font-extrabold tracking-tight ${active ? "text-bone" : "text-ink"}`}>{v.name}</span>
+                              {active && <Check className="ml-auto h-3.5 w-3.5 text-gold" />}
+                            </div>
+                            <p className={`mt-1 text-[10px] leading-tight ${active ? "text-bone/60" : "text-ink/45"}`}>{v.tagline}</p>
+                            <div className={`mt-2 rounded-lg px-2 py-1 text-[10px] font-bold uppercase tracking-[0.10em] ${active ? "bg-bone/15 text-bone" : "bg-ink/5 text-ink/60"}`}>{v.previewLabel}</div>
+                          </div>
+                          <div className={`mx-2 mb-2 overflow-hidden rounded-lg border ${active ? "border-bone/15 bg-bone/10" : "border-ink/10 bg-white"}`}>
+                            <div className="h-16 bg-ink/5 p-1">
+                              <TemplatePhonePreview templateId="velvet" industry="hairSalon" variantId={String(v.id)} className="h-full w-full" scale={0.32} />
                             </div>
                           </div>
                         </button>

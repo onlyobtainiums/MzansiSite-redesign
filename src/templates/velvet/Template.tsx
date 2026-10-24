@@ -13,6 +13,12 @@ import BarberVariant3 from "./barber-variants/Variant3";
 import BarberVariant4 from "./barber-variants/Variant4";
 import BarberVariant5 from "./barber-variants/Variant5";
 import BarberVariant6 from "./barber-variants/Variant6";
+import HairSalonVariant1 from "./hair-salon-variants/V1HeroFirst";
+import HairSalonVariant2 from "./hair-salon-variants/V2ServicesFirst";
+import HairSalonVariant3 from "./hair-salon-variants/V3TrustFirst";
+import HairSalonVariant4 from "./hair-salon-variants/V4GalleryFirst";
+import HairSalonVariant5 from "./hair-salon-variants/V5AboutFirst";
+import HairSalonVariant6 from "./hair-salon-variants/V6BookingFirst";
 
 /* Velvet — editorial luxe for beauty & wellness.
    Palette: cream #f6efe6 · espresso #241a12 · gold #b98a2f · clay #c17857 */
@@ -26,6 +32,16 @@ export default function VelvetTemplate({ site }: { site: SiteData }) {
     if (v === 5) return <BarberVariant5 site={site} />;
     if (v === 6) return <BarberVariant6 site={site} />;
     return <BarberVariant1 site={site} />;
+  }
+
+  if (site.industry === "hairSalon") {
+    const v = (site.designVariant ?? 1) as number;
+    if (v === 2) return <HairSalonVariant2 site={site} />;
+    if (v === 3) return <HairSalonVariant3 site={site} />;
+    if (v === 4) return <HairSalonVariant4 site={site} />;
+    if (v === 5) return <HairSalonVariant5 site={site} />;
+    if (v === 6) return <HairSalonVariant6 site={site} />;
+    return <HairSalonVariant1 site={site} />;
   }
 
   const [menuOpen, setMenuOpen] = useState(false);
