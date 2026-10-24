@@ -21,11 +21,13 @@ import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
 import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
+import BarberVariant4 from "../velvet/barber-variants/Variant4";
 
 /* Praxis — crisp, credibility-first design for professional services.
    Palette: paper #f4f2ec · ink #101c2c · royal #1f3a5f · bronze #a8895b */
 
 export default function PraxisTemplate({ site }: { site: SiteData }) {
+  if (site.industry === "barber") return <BarberVariant4 site={site} />;
   const [menuOpen, setMenuOpen] = useState(false);
   const gallery = site.galleryUrls.slice(0, 6);
   const consultLink = waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to book a consultation.`);

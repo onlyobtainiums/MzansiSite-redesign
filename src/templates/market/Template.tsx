@@ -23,6 +23,7 @@ import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
 import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
+import BarberVariant5 from "../velvet/barber-variants/Variant5";
 
 /* Market — product-led storefront for retail, wholesale & manufacturing.
    Palette: paper #fbf7ef · ink #191406 · red #e0402a · green #2f7d4f */
@@ -30,6 +31,7 @@ import { Up } from "../Reveal";
 const PRODUCT_BADGES: string[] = ["", "", "", "", "", ""]; // Removed false scarcity badges ("Low stock", "Best seller") — only owner-verified labels allowed
 
 export default function MarketTemplate({ site }: { site: SiteData }) {
+  if (site.industry === "barber") return <BarberVariant5 site={site} />;
   if (site.industry === "bakery") return <BakeryMarket site={site} />;
 
   const [menuOpen, setMenuOpen] = useState(false);

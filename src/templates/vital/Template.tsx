@@ -24,6 +24,7 @@ import type { SiteData } from "../types";
 import { displayPhone, waLink } from "../types";
 import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
+import BarberVariant6 from "../velvet/barber-variants/Variant6";
 
 /* Vital — clean, versatile design for services, IT, transport & agri.
    Palette: mist #f2f6f3 · pine #0c1d18 · teal #0e7a5f · gold #d9a62e */
@@ -31,6 +32,7 @@ import { Up } from "../Reveal";
 const SERVICE_ICONS = [Wrench, Wifi, Truck, Leaf, ShieldCheck, Zap];
 
 export default function VitalTemplate({ site }: { site: SiteData }) {
+  if (site.industry === "barber") return <BarberVariant6 site={site} />;
   const [menuOpen, setMenuOpen] = useState(false);
   const gallery = site.galleryUrls.slice(0, 6);
   const bookLink = waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to make an enquiry.`);

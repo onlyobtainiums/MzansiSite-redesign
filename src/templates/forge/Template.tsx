@@ -2,6 +2,7 @@
 
 import type { SiteData } from "../types";
 import LegacyForge from "./legacy";
+import BarberVariant2 from "../velvet/barber-variants/Variant2";
 import Electrician from "./electrician";
 import Plumber from "./plumber";
 import PlumberV2ServicesFirst from "./variants/plumber/V2ServicesFirst";
@@ -77,6 +78,8 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
       return <Painter site={site} />;
     case "roofer":
       return <Roofer site={site} />;
+    case "barber":
+      return <BarberVariant2 site={site} />;
     case "solar":
       return <Solar site={site} />;
     case "applianceRepair":
