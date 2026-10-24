@@ -109,7 +109,6 @@ export function VariantClient() {
 
   const site = getDemoSiteData({
     industry: industryKey,
-    isDemo: true,
   }) as SiteData;
 
   return (
