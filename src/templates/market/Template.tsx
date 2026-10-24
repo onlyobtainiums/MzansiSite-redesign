@@ -32,6 +32,7 @@ const PRODUCT_BADGES: string[] = ["", "", "", "", "", ""]; // Removed false scar
 
 export default function MarketTemplate({ site }: { site: SiteData }) {
   if (site.industry === "barber") return <BarberVariant5 site={site} />;
+  if (site.industry === "hairSalon") return <HairSalonVariant5 site={site} />;
   if (site.industry === "bakery") return <BakeryMarket site={site} />;
 
   const [menuOpen, setMenuOpen] = useState(false);

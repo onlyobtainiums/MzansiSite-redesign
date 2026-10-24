@@ -10,6 +10,7 @@ import PlumberV3TrustFirst from "./variants/plumber/V3TrustFirst";
 import PlumberV4GalleryFirst from "./variants/plumber/V4GalleryFirst";
 import PlumberV5AboutFirst from "./variants/plumber/V5AboutFirst";
 import PlumberV6BookingFirst from "./variants/plumber/V6BookingFirst";
+import HairSalonVariant2 from "../velvet/hair-salon-variants/V2ServicesFirst";
 import Carpenter from "./carpenter";
 import Construction from "./construction";
 import Handyman from "./handyman";
@@ -80,6 +81,8 @@ export default function ForgeTemplate({ site }: { site: SiteData }) {
       return <Roofer site={site} />;
     case "barber":
       return <BarberVariant2 site={site} />;
+    case "hairSalon":
+      return <HairSalonVariant2 site={site} />;
     case "solar":
       return <Solar site={site} />;
     case "applianceRepair":

@@ -22,6 +22,7 @@ import { displayPhone, waLink } from "../types";
 import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
 import BarberVariant3 from "../velvet/barber-variants/Variant3";
+import HairSalonVariant3 from "../velvet/hair-salon-variants/V3TrustFirst";
 
 /* Savanna — warm, wanderlust design for hospitality & tourism.
    Palette: forest #1d241a · cream #f5ead8 · burnt orange #d97b2b · sage #8a9a6b */
@@ -30,6 +31,7 @@ const ROOM_ICONS = [BedDouble, BedDouble, Sunrise, UtensilsCrossed, MapPin];
 
 export default function SavannaTemplate({ site }: { site: SiteData }) {
   if (site.industry === "barber") return <BarberVariant3 site={site} />;
+  if (site.industry === "hairSalon") return <HairSalonVariant3 site={site} />;
   if (site.industry === "coffeeShop") return <CoffeeShopSavanna site={site} />;
 
   const [menuOpen, setMenuOpen] = useState(false);

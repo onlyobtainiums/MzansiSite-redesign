@@ -22,6 +22,7 @@ import { displayPhone, waLink } from "../types";
 import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../shared";
 import { Up } from "../Reveal";
 import BarberVariant4 from "../velvet/barber-variants/Variant4";
+import HairSalonVariant4 from "../velvet/hair-salon-variants/V4GalleryFirst";
 
 /* Praxis — crisp, credibility-first design for professional services.
    Palette: paper #f4f2ec · ink #101c2c · royal #1f3a5f · bronze #a8895b */
