@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=Sora:wght@300;400;500;600;700&family=Zilla+Slab:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+/*
+ * Studio chrome (chooser / editor) uses viewport breakpoints (md:, lg:).
+ * The six template families use CONTAINER queries (@sm:, @md: …) so they react
+ * to the preview frame width — the same templates work inside a 390px phone
+ * frame, a desktop frame, or a full page when exported to a production site.
+ */
+
+:root {
+  --mz-ink: #17130d;
+  --mz-paper: #f5f1e8;
+  --mz-accent: #b9662a;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--mz-paper);
+  color: var(--mz-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: #b9662a; color: #fff7ec; }
+
+/* ---------- per-family type systems ---------- */
+.font-velvet   { font-family: 'Fraunces', Georgia, serif; }
+.font-forge    { font-family: 'Archivo', 'Inter', sans-serif; }
+.font-prices   { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+.font-savanna  { font-family: 'Lora', Georgia, serif; }
+.font-savanna-sans { font-family: 'Nunito Sans', 'Inter', sans-serif; }
+.font-praxis   { font-family: 'Sora', 'Inter', sans-serif; }
+.font-market   { font-family: 'Zilla Slab', Georgia, serif; }
+.font-market-sans { font-family: 'Work Sans', 'Inter', sans-serif; }
+.font-vital    { font-family: 'Manrope', 'Inter', sans-serif; }
+
+/* ---------- micro-animations (motion-safe only) ---------- */
+@keyframes mz-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes mz-progress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+@keyframes mz-shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+@keyframes mz-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mz-fade-up { animation: mz-fade-up .7s cubic-bezier(.22,.68,.32,1) both; }
+  .mz-fade-in { animation: mz-fade-in .5s ease both; }
+  .mz-carousel-slide { transition: transform .8s cubic-bezier(.7,0,.3,1), opacity .8s ease; }
+  .mz-progress-run { animation-name: mz-progress; animation-timing-function: linear; animation-fill-mode: forwards; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mz-carousel-slide { transition: none; }
+}
+
+.mz-img-loading {
+  background: linear-gradient(100deg, #e4ddd0 30%, #f2ecdf 50%, #e4ddd0 70%);
+  background-size: 200% 100%;
+  animation: mz-shimmer 1.6s linear infinite;
+}
+
+/* thin elegant scrollbars inside preview frames */
+.mz-frame-scroll { scrollbar-width: thin; scrollbar-color: #b9ac93 transparent; }
+.mz-frame-scroll::-webkit-scrollbar { width: 6px; }
+.mz-frame-scroll::-webkit-scrollbar-thumb { background: #b9ac93; border-radius: 3px; }
+
+/* dotted leader for Forge price rows */
+.mz-leader {
+  border-bottom: 2px dotted currentColor;
+  opacity: .35;
+  transform: translateY(-4px);
+}
+
+/* form focus ring */
+.mz-field:focus-visible, .mz-focus:focus-visible {
+  outline: 2px solid var(--mz-accent);
+  outline-offset: 2px;
+}
