@@ -1,393 +1,219 @@
 "use client";
 
-import { ArrowRight, Clock, MapPin, Menu, Phone, Scissors, ShieldCheck, Sparkles, Star, X } from "lucide-react";
-import { useState } from "react";
-import type { SiteData } from "../../types";
-import { displayPhone, waLink } from "../../types";
-import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../../shared";
-import { Up } from "../../Reveal";
-import { ImageWithFallback } from "../../forge/variants/shared/ImageWithFallback";
+import { ArrowRight, Clock, ImagePlus, MapPin, Phone } from "lucide-react";
+import type { SiteData } from "@/templates/types";
+import { waLink, telLink } from "@/templates/types";
+import { cn } from "../barber-variants/shared/cn";
+import { SmartImage } from "../barber-variants/shared/SmartImage";
+import { BrandMark, SamplePill, WhatsAppActionForSite } from "../barber-variants/shared/kit";
 
-/* Velvet — Hair Salon V1: "Hero-First".
-   Editorial luxe, arched photography. Hero leads with a large treatment image,
-   services menu below, gallery near bottom. Soft arched corners, cream + gold
-   palette. Structurally different from V1 Circuit (electrician) — no split
-   hero, no angular corners. Primary CTA: WhatsApp booking from hero.
-   No images of people, faces, or hands — hero uses interior/tools/decor only. */
-export default function HairSalonV1HeroFirst({ site }: { site: SiteData }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const gallery = site.galleryUrls.slice(0, 6);
-  const bookLink = waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to make a booking.`);
+const ROSE = "#d8a18c";
+
+const SAMPLE_PHOTOS = [
+  { id: "s1", src: "/images/barber-pack/hero-chair.jpg", alt: "Styling chairs and brass-framed mirrors in a sunlit salon interior", sample: true },
+  { id: "s2", src: "/images/barber-pack/interior-warm.jpg", alt: "Elegant salon interior with round mirrors and soft lighting", sample: true },
+  { id: "s3", src: "/images/barber-pack/tools-flatlay.jpg", alt: "Salon scissors, brushes and colour tools arranged on sage linen", sample: true },
+  { id: "s4", src: "/images/barber-pack/products-shelf.jpg", alt: "Salon shelves stocked with hair care products", sample: true },
+  { id: "s5", src: "/images/barber-pack/razor-detail.jpg", alt: "Backwash stations and product display in a bright salon", sample: true },
+  { id: "s6", src: "/images/barber-pack/pole-street.jpg", alt: "Waiting lounge with leather seating and marble floors", sample: true },
+];
+
+export default function HairSalonVariant1({ site }: { site: SiteData }) {
+  const name = site.businessName || "Your Hair Studio";
+  const photos = site.galleryUrls.length
+    ? site.galleryUrls.map((url, i) => ({ id: `p${i}`, src: url, alt: `${name} photo ${i + 1}`, sample: false }))
+    : SAMPLE_PHOTOS;
+  const hero = photos[0];
+  const frames = photos.slice(1, 4);
+  const edit = site.services.slice(0, 6);
 
   return (
-    <>
-      <WhatsAppFab site={site} accent="#b98a2f" />
+    <div className="@container bg-[#251322] font-sans text-[#f6ede3]">
+      {/* header */ }
+      <header className="flex items-center justify-between px-6 pt-6 @md:px-12 @md:pt-9">
+        <div className="flex items-center gap-3">
+          <BrandMark logo={site.logoUrl ?? null} name={name} className="h-10 w-10 text-xs" />
+          <div className="leading-tight">
+            <p className="text-[11px] uppercase tracking-[0.3em] text-[#f6ede3]/70">{name}</p>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#f6ede3]/45">{site.area || "Your area"}</p>
+          </div>
+        </div>
+        <nav className="hidden items-center gap-8 text-[11px] uppercase tracking-[0.25em] text-[#f6ede3]/65 @md:flex">
+          <a className="hover:text-[#d8a18c]" href="#hvs-services">Services</a>
+          <a className="hover:text-[#d8a18c]" href="#hvs-frames">Frames</a>
+          <a className="hover:text-[#d8a18c]" href="#hvs-visit">Visit</a>
+        </nav>
+      </header>
 
-      <div className="@container/page min-h-screen bg-[#f6efe6] font-sans text-[#241a12]">
-        {/* ——— Announcement bar ——— */}
-        <div className="bg-[#241a12] px-4 py-2 text-center text-[11px] font-medium tracking-[0.22em] text-[#d8c7ae] uppercase">
-          <span className="inline-flex items-center gap-2">
-            <Clock className="h-3.5 w-3.5 text-[#b98a2f]" /> {site.hours}
-            <span className="hidden bp-sm:inline">·</span>
-            <span className="hidden bp-sm:inline-flex items-center gap-1.5">
-              <MapPin className="h-3.5 w-3.5 text-[#b98a2f]" /> {site.area}
-            </span>
-          </span>
+      {/* hero */ }
+      <section className="relative grid items-center gap-10 px-6 pb-16 pt-10 @md:px-12 @lg:grid-cols-[1.05fr_0.95fr] @lg:pt-14">
+        <div className="relative z-10">
+          <p className="mb-5 flex items-center gap-3 text-[11px] uppercase tracking-[0.35em]" style={{ color: ROSE }}>
+            <span className="h-px w-10" style={{ background: ROSE }} /> Hair studio · {site.area || "South Africa"}
+          </p>
+          <h1 className="max-w-[13ch] text-[clamp(2.9rem,8.6cqw,6.6rem)] font-light leading-[0.98] break-words">
+            {name.split(" ").map((w, i) => (
+              <span key={i} className={cn(i === 1 && "italic", i === 1 && `text-${ROSE}`)}>{w} </span>
+            ))}
+          </h1>
+          <p className="mt-5 max-w-md font-sans text-[15px] leading-relaxed text-[#f6ede3]/75">
+            {site.tagline || "A short line about your studio goes here."}
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <WhatsAppActionForSite
+              site={site}
+              className="bg-[#d8a18c] px-7 py-3.5 font-sans text-[13px] font-semibold uppercase tracking-[0.18em] text-[#251322] transition-transform hover:-translate-y-0.5"
+            />
+            <a
+              href="#hvs-services"
+              className="group inline-flex items-center gap-2 border border-[#f6ede3]/30 px-7 py-3.5 font-sans text-[13px] font-semibold uppercase tracking-[0.18em] transition-colors hover:border-[#d8a18c] hover:text-[#d8a18c]"
+            >
+              See the services <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </a>
+          </div>
+          <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-[#f6ede3]/15 pt-6 font-sans text-[13px] text-[#f6ede3]/65">
+            <span className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" style={{ color: ROSE }} />{site.area || "Add your address"}, {site.area}</span>
+            <span className="flex items-center gap-2"><Clock className="h-3.5 w-3.5" style={{ color: ROSE }} />{site.hours || "Add opening hours"}</span>
+            {site.phone && (
+              <a href={telLink(site.phone)} className="flex items-center gap-2 hover:text-[#d8a18c]">
+                <Phone className="h-3.5 w-3.5" style={{ color: ROSE }} />{site.phone}
+              </a>
+            )}
+          </div>
         </div>
 
-        {/* ——— Nav ——— */}
-        <header className="sticky top-0 z-40 border-b border-[#241a12]/10 bg-[#f6efe6]/90 backdrop-blur-md">
-          <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-            <a href="#top" className="flex min-w-0 items-center gap-3">
-              <LogoBlock site={site} className="shrink-0 rounded-full border border-[#b98a2f]/40 bg-[#241a12] font-display text-[#e8ce9a]" />
-              <span className="font-serif break-words text-xl leading-none">{site.businessName}</span>
-            </a>
-            <div className="hidden items-center gap-8 text-[12px] font-semibold tracking-[0.18em] uppercase bp-md:flex">
-              <a href="#services" className="text-[#241a12]/60 transition-colors hover:text-[#241a12]">Services</a>
-              <a href="#gallery" className="text-[#241a12]/60 transition-colors hover:text-[#241a12]">Gallery</a>
-              <a href="#reviews" className="text-[#241a12]/60 transition-colors hover:text-[#241a12]">Reviews</a>
-              <a href="#visit" className="text-[#241a12]/60 transition-colors hover:text-[#241a12]">Visit</a>
-            </div>
-            <div className="flex items-center gap-3">
-              <a
-                href={bookLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden rounded-full bg-[#241a12] px-5 py-2.5 text-[12px] font-bold tracking-[0.16em] text-[#f6efe6] uppercase transition-all duration-300 hover:bg-[#b98a2f] hover:text-[#241a12] bp-sm:block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-              >
-                Book now
-              </a>
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="grid h-10 w-10 place-items-center rounded-full border border-[#241a12]/15 bp-md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                aria-label="Toggle navigation menu"
-              >
-                {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
-            </div>
-          </nav>
-          {menuOpen && (
-            <div className="border-t border-[#241a12]/10 bg-[#f6efe6] px-5 py-4 bp-md:hidden">
-              {["services", "gallery", "reviews", "visit"].map((id) => (
-                <a
-                  key={id}
-                  href={`#${id}`}
-                  onClick={() => setMenuOpen(false)}
-                  className="block py-2.5 text-sm font-semibold tracking-[0.18em] uppercase text-[#241a12]/70"
-                >
-                  {id}
-                </a>
-              ))}
+        <figure className="relative">
+          {hero ? (
+            <SmartImage src={hero.src} alt={hero.alt} eager className="aspect-[3/4] w-full rounded-t-[10rem] object-cover ring-1 ring-[#d8a18c]/40 @md:aspect-[4/5]" />
+          ) : (
+            <div className="grid aspect-[3/4] w-full place-items-center rounded-t-[10rem] bg-[#31182c] ring-1 ring-[#d8a18c]/40">
+              <BrandMark logo={site.logoUrl ?? null} name={name} className="h-24 w-24 text-2xl text-[#d8a18c]" />
             </div>
           )}
-        </header>
+          <figcaption className="mt-3 flex items-center justify-between font-sans text-[11px] uppercase tracking-[0.2em] text-[#f6ede3]/50">
+            <span>{hero?.alt || "Add your signature interior shot"}</span>
+            {hero?.sample && <SamplePill label="Sample" className="text-[#f6ede3]/60" />}
+          </figcaption>
+        </figure>
+      </section>
 
-        {/* ——— HERO FIRST — large treatment image leads ——— */}
-        <section id="top" className="relative overflow-hidden">
-          <div
-            className="pointer-events-none absolute -left-32 top-10 h-96 w-96 rounded-full opacity-40 blur-3xl"
-            style={{ background: "radial-gradient(circle, #c1785755, transparent 70%)" }}
-          />
-          <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-5 pb-20 pt-14 bp-md:grid-cols-2 bp-md:pt-20">
-            <div className="@container relative z-10">
-              <Up>
-                <p className="mb-5 inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.28em] text-[#b98a2f] uppercase">
-                  <span className="h-px w-8 bg-[#b98a2f]" /> {site.area}
-                </p>
-              </Up>
-              <Up delay={0.08}>
-                <h1 className="font-serif text-[min(3rem,calc(100cqw/5.9))] leading-[1.02] break-words bp-md:text-[min(4.5rem,calc(100cqw/5.9))]">
-                  {site.tagline.split("—")[0]}
-                </h1>
-              </Up>
-              <Up delay={0.16}>
-                <p className="mt-6 text-sm font-medium text-[#241a12]/60">
-                  {site.area} · {site.hours} — enquire on WhatsApp for availability
-                </p>
-              </Up>
-              <Up delay={0.24}>
-                <div className="mt-9 flex flex-wrap items-center gap-4">
-                  <a
-                    href={bookLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-3 rounded-full bg-[#241a12] px-7 py-4 text-[13px] font-bold tracking-[0.16em] text-[#f6efe6] uppercase transition-all duration-300 hover:bg-[#b98a2f] hover:text-[#241a12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                  >
-                    WhatsApp to book
-                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </a>
-                  <a
-                    href="#services"
-                    className="text-[13px] font-bold tracking-[0.16em] text-[#241a12]/70 uppercase underline decoration-[#b98a2f] decoration-2 underline-offset-8 transition-colors hover:text-[#241a12]"
-                  >
-                    View the menu
-                  </a>
-                </div>
-              </Up>
-            </div>
-
-            <Up delay={0.15} className="relative">
-              <div className="relative mx-auto w-[78%] max-w-sm">
-                <div className="absolute -inset-4 rounded-t-full rounded-b-[2rem] border border-[#b98a2f]/50" aria-hidden />
-                <div className="overflow-hidden rounded-t-full rounded-b-[2rem]">
-                  <ImageWithFallback
-                    src={site.heroImageUrl}
-                    alt={`${site.businessName} treatment room`}
-                    className="aspect-[3/4] w-full object-cover"
-                  />
-                </div>
-                <div className="mz-bob absolute -right-8 bottom-10 rounded-2xl border border-[#241a12]/10 bg-[#f6efe6]/95 px-4 py-3 shadow-xl backdrop-blur">
-                  <p className="text-[10px] font-bold tracking-[0.2em] text-[#b98a2f] uppercase">Enquire on WhatsApp</p>
-                  <p className="font-serif text-lg leading-tight">View our services</p>
-                </div>
-              </div>
-            </Up>
+      {/* service edit */ }
+      <section id="hvs-services" className="border-t border-[#f6ede3]/12 bg-[#2c1728] px-6 py-16 @md:px-12 @md:py-24">
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.35em]" style={{ color: ROSE }}>
+              01 · The Service Edit
+            </p>
+            <h2 className="mt-3 text-[clamp(1.9rem,4.4cqw,3.3rem)] font-light leading-tight">
+              Colour, cuts &amp; care — <em className={`text-${ROSE}`}>priced plainly.</em>
+            </h2>
           </div>
-        </section>
-
-        {/* ——— Service marquee ——— */}
-        <div className="overflow-hidden border-y border-[#241a12]/10 bg-[#241a12] py-3.5">
-          <div className="marquee-track">
-            {[0, 1].map((n) => (
-              <div key={n} className="flex shrink-0 items-center">
-                {site.services.map((s, i) => (
-                  <span key={`${n}-${i}`} className="flex items-center whitespace-nowrap">
-                    <span className="px-6 font-serif text-lg italic text-[#e8ce9a]">{s.name}</span>
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#c17857]" aria-hidden />
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
+          <SamplePill label="Sample prices" className="text-[#f6ede3]/70" />
         </div>
 
-        {/* ——— Services menu ——— */}
-        <section id="services" className="mx-auto max-w-4xl px-5 py-20 bp-md:py-28">
-          <Up className="text-center">
-            <p className="mb-4 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">The menu</p>
-            <h2 className="font-serif text-4xl break-words bp-md:text-6xl">Services & pricing</h2>
-            <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#241a12]/55">
-              Honest prices, no surprises. WhatsApp us to check availability — most styles can be booked within the week.
-            </p>
-          </Up>
-          <div className="mt-14 space-y-2">
-            {site.services.map((service, i) => (
-              <Up key={service.name} delay={i * 0.05}>
-                <a
-                  href={waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to book: ${service.name} (${service.price})`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex flex-col gap-1 rounded-2xl px-4 py-4 transition-colors duration-300 hover:bg-[#241a12]/[0.04] bp-sm:flex-row bp-sm:items-baseline bp-sm:gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                  aria-label={`Book ${service.name} via WhatsApp`}
-                >
-                  <div className="min-w-0">
-                    <h3 className="font-serif text-2xl break-words transition-colors group-hover:text-[#8a5f1e]">{service.name}</h3>
-                    {service.description && (
-                      <p className="mt-0.5 text-xs font-medium tracking-wide text-[#241a12]/45">{service.description}</p>
-                    )}
-                  </div>
-                  <span className="mx-2 hidden flex-1 border-b border-dotted border-[#241a12]/30 bp-sm:block" aria-hidden />
-                  <span className="font-serif text-2xl text-[#b98a2f]">{service.price}</span>
-                  <span className="hidden rounded-full border border-[#b98a2f]/40 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-[#8a5f1e] uppercase opacity-0 transition-all duration-300 group-hover:opacity-100 bp-sm:block">
-                    Book
-                  </span>
-                </a>
-              </Up>
-            ))}
-          </div>
-        </section>
-
-        {/* ——— About pull-quote ——— */}
-        <section className="bg-[#241a12] py-20 text-[#f6efe6] bp-md:py-28">
-          <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-5 bp-md:grid-cols-[0.9fr_1.1fr]">
-            <Up>
-              <div className="overflow-hidden rounded-t-full rounded-b-[2rem]">
-                <ImageWithFallback
-                  src={gallery[1] ?? site.heroImageUrl}
-                  alt={`${site.businessName} interior`}
-                  className="aspect-[3/4] w-full object-cover"
-                />
-              </div>
-            </Up>
-            <div>
-              <Up>
-                <p className="mb-5 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">Why clients stay</p>
-              </Up>
-              <Up delay={0.1}>
-                <blockquote className="font-serif text-3xl leading-snug break-words bp-md:text-5xl">
-                  {site.aboutQuote ? `“${site.aboutQuote}”` : "“You shouldn’t have to DM five times to find out what a style costs.”"}
-                </blockquote>
-              </Up>
-              <Up delay={0.2}>
-                <p className="mt-7 max-w-md text-sm leading-relaxed text-[#f6efe6]/60">
-                  {site.businessName} · {site.area}. Every price is published, every booking confirmed on WhatsApp within
-                  minutes, and every client leaves with our aftercare notes. {site.tagline}
-                </p>
-              </Up>
-              <Up delay={0.3}>
-                <div className="mt-9 grid grid-cols-3 gap-6 border-t border-[#f6efe6]/10 pt-8">
-                  {[
-                    [site.area.split(",")[0] || site.area, "based in"],
-                    [site.services.length + " services", "on the menu"],
-                    [site.hours.split("·")[0].trim() || site.hours, "hours"],
-                  ].map(([big, small]) => (
-                    <div key={small}>
-                      <p className="font-serif text-xl text-[#e8ce9a] break-words bp-md:text-2xl">{big}</p>
-                      <p className="mt-1 text-[10px] font-bold tracking-[0.18em] text-[#f6efe6]/45 uppercase">{small}</p>
-                    </div>
-                  ))}
-                </div>
-              </Up>
-            </div>
-          </div>
-        </section>
-
-        {/* ——— Gallery ——— */}
-        <section id="gallery" className="mx-auto max-w-6xl px-5 py-20 bp-md:py-28">
-          <Up className="mb-12 flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
-            <div className="@container w-full min-w-0 bp-md:w-auto bp-md:grow">
-              <p className="mb-4 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">Recent work</p>
-              <h2 className="font-serif text-[min(2.25rem,calc(100cqw/7.5))] break-words bp-md:text-[min(3.75rem,calc(100cqw/7.5))]">
-                {site.galleryHeading ?? "Fresh from the chair"}
-              </h2>
-            </div>
-            <SocialRow site={site} iconClassName="text-[#241a12]/50" />
-          </Up>
-          <div className="grid grid-cols-2 gap-4 bp-md:grid-cols-3 bp-md:gap-6">
-            {gallery.map((url, i) => (
-              <Up key={`${url}-${i}`} delay={i * 0.06}>
-                <div
-                  className={`overflow-hidden transition-transform duration-300 hover:-translate-y-1.5 ${i % 3 === 0 ? "rounded-t-full rounded-b-2xl" : "rounded-2xl"}`}
-                >
-                  <ImageWithFallback
-                    src={url}
-                    alt={`${site.businessName} work ${i + 1}`}
-                    className="aspect-[3/4] w-full object-cover transition-transform duration-700 hover:scale-105"
-                  />
-                </div>
-              </Up>
-            ))}
-          </div>
-        </section>
-
-        {/* ——— Reviews ——— */}
-        {site.isDemo && site.reviewItems ? (
-          <section id="reviews" className="bg-[#efe4d2] py-20 bp-md:py-28">
-            <div className="mx-auto max-w-6xl px-5">
-              <Up className="mb-12 @container text-center">
-                <p className="mb-4 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">Word of mouth</p>
-                <h2 className="font-serif text-[min(2.25rem,calc(100cqw/7.5))] break-words bp-md:text-[min(3.75rem,calc(100cqw/7.5))]">
-                  {site.reviewHeading}
-                </h2>
-                <DemoBadge className="mt-3" />
-              </Up>
-              <div className="grid grid-cols-1 gap-5 bp-md:grid-cols-3">
-                {site.reviewItems.map((review, i) => (
-                  <Up key={review.name} delay={i * 0.1}>
-                    <div className="flex h-full flex-col justify-between rounded-3xl border border-[#241a12]/10 bg-[#f6efe6] p-7">
-                      <div>
-                        <div className="mb-4 flex gap-1">
-                          {Array.from({ length: 5 }).map((_, s) => (
-                            <Star key={s} className="h-3.5 w-3.5 fill-[#b98a2f] text-[#b98a2f]" />
-                          ))}
-                        </div>
-                        <p className="font-serif text-xl leading-snug">&ldquo;{review.quote}&rdquo;</p>
-                      </div>
-                      <p className="mt-6 text-xs font-bold tracking-[0.18em] text-[#241a12]/45 uppercase">{review.name} — DEMO</p>
-                    </div>
-                  </Up>
-                ))}
-              </div>
-            </div>
-          </section>
+        {edit.length === 0 ? (
+          <button
+            type="button"
+            className="flex w-full items-center justify-center gap-3 border border-dashed border-[#f6ede3]/30 px-6 py-12 font-sans text-sm text-[#f6ede3]/60 transition-colors hover:border-[#d8a18c] hover:text-[#d8a18c]"
+          >
+            <ImagePlus className="h-4 w-4" aria-hidden /> No services yet — add your menu
+          </button>
         ) : (
-          <section id="reviews" className="bg-[#efe4d2] py-20 bp-md:py-28">
-            <div className="mx-auto max-w-6xl px-5 text-center">
-              <Up className="mx-auto max-w-2xl">
-                <p className="mb-4 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">What to expect</p>
-                <h2 className="font-serif text-3xl break-words bp-md:text-4xl">Honest pricing, clear communication</h2>
-                <p className="mt-4 text-sm leading-relaxed text-[#241a12]/60">
-                  Prices are listed above — enquire on WhatsApp for availability and to ask any questions before you book.
-                  No invented reviews are shown; references available on request.
-                </p>
-                <a
-                  href={waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to ask about your services.`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#241a12] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-[#f6efe6]"
-                >
-                  Ask a question on WhatsApp
-                </a>
-              </Up>
-            </div>
-          </section>
+          <ol className="grid gap-x-14 @lg:grid-cols-2">
+            {edit.map((s, i) => (
+              <li key={s.name || i} className="group border-b border-[#f6ede3]/12 py-5">
+                <div className="flex items-baseline gap-4">
+                  <span className="text-xs tabular-nums" style={{ color: ROSE }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="flex-1 text-xl font-normal @md:text-2xl">{s.name || "Untitled service"}</h3>
+                  <span className="text-lg tabular-nums" style={{ color: ROSE }}>
+                    {s.price || "—"}
+                  </span>
+                </div>
+                {s.description && (
+                  <p className="mt-1 pl-8 font-sans text-[13px] leading-relaxed text-[#f6ede3]/55">{s.description}</p>
+                )}
+              </li>
+            ))}
+          </ol>
         )}
+      </section>
 
-        {/* ——— Visit ——— */}
-        <section id="visit" className="mx-auto max-w-6xl px-5 py-20 bp-md:py-28">
-          <div className="grid grid-cols-1 gap-10 bp-md:grid-cols-2">
-            <Up className="@container">
-              <p className="mb-4 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">Visit us</p>
-              <h2 className="font-serif text-[min(2.25rem,calc(100cqw/7.5))] break-words bp-md:text-[min(3rem,calc(100cqw/7.5))]">
-                {site.area}
-              </h2>
-              <div className="mt-8 space-y-5">
-                <div className="flex items-center gap-4 border-b border-[#241a12]/10 pb-5">
-                  <Clock className="h-5 w-5 text-[#b98a2f]" />
-                  <div>
-                    <p className="text-[10px] font-bold tracking-[0.2em] text-[#241a12]/40 uppercase">Hours</p>
-                    <p className="font-medium">{site.hours}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 border-b border-[#241a12]/10 pb-5">
-                  <Phone className="h-5 w-5 text-[#b98a2f]" />
-                  <div>
-                    <p className="text-[10px] font-bold tracking-[0.2em] text-[#241a12]/40 uppercase">Call / WhatsApp</p>
-                    <p className="font-medium">{displayPhone(site.whatsapp)}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <MapPin className="h-5 w-5 text-[#b98a2f]" />
-                  <div>
-                    <p className="text-[10px] font-bold tracking-[0.2em] text-[#241a12]/40 uppercase">Find us</p>
-                    <p className="font-medium">{site.area}</p>
-                  </div>
-                </div>
-              </div>
-            </Up>
-            <Up delay={0.15}>
-              <div className="flex h-full min-h-[320px] flex-col items-center justify-center rounded-3xl bg-[#241a12] p-10 text-center text-[#f6efe6]">
-                <p className="font-serif text-3xl leading-snug bp-md:text-4xl">Ready when you are.</p>
-                <p className="mt-3 max-w-xs text-sm text-[#f6efe6]/55">
-                  Send one WhatsApp message — we reply within minutes during trading hours.
-                </p>
-                <a
-                  href={bookLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-8 inline-flex items-center gap-3 rounded-full bg-[#b98a2f] px-8 py-4 text-[13px] font-bold tracking-[0.16em] text-[#241a12] uppercase transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                >
-                  Book on WhatsApp <ArrowRight className="h-4 w-4" />
-                </a>
-              </div>
-            </Up>
-          </div>
-        </section>
-
-        {/* ——— Footer ——— */}
-        <footer className="border-t border-[#241a12]/10 px-5 py-10">
-          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 bp-md:flex-row">
-            <div className="flex flex-wrap items-center gap-3">
-              <LogoBlock site={site} className="rounded-full border border-[#b98a2f]/40 bg-[#241a12] font-display text-[#e8ce9a]" />
-              <span className="min-w-0 break-words font-serif text-lg">{site.businessName}</span>
-            </div>
-            <SocialRow site={site} iconClassName="text-[#241a12]/45" />
-            <p className="text-[11px] font-medium tracking-[0.18em] text-[#241a12]/40 uppercase">
-              Powered by <span className="text-[#b98a2f]">MzansiSite</span>
+      {/* frames */ }
+      <section id="hvs-frames" className="border-t border-[#f6ede3]/12 px-6 py-16 @md:px-12 @md:py-20">
+        <div className="mb-10 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.35em]" style={{ color: ROSE }}>
+              02 · Frames
             </p>
+            <h2 className="mt-3 text-[clamp(1.6rem,3.6cqw,2.6rem)] font-light">The shop, in passing light.</h2>
           </div>
-        </footer>
-      </div>
-    </>
+          {photos.some((p) => p.sample) && <SamplePill label="Sample photos" className="text-[#f6ede3]/70" />}
+        </div>
+
+        {photos.length === 0 ? (
+          <button type="button" className="flex w-full items-center justify-center gap-3 border border-dashed border-[#f6ede3]/30 px-6 py-12 font-sans text-sm text-[#f6ede3]/60 transition-colors hover:border-[#d8a18c] hover:text-[#d8a18c]">
+            <ImagePlus className="h-4 w-4" aria-hidden /> No photos yet — upload shop photos
+          </button>
+        ) : (
+          <div className="grid gap-4 @md:grid-cols-3">
+            {frames.map((p, i) => (
+              <figure key={p.id} className={cn("group relative", i === 1 && "@md:mt-10", i === 2 && "@md:mt-20")}>
+                <SmartImage src={p.src} alt={p.alt} className="aspect-[3/4] w-full" />
+                <figcaption className="mt-3 flex items-center gap-2 font-sans text-[11px] uppercase tracking-[0.2em] text-[#f6ede3]/55">
+                  <span style={{ color: ROSE }}>{String(i + 1).padStart(2, "0")}</span> {p.alt}
+                  {p.sample && <SamplePill label="Sample" />}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* visit */ }
+      <section id="hvs-visit" className="grid border-t border-[#f6ede3]/12 @lg:grid-cols-2">
+        <div className="px-6 py-14 @md:px-12">
+          <p className="text-[11px] uppercase tracking-[0.35em]" style={{ color: ROSE }}>
+            03 · Visit
+          </p>
+          <h2 className="mt-3 text-[clamp(1.9rem,4cqw,3rem)] font-light leading-tight">The chair is waiting.</h2>
+          <div className="mt-7 space-y-4 font-sans text-[15px] text-[#f6ede3]/80">
+            <p className="flex gap-3">
+              <MapPin className="mt-1 h-4 w-4 shrink-0" style={{ color: ROSE }} />
+              {site.area || "Add your address"}{site.area ? `, ${site.area}` : ""}
+            </p>
+            {site.phone && (
+              <a href={telLink(site.phone)} className="flex gap-3 underline-offset-4 hover:underline">
+                <Phone className="mt-1 h-4 w-4 shrink-0" style={{ color: ROSE }} />
+                {site.phone}
+              </a>
+            )}
+          </div>
+          <WhatsAppActionForSite
+            site={site}
+            label="Message us on WhatsApp"
+            className="mt-8 border border-[#c8a05c] px-7 py-3.5 font-sans text-[13px] font-semibold uppercase tracking-[0.18em] text-[#c8a05c] transition-colors hover:bg-[#c8a05c] hover:text-[#1a1409]"
+          />
+        </div>
+        <div className="border-t border-[#f6ede3]/12 px-6 py-14 @lg:border-l @lg:border-t-0 @md:px-12">
+          <p className="font-sans text-[11px] uppercase tracking-[0.3em] text-[#f6ede3]/50">Opening hours</p>
+          <ul className="mt-5 divide-y divide-[#f6ede3]/12">
+            <li className="flex items-baseline justify-between gap-6 py-3.5">
+              <span className="font-sans text-sm text-[#f6ede3]/65">{site.hours ? site.hours.split(" · ")[0] : "Hours"}</span>
+              <span className="text-lg">{site.hours || "—"}</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <footer className="flex flex-wrap items-center justify-between gap-4 border-t border-[#f6ede3]/12 px-6 py-8 font-sans text-[11px] uppercase tracking-[0.2em] text-[#f6ede3]/45 @md:px-12">
+        <span className="flex items-center gap-3">
+          <BrandMark logo={site.logoUrl ?? null} name={name} className="h-8 w-8 text-[10px]" />
+          {name}
+        </span>
+        <span>Design: Velvet · MzansiSite demo — sample content until edited</span>
+      </footer>
+    </div>
   );
 }

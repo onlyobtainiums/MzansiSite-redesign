@@ -1,223 +1,370 @@
 "use client";
 
-import { ArrowRight, Clock, MapPin, Menu, Phone, Scissors, ShieldCheck, Sparkles, Star } from "lucide-react";
-import type { SiteData } from "../../types";
-import { displayPhone, waLink } from "../../types";
-import { LogoBlock, SocialRow, WhatsAppFab } from "../../shared";
-import { Up } from "../../Reveal";
-import { ImageWithFallback } from "../../forge/variants/shared/ImageWithFallback";
+import { useMemo, useState } from "react";
+import { Check, Clock, Copy, Info, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck } from "lucide-react";
+import type { SiteData } from "@/templates/types";
+import { mailLink, telLink, waLink } from "@/templates/types";
+import { cn } from "../barber-variants/shared/cn";
+import { SmartImage } from "../barber-variants/shared/SmartImage";
+import { BrandMark, SamplePill } from "../barber-variants/shared/kit";
 
-/* Velvet — Hair Salon V6: "Booking-First".
-   Sticky WhatsApp booking bar at top (always visible), minimal hero below.
-   Conversion-optimised CTA hierarchy — primary CTA is always on screen.
-   Structurally different from V1 Hero-First — booking bar first, hero secondary.
-   Shapes: high-contrast pill shapes, rounded-full buttons.
-   Industry function: appointment enquiry via WhatsApp — service type, preferred time.
-   This is an enquiry flow, not a functioning booking system — no payment,
-   no calendar, no reservation confirmation. */
-export default function HairSalonV6BookingFirst({ site }: { site: SiteData }) {
-  const gallery = site.galleryUrls.slice(0, 6);
-  const bookLink = waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to book an appointment.`);
+const COCOA = "#332217";
+const WA = "#1faf57";
+
+const SAMPLE_PHOTOS = [
+  { id: "s1", src: "/images/barber-pack/hero-chair.jpg", alt: "Styling chairs and brass-framed mirrors in a sunlit salon interior", sample: true },
+  { id: "s2", src: "/images/barber-pack/tools-flatlay.jpg", alt: "Salon scissors, brushes and colour tools arranged on sage linen", sample: true },
+  { id: "s3", src: "/images/barber-pack/interior-warm.jpg", alt: "Elegant salon interior with round mirrors and soft lighting", sample: true },
+  { id: "s4", src: "/images/barber-pack/products-shelf.jpg", alt: "Salon shelves stocked with hair care products", sample: true },
+  { id: "s5", src: "/images/barber-pack/razor-detail.jpg", alt: "Backwash stations and product display in a bright salon", sample: true },
+  { id: "s6", src: "/images/barber-pack/pole-street.jpg", alt: "Waiting lounge with leather seating and marble floors", sample: true },
+];
+
+const LENGTHS = ["Short", "Medium", "Long"];
+const TEXTURES = ["Straight", "Wavy", "Curly", "Coily", "Not sure"];
+
+export default function HairSalonVariant6({ site }: { site: SiteData }) {
+  const name = site.businessName || "Your Hair Studio";
+  const photos = site.galleryUrls.length
+    ? site.galleryUrls.map((url, i) => ({ id: `p${i}`, src: url, alt: `${name} photo ${i + 1}`, sample: false }))
+    : SAMPLE_PHOTOS;
+  const waDigits = site.whatsapp.replace(/\D/g, "");
+  const hasWa = waDigits.length >= 10;
+
+  const [clientName, setClientName] = useState("");
+  const [length, setLength] = useState("");
+  const [texture, setTexture] = useState("");
+  const [service, setService] = useState("");
+  const [when, setWhen] = useState("");
+  const [note, setNote] = useState("");
+  const [errors, setErrors] = useState<{ name?: string; service?: string }>({});
+  const [drafted, setDrafted] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const serviceOptions = useMemo(() => site.services.map((s) => s.name).filter(Boolean), [site.services]);
+
+  const composed = useMemo(() => {
+    const lines = [
+      `Hi ${name}, new hair enquiry from the website:`,
+      `• Name: ${clientName || "—"}`,
+      length ? `• Hair length: ${length}` : null,
+      texture ? `• Texture: ${texture}` : null,
+      service ? `• Interested in: ${service}` : null,
+      when ? `• Preferred time: ${when}` : null,
+      note ? `• Notes: ${note}` : null,
+      "(This is an enquiry — please reply to confirm availability and a final quote.)",
+    ].filter(Boolean);
+    return lines.join("\n");
+  }, [clientName, length, texture, service, when, note, name]);
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const errs: typeof errors = {};
+    if (!clientName.trim()) errs.name = "Please add your name so the studio knows who is asking.";
+    if (!service) errs.service = "Choose a service, or “Not sure yet”.";
+    setErrors(errs);
+    if (Object.keys(errs).length) return;
+    window.open(waLink(site.whatsapp, composed), "_blank", "noopener");
+    setDrafted(true);
+  }
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(composed);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt("Copy your enquiry:", composed);
+    }
+  }
 
   return (
-    <>
-      {/* ——— STICKY BOOKING BAR — always visible at top ——— */}
-      <div className="fixed top-0 left-0 right-0 z-[100] bg-[#b98a2f] text-[#241a12] shadow-[0_10px_30px_-10px_rgba(185,138,47,0.6)]">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-5 py-4 bp-md:flex-row bp-md:items-center bp-md:py-3">
-          <Up className="flex items-center gap-3">
-            <Phone className="h-5 w-5 fill-[#241a12]" />
-            <div>
-              <p className="text-[10px] font-bold tracking-[0.14em] uppercase">Enquire on WhatsApp</p>
-              <a href={`tel:+${site.whatsapp.replace(/\D/g, "")}`} className="font-display text-sm font-bold tracking-tight hover:underline">
-                {displayPhone(site.whatsapp)}
-              </a>
-            </div>
-          </Up>
-          <a
-            href={bookLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 bg-[#241a12] px-6 py-3 rounded-full font-display text-sm font-bold tracking-[0.14em] text-[#f6efe6] uppercase transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#f6efe6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-          >
-            <ArrowRight className="h-4 w-4" /> Book on WhatsApp
-          </a>
-        </div>
-      </div>
-
-      <WhatsAppFab site={site} accent="#b98a2f" />
-
-      <div className="@container/page min-h-screen bg-[#f6efe6] font-sans text-[#241a12] pt-24 bp-md:pt-16">
-        {/* ——— Top bar — minimal, below sticky bar ——— */}
-        <div className="bg-[#f6efe6] px-4 py-2">
-          <div className="mx-auto flex max-w-6xl items-center justify-center gap-2 text-center text-[11px] font-bold tracking-[0.14em] uppercase bp-sm:justify-between">
-            <span className="flex items-center gap-2">
-              <Clock className="h-4 w-4 fill-[#b98a2f]" /> {site.hours}
-            </span>
-          </div>
-        </div>
-
-        {/* ——— Nav — minimal, below sticky bar ——— */}
-        <header className="sticky top-24 z-40 border-b border-[#b98a2f]/30 bg-[#f6efe6]/90 backdrop-blur-md text-[#241a12]">
-          <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-            <a href="#services" className="flex min-w-0 items-center gap-3">
-              <LogoBlock site={site} className="shrink-0 rounded-full border border-[#b98a2f]/40 bg-[#241a12] font-display text-[#e8ce9a]" />
-              <span className="font-serif break-words text-xl leading-none">{site.businessName}</span>
+    <div className="@container bg-[#f6f1ea] font-sans text-[#332217]">
+      {/* top bar */ }
+      <header className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 @md:px-10">
+        <p className="flex items-center gap-2.5 text-[15px] font-extrabold tracking-tight">
+          <BrandMark logo={site.logoUrl ?? null} name={name} className="h-9 w-9 text-[10px]" />
+          {name}
+        </p>
+        <div className="flex items-center gap-4 text-[12px] font-semibold text-[#332217]/70">
+          <span className="hidden @sm:inline">{site.hours || "Add opening hours"}</span>
+          {site.phone && (
+            <a href={telLink(site.phone)} className="grid h-9 w-9 place-items-center rounded-full border border-[#332217]/25" aria-label="Phone the studio">
+              <Phone className="h-4 w-4" />
             </a>
-            <div className="hidden items-center gap-8 text-[12px] font-semibold tracking-[0.18em] uppercase bp-md:flex">
-              <a href="#services" className="text-[#b98a2f]">Services</a>
-              <a href="#visit" className="text-[#241a12]/60 transition-colors hover:text-[#b98a2f]">Visit</a>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => {}}
-                className="hidden grid h-10 w-10 place-items-center border border-[#241a12]/20 bp-md:hidden"
-                aria-label="Menu"
-              >
-                <Menu className="h-5 w-5" />
-              </button>
-            </div>
-          </nav>
-        </header>
+          )}
+        </div>
+      </header>
 
-        {/* ——— Hero as secondary banner — minimal ——— */}
-        <section id="top" className="relative bg-[#f6efe6] text-[#241a12] py-16">
-          <div className="relative mx-auto max-w-6xl px-5">
-            <Up>
-              <p className="mb-4 inline-flex items-center gap-2 border-l-4 border-[#b98a2f] pl-3 py-1.5 text-[11px] font-bold tracking-[0.22em] text-[#b98a2f] uppercase bg-[#b98a2f]/20">
-                <Clock className="h-4 w-4" /> {site.area} · {site.hours}
-              </p>
-            </Up>
-            <Up delay={0.08}>
-              <h1 className="font-display text-[min(2.5rem,calc(100cqw/10))] font-extrabold leading-[0.95] tracking-tight uppercase break-words">
-                Expert.<br />
-                <span className="text-[#b98a2f]">treatments done right.</span>
-              </h1>
-            </Up>
-            <Up delay={0.16}>
-              <p className="mt-6 max-w-xl mx-auto text-base leading-relaxed text-[#334155]">{site.tagline}</p>
-            </Up>
-            <Up delay={0.24} className="mt-10">
-              <div className="bg-white border border-[#b98a2f]/20 p-8 rounded-none">
-                <ImageWithFallback
-                  src={site.heroImageUrl}
-                  alt={site.businessName}
-                  className="w-full h-64 object-cover bp-md:h-80"
-                />
-                <div className="mt-4">
-                  <p className="text-[10px] font-bold tracking-[0.2em] text-[#b98a2f] uppercase">Enquire on WhatsApp</p>
-                  <p className="font-display text-sm font-bold text-[#241a12]">{site.area} · {site.hours}</p>
-                </div>
-              </div>
-            </Up>
-          </div>
-        </section>
-
-        {/* ——— Services — below hero ——— */}
-        <section id="services" className="mx-auto max-w-4xl px-5 py-20 bp-md:py-28">
-          <Up className="mb-12 @container">
-            <div className="inline-flex items-center gap-2 border-l-4 border-[#b98a2f] pl-3 py-1 mb-3 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">
-              <Scissors className="h-4 w-4" /> The menu
-            </div>
-            <h2 className="font-display text-4xl font-extrabold tracking-tight uppercase break-words bp-md:text-6xl">
-              Services & <span className="text-[#334155]">pricing</span>
-            </h2>
-          </Up>
-          <div className="mt-14 space-y-2">
-            {site.services.map((service, i) => (
-              <Up key={service.name} delay={i * 0.05}>
-                <a
-                  href={waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to book: ${service.name} (${service.price})`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex flex-col gap-1 rounded-2xl px-4 py-4 transition-colors duration-300 hover:bg-[#f6efe6]/[0.04] bp-sm:flex-row bp-sm:items-baseline bp-sm:gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                  aria-label={`Book ${service.name} via WhatsApp`}
-                >
-                  <div className="min-w-0">
-                    <h3 className="font-serif text-2xl break-words transition-colors group-hover:text-[#8a5f1e]">{service.name}</h3>
-                    {service.description && (
-                      <p className="mt-0.5 text-xs font-medium tracking-wide text-[#241a12]/45">{service.description}</p>
-                    )}
-                  </div>
-                  <span className="mx-2 hidden flex-1 border-b border-dotted border-[#241a12]/30 bp-sm:block" aria-hidden />
-                  <span className="font-serif text-2xl text-[#b98a2f]">{service.price}</span>
-                </a>
-              </Up>
-            ))}
-          </div>
-        </section>
-
-        {/* ——— Contact ——— */}
-        <section id="visit" className="border-t border-[#b98a2f]/20 bg-[#241a12]">
-          <div className="mx-auto max-w-6xl px-5 py-20 bp-md:py-28">
-            <Up className="@container">
-              <p className="mb-3 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">Visit us</p>
-              <h2 className="font-display text-3xl font-extrabold tracking-tight uppercase break-words bp-md:text-4xl">
-                Based in {site.area.split(",")[0]}
-              </h2>
-            </Up>
-            <div className="mt-10 grid grid-cols-1 gap-6 bp-md:grid-cols-2">
-              <div className="border border-[#b98a2f]/30 bg-[#1e293b] p-8 rounded-none">
-                <p className="text-[11px] font-bold tracking-[0.24em] text-[#b98a2f] uppercase">Phone</p>
-                <a
-                  href={`tel:+${site.whatsapp.replace(/\D/g, "")}`}
-                  className="mt-2 flex items-center gap-3 transition-colors hover:text-[#b98a2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                  aria-label="Call Naledi's Braids & Beauty"
-                >
-                  <Phone className="h-5 w-5 shrink-0 text-[#b98a2f]" />
-                  <span className="font-display text-xl font-extrabold break-words">{displayPhone(site.whatsapp)}</span>
-                </a>
-              </div>
-              <div className="border border-[#b98a2f]/30 bg-[#1e293b] p-8 rounded-none">
-                <p className="text-[11px] font-bold tracking-[0.24em] text-[#b98a2f] uppercase">WhatsApp</p>
-                <a
-                  href={bookLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 flex items-center gap-3 bg-[#b98a2f] px-4 py-3 rounded-none font-display text-sm font-bold text-[#241a12] uppercase transition-all duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                  aria-label={`Message ${site.businessName.split(" ")[0]} via WhatsApp`}
-                >
-                  Message {site.businessName.split(" ")[0]}
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ——— Gallery — small grid at bottom ——— */}
-        <section id="gallery" className="mx-auto max-w-6xl px-5 py-20 bp-md:py-28">
-          <Up className="mb-12 @container">
-            <p className="mb-3 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">Recent work</p>
-            <h2 className="font-display text-4xl font-extrabold tracking-tight uppercase bp-md:text-6xl">Gallery</h2>
-          </Up>
-          <div className="grid grid-cols-2 gap-4 bp-sm:grid-cols-3 bp-md:gap-6">
-            {gallery.map((url, i) => (
-              <Up key={`${url}-${i}`} delay={i * 0.05}>
-                <div className="relative aspect-square w-full overflow-hidden rounded-none border-2 border-[#b98a2f]/30 bg-[#241a12]">
-                  <ImageWithFallback
-                    src={url}
-                    alt={`${site.businessName} work ${i + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </Up>
-            ))}
-          </div>
-        </section>
-
-        {/* ——— Footer ——— */}
-        <footer className="border-t border-[#b98a2f]/20 bg-[#241a12] px-5 py-10 text-[#f6efe6]">
-          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 bp-md:flex-row">
-            <div className="flex flex-wrap items-center gap-3">
-              <LogoBlock site={site} className="border-2 border-[#b98a2f] bg-[#b98a2f] font-display text-[#241a12]" />
-              <span className="min-w-0 break-words font-display text-lg font-extrabold uppercase">{site.businessName}</span>
-            </div>
-            <SocialRow site={site} iconClassName="text-[#94a3b8]/50" />
-            <p className="text-[11px] font-bold tracking-[0.18em] text-[#64748b] uppercase">
-              Powered by <span className="text-[#b98a2f]">MzansiSite</span>
+      <main className="px-5 pb-14 pt-6 @md:px-10 @md:pt-10">
+        <div className="grid gap-10 @lg:grid-cols-[1.05fr_1fr] @lg:items-start">
+          {/* contact panel */ }
+          <div>
+            <p className="mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white" style={{ background: COCOA }}>
+              <MessageCircle className="h-3.5 w-3.5" aria-hidden /> Hair studio · {site.area || "your area"}
             </p>
+            <h1 className="text-[clamp(2.1rem,5.6cqw,4rem)] font-extrabold leading-[1.02] tracking-[-0.02em]">
+              Hair consult leads: length, texture, goals.
+            </h1>
+            <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-[#332217]/70">
+              {site.tagline || "Add your one-liner in the editor."} Tell us about your hair and we’ll draft a WhatsApp
+              enquiry — the studio confirms by reply.
+            </p>
+
+            <div className="mt-8 max-w-md space-y-3">
+              {hasWa ? (
+                <a
+                  href={waLink(site.whatsapp, `Hi ${name}, I'd like to book a hair appointment.`)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-2xl px-5 py-4 text-white shadow-lg shadow-[#1faf57]/30 transition-transform hover:-translate-y-0.5"
+                  style={{ background: WA }}
+                >
+                  <MessageCircle className="h-6 w-6 shrink-0" aria-hidden />
+                  <span>
+                    <span className="block text-[15px] font-extrabold">WhatsApp us · {site.whatsapp}</span>
+                    <span className="block text-[12px] font-medium text-white/80">Usually the fastest way to reach the studio</span>
+                  </span>
+                </a>
+              ) : (
+                <p className="rounded-2xl border-2 border-dashed border-[#332217]/30 px-5 py-4 text-sm font-semibold text-[#332217]/60">
+                  Add your WhatsApp number in the editor to switch this button live.
+                </p>
+              )}
+              <div className="grid grid-cols-2 gap-3">
+                {site.phone ? (
+                  <a href={telLink(site.phone)} className="flex items-center gap-2.5 rounded-2xl border border-[#332217]/25 bg-white px-4 py-3.5 text-[13px] font-bold transition-colors hover:border-[#332217]">
+                    <Phone className="h-4 w-4 shrink-0" aria-hidden /> {site.phone}
+                  </a>
+                ) : (
+                  <span className="flex items-center gap-2.5 rounded-2xl border border-dashed border-[#332217]/25 px-4 py-3.5 text-[13px] font-semibold text-[#332217]/50">
+                    <Phone className="h-4 w-4" /> Phone not added
+                  </span>
+                )}
+                {site.email ? (
+                  <a href={mailLink(site.email)} className="flex items-center gap-2.5 rounded-2xl border border-[#332217]/25 bg-white px-4 py-3.5 text-[13px] font-bold transition-colors hover:border-[#332217]">
+                    <Mail className="h-4 w-4 shrink-0" aria-hidden /> Email us
+                  </a>
+                ) : (
+                  <span className="flex items-center gap-2.5 rounded-2xl border border-dashed border-[#332217]/25 px-4 py-3.5 text-[13px] font-semibold text-[#332217]/50">
+                    <Mail className="h-4 w-4" /> Email not added
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <ul className="mt-7 space-y-2.5 text-[13px] font-semibold text-[#332217]/75">
+              <li className="flex items-center gap-2.5"><ShieldCheck className="h-4 w-4" style={{ color: WA }} /> An enquiry is not a confirmed appointment — the studio replies first.</li>
+              <li className="flex items-center gap-2.5"><Clock className="h-4 w-4" style={{ color: WA }} /> We answer during shop hours (listed below).</li>
+              <li className="flex items-center gap-2.5"><Info className="h-4 w-4" style={{ color: WA }} /> No payment is ever taken through this page.</li>
+            </ul>
           </div>
-        </footer>
-      </div>
-    </>
+
+          {/* enquiry form */ }
+          <form onSubmit={submit} noValidate className="rounded-2xl border border-[#332217]/15 bg-white p-6 shadow-[0_24px_60px_-30px_rgba(51,34,23,0.4)] @md:p-8">
+            <h2 className="text-xl font-extrabold tracking-tight">Hair consult enquiry</h2>
+            <p className="mt-1 text-[12.5px] text-[#332217]/60">
+              Fill this in and we’ll open WhatsApp with your message drafted. Nothing sends until you press send.
+            </p>
+
+            <label className="mt-6 block">
+              <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#332217]/70">Your name *</span>
+              <input
+                value={clientName}
+                onChange={(e) => { setClientName(e.target.value); if (errors.name) setErrors({ ...errors, name: undefined }); }}
+                placeholder="e.g. Zola M."
+                className={cn("w-full rounded-xl border bg-[#f6f1ea] px-4 py-3 text-sm outline-none transition-colors focus:border-[#1faf57]", errors.name ? "border-red-400" : "border-[#332217]/20")}
+                aria-invalid={!!errors.name}
+              />
+              {errors.name && <span className="mt-1 block text-[12px] font-semibold text-red-600">{errors.name}</span>}
+            </label>
+
+            <fieldset className="mt-5">
+              <legend className="mb-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#332217]/70">Service *</legend>
+              <div className="flex flex-wrap gap-2">
+                {[...serviceOptions, "Not sure yet"].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    aria-pressed={service === s}
+                    onClick={() => { setService(s); if (errors.service) setErrors({ ...errors, service: undefined }); }}
+                    className={cn(
+                      "rounded-full border px-3.5 py-1.5 text-[12.5px] font-bold transition-colors",
+                      service === s ? "border-transparent text-white" : "border-[#332217]/25 text-[#332217]/75 hover:border-[#332217]",
+                    )}
+                    style={service === s ? { background: COCOA } : undefined}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+              {errors.service && <span className="mt-1 block text-[12px] font-semibold text-red-600">{errors.service}</span>}
+            </fieldset>
+
+            <div className="mt-5 grid gap-3 @md:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#332217]/70">Hair length</span>
+                <div className="flex flex-wrap gap-2">
+                  {LENGTHS.map((l) => (
+                    <button
+                      key={l}
+                      type="button"
+                      aria-pressed={length === l}
+                      onClick={() => setLength(l)}
+                      className={cn(
+                        "rounded-full border px-3 py-1.5 text-[12px] font-bold transition-colors",
+                        length === l ? "border-transparent text-white" : "border-[#332217]/25 text-[#332217]/75 hover:border-[#332217]",
+                      )}
+                      style={length === l ? { background: COCOA } : undefined}
+                    >
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#332217]/70">Hair texture</span>
+                <div className="flex flex-wrap gap-2">
+                  {TEXTURES.map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      aria-pressed={texture === t}
+                      onClick={() => setTexture(t)}
+                      className={cn(
+                        "rounded-full border px-3 py-1.5 text-[12px] font-bold transition-colors",
+                        texture === t ? "border-transparent text-white" : "border-[#332217]/25 text-[#332217]/75 hover:border-[#332217]",
+                      )}
+                      style={texture === t ? { background: COCOA } : undefined}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </label>
+            </div>
+
+            <label className="mt-5 block">
+              <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#332217]/70">Preferred day &amp; time (optional)</span>
+              <input
+                value={when}
+                onChange={(e) => setWhen(e.target.value)}
+                placeholder="e.g. Saturday morning, after 10"
+                className="w-full rounded-xl border border-[#332217]/20 bg-[#f6f1ea] px-4 py-3 text-sm outline-none transition-colors focus:border-[#1faf57]"
+              />
+            </label>
+
+            <label className="mt-5 block">
+              <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#332217]/70">Anything else? (optional)</span>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                rows={3}
+                placeholder="Reference photo? Questions about colour maintenance?"
+                className="w-full resize-none rounded-xl border border-[#332217]/20 bg-[#f6f1ea] px-4 py-3 text-sm outline-none transition-colors focus:border-[#1faf57]"
+              />
+            </label>
+
+            {hasWa ? (
+              <button
+                type="submit"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-4 text-[15px] font-extrabold text-white transition-transform hover:-translate-y-0.5"
+                style={{ background: WA }}
+              >
+                <Send className="h-4 w-4" aria-hidden /> Draft my WhatsApp enquiry
+              </button>
+            ) : (
+              <p className="mt-6 rounded-xl border-2 border-dashed border-[#332217]/30 px-4 py-3.5 text-center text-[13px] font-semibold text-[#332217]/60">
+                The studio needs a WhatsApp number before this form can send — add one in the editor.
+              </p>
+            )}
+            <button type="button" onClick={copy} className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-[#332217]/20 px-5 py-3 text-[13px] font-bold text-[#332217]/75 transition-colors hover:border-[#332217]">
+              {copied ? <Check className="h-4 w-4 text-[#1faf57]" /> : <Copy className="h-4 w-4" />}
+              {copied ? "Copied to clipboard" : "Copy enquiry text instead"}
+            </button>
+
+            {drafted && (
+              <p role="status" className="mt-4 flex items-start gap-2.5 rounded-xl bg-[#1faf57]/12 px-4 py-3 text-[12.5px] font-semibold leading-relaxed text-[#332217]">
+                <Check className="mt-0.5 h-4 w-4 shrink-0" style={{ color: WA }} />
+                WhatsApp opened with your enquiry drafted. Press send there — and remember, the studio
+                confirms your time by reply. Nothing is booked yet.
+              </p>
+            )}
+          </form>
+        </div>
+
+        {/* proof band */ }
+        {photos.length > 0 && (
+          <div className="mt-14">
+            <div className="mb-4 flex items-center gap-3">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#332217]/60">Inside the studio</p>
+              {photos.some((p) => p.sample) && <SamplePill label="Sample photos" />}
+            </div>
+            <div className="grid grid-cols-2 gap-3 @md:grid-cols-4">
+              {photos.slice(0, 4).map((p) => (
+                <SmartImage key={p.id} src={p.src} alt={p.alt} className="aspect-[4/3] w-full rounded-xl" />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* info tiles */ }
+        <div className="mt-14 grid gap-4 @md:grid-cols-3">
+          <div className="rounded-2xl bg-white p-6 shadow-sm">
+            <p className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#332217]/60">
+              <Clock className="h-4 w-4" /> Shop hours
+            </p>
+            <ul className="space-y-2">
+              {site.hours ? (
+                site.hours.split(/ · |\n/).map((row, i) => {
+                  const parts = row.trim().split(/\s{2,}|(?<=[a-zA-Z])\s+(?=\d)/);
+                  const label = parts.length >= 2 ? parts[0].trim() : row.trim();
+                  const value = parts.length >= 2 ? parts.slice(1).join(" ").trim() : "";
+                  return (
+                    <li key={i} className="flex justify-between gap-4 text-sm">
+                      <span className="font-bold">{label}</span>
+                      <span className="text-[#332217]/70">{value || "—"}</span>
+                    </li>
+                  );
+                })
+              ) : null}
+            </ul>
+          </div>
+          <div className="rounded-2xl bg-white p-6 shadow-sm">
+            <p className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#332217]/60">
+              <MapPin className="h-4 w-4" /> Where to sit
+            </p>
+            <p className="text-sm font-bold">{site.area || "Add your address"}</p>
+            <p className="text-sm text-[#332217]/70">{site.area || "Your area"}</p>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.area} ${site.area}`)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-extrabold underline decoration-[#1faf57] decoration-2 underline-offset-4"
+            >
+              Get directions
+            </a>
+          </div>
+          <div className="rounded-2xl bg-white p-6 shadow-sm">
+            <p className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#332217]/60">
+              Services <SamplePill label="Sample prices" />
+            </p>
+            <ul className="space-y-2">
+              {site.services.slice(0, 4).map((s) => (
+                <li key={s.name} className="flex justify-between gap-4 text-sm">
+                  <span className="font-bold">{s.name}</span><span className="text-[#332217]/70">{s.price}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-[12px] text-[#332217]/55">Full menu shared on enquiry.</p>
+          </div>
+        </div>
+      </main>
+
+      <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#332217]/12 px-5 py-6 text-[11px] font-bold uppercase tracking-[0.2em] text-[#332217]/50 @md:px-10">
+        <span>{name}</span>
+        <span>Design: Vital · MzansiSite demo — enquiries are not confirmed appointments</span>
+      </footer>
+    </div>
   );
 }

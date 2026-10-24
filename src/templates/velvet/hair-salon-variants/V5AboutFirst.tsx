@@ -1,301 +1,214 @@
 "use client";
 
-import { ArrowRight, Clock, MapPin, Menu, Phone, Scissors, ShieldCheck, Sparkles, Star, X } from "lucide-react";
-import { useState } from "react";
-import type { SiteData } from "../../types";
-import { displayPhone, waLink } from "../../types";
-import { DemoBadge, LogoBlock, SocialRow, WhatsAppFab } from "../../shared";
-import { Up } from "../../Reveal";
-import { ImageWithFallback } from "../../forge/variants/shared/ImageWithFallback";
+import { ArrowRight, Clock, Leaf, Mail, MapPin, PenLine, Phone, Sparkles } from "lucide-react";
+import type { SiteData } from "@/templates/types";
+import { mailLink, telLink } from "@/templates/types";
+import { cn } from "../barber-variants/shared/cn";
+import { SmartImage } from "../barber-variants/shared/SmartImage";
+import { BrandMark, SamplePill, WhatsAppActionForSite } from "../barber-variants/shared/kit";
 
-/* Velvet — Hair Salon V5: "About-First".
-   Business story/narrative leads — salon bio, company history, about quote.
-   Hero is secondary below. Services at bottom.
-   Structurally different from V1 Hero-First — narrative first, hero second.
-   Shapes: organic blob shapes, arched accents, cream + gold palette.
-   Primary CTA: story-ending "Contact us" CTA.
-   No images of people, faces, or hands — uses interior/tools/decor only. */
-export default function HairSalonV5AboutFirst({ site }: { site: SiteData }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const gallery = site.galleryUrls.slice(0, 6);
-  const bookLink = waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to make a booking.`);
+const APRICOT = "#e0703f";
+
+const SAMPLE_PHOTOS = [
+  { id: "s1", src: "/images/barber-pack/hero-chair.jpg", alt: "Styling chairs and brass-framed mirrors in a sunlit salon interior", sample: true },
+  { id: "s2", src: "/images/barber-pack/tools-flatlay.jpg", alt: "Salon scissors, brushes and colour tools arranged on sage linen", sample: true },
+  { id: "s3", src: "/images/barber-pack/interior-warm.jpg", alt: "Elegant salon interior with round mirrors and soft lighting", sample: true },
+  { id: "s4", src: "/images/barber-pack/products-shelf.jpg", alt: "Salon shelves stocked with hair care products", sample: true },
+  { id: "s5", src: "/images/barber-pack/razor-detail.jpg", alt: "Backwash stations and product display in a bright salon", sample: true },
+  { id: "s6", src: "/images/barber-pack/pole-street.jpg", alt: "Waiting lounge with leather seating and marble floors", sample: true },
+];
+
+function paragraphs(text: string): string[] {
+  return text.split(/\n+/).map((p) => p.trim()).filter(Boolean);
+}
+
+export default function HairSalonVariant5({ site }: { site: SiteData }) {
+  const name = site.businessName || "Your Hair Studio";
+  const photos = site.galleryUrls.length
+    ? site.galleryUrls.map((url, i) => ({ id: `p${i}`, src: url, alt: `${name} photo ${i + 1}`, sample: false }))
+    : SAMPLE_PHOTOS;
+  const paras = paragraphs(site.tagline || "");
+  const picture = photos[2] ?? photos[0];
 
   return (
-    <>
-      <WhatsAppFab site={site} accent="#b98a2f" />
-
-      <div className="@container/page min-h-screen bg-[#ffffff] font-sans text-[#241a12]">
-        {/* ——— Top bar — light, story-focused ——— */}
-        <div className="bg-[#ffffff] px-4 py-2 border-b border-[#cbd5e1]">
-          <div className="mx-auto flex max-w-6xl items-center justify-center gap-2 text-center text-[11px] font-bold tracking-[0.14em] uppercase bp-sm:justify-between">
-            <span className="flex items-center gap-2">
-              <Clock className="h-4 w-4 fill-[#b98a2f]" /> {site.hours}
-            </span>
-            <a href={`tel:+${site.whatsapp.replace(/\D/g, "")}`} className="hidden items-center gap-2 underline underline-offset-4 bp-sm:flex">
-              <Phone className="h-4 w-4" /> {displayPhone(site.whatsapp)}
-            </a>
+    <div className="@container bg-[#faf1ea] font-sans text-[#3b2417]">
+      {/* masthead */ }
+      <header className="border-b border-[#3b2417]/12 px-5 py-6 @md:px-10">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <BrandMark logo={site.logoUrl ?? null} name={name} className="h-11 w-11 text-xs" />
+            <div className="leading-tight">
+              <p className="font-sans text-xl font-semibold">{name}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#3b2417]/60">{site.area || "Your area"}</p>
+            </div>
           </div>
+          <WhatsAppActionForSite
+            site={site}
+            message={`Hi ${name}, I'd love to talk about my hair.`}
+            className="rounded-full bg-[#3b2417] px-5 py-2.5 text-sm font-semibold text-[#faf1ea] transition-transform hover:-translate-y-0.5"
+            label="Say hello"
+          />
         </div>
+      </header>
 
-        {/* ——— Nav — side-by-side logo + story ——— */}
-        <header className="sticky top-0 z-40 border-b border-[#cbd5e1] bg-[#ffffff]/90 backdrop-blur-md text-[#241a12]">
-          <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-            <a href="#about" className="flex min-w-0 items-center gap-3">
-              <LogoBlock site={site} className="shrink-0 rounded-full border border-[#b98a2f]/40 bg-[#241a12] font-display text-[#e8ce9a]" />
-              <span className="font-serif break-words text-xl leading-none">{site.businessName}</span>
-            </a>
-            <div className="hidden items-center gap-8 text-[12px] font-semibold tracking-[0.18em] uppercase bp-md:flex">
-              <a href="#about" className="text-[#241a12]/60 transition-colors hover:text-[#b98a2f]">Our story</a>
-              <a href="#services" className="text-[#241a12]/60 transition-colors hover:text-[#b98a2f]">Services</a>
-              <a href="#visit" className="text-[#241a12]/60 transition-colors hover:text-[#b98a2f]">Visit</a>
-            </div>
-            <div className="flex items-center gap-3">
-              <a
-                href={bookLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden bg-[#241a12] px-5 py-2.5 text-[12px] font-bold tracking-[0.16em] text-[#f6efe6] uppercase transition-all duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f] bp-sm:block"
-              >
-                Book now
-              </a>
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="grid h-10 w-10 place-items-center rounded-full border border-[#241a12]/15 bp-md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                aria-label="Toggle navigation menu"
-              >
-                {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
-            </div>
-          </nav>
-          {menuOpen && (
-            <div className="border-t border-[#cbd5e1] px-5 py-4 bp-md:hidden">
-              {["about", "services", "visit"].map((id) => (
-                <a
-                  key={id}
-                  href={`#${id}`}
-                  onClick={() => setMenuOpen(false)}
-                  className="block py-2.5 text-sm font-semibold tracking-[0.18em] uppercase text-[#241a12]/70"
-                >
-                  {id.replace("about", "Our story")}
-                </a>
+      <main className="mx-auto max-w-5xl px-5 @md:px-10">
+        {/* the letter */ }
+        <section className="border-b border-dashed border-[#3b2417]/25 py-12 @md:py-16">
+          <p className="mb-5 inline-flex -rotate-2 items-center gap-2 rounded-sm px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-white shadow-sm" style={{ background: APRICOT }}>
+            <PenLine className="h-3.5 w-3.5" aria-hidden /> A letter from the studio
+          </p>
+          <h1 className="font-sans text-[clamp(2rem,5.4cqw,4rem)] font-semibold leading-[1.05] break-words">
+            {site.tagline || "Every salon has a story. This one starts with yours."}
+          </h1>
+
+          {paras.length === 0 ? (
+            <button
+              type="button"
+              className="mt-8 w-full rounded-xl border-2 border-dashed border-[#3b2417]/30 bg-white/60 px-6 py-12 text-left"
+            >
+              <p className="flex items-center gap-2 font-sans text-xl font-semibold" style={{ color: APRICOT }}>
+                <PenLine className="h-5 w-5" /> Write your letter here
+              </p>
+              <p className="mt-2 max-w-[56ch] text-sm leading-relaxed text-[#3b2417]/70">
+                How did the studio begin? What do regulars love about it? What should a nervous first-timer know?
+                Add it in the editor — this space is reserved for the real thing.
+              </p>
+            </button>
+          ) : (
+            <div className="mx-auto mt-8 max-w-3xl rounded-xl border border-[#3b2417]/15 bg-white/70 p-6 shadow-[0_20px_50px_-30px_rgba(59,36,23,0.35)] @md:p-10">
+              <p className="font-sans text-xl font-semibold italic">Dear {site.area || "friend"},</p>
+              {paras.map((p, i) => (
+                <p key={i} className="mt-4 font-sans text-[1.05rem] leading-relaxed text-[#3b2417]/85">{p}</p>
               ))}
+              <p className="mt-6 font-sans text-lg font-semibold italic" style={{ color: APRICOT }}>
+                — {name}
+              </p>
+              <SamplePill label="Sample letter — edit in 'Business'" className="mt-4" />
             </div>
           )}
-        </header>
+        </section>
 
-        {/* ——— ABOUT FIRST — narrative leads ——— */}
-        <section id="about" className="mx-auto max-w-6xl px-5 py-20 bp-md:py-28">
-          <Up className="mb-12 @container">
-            <div className="inline-flex items-center gap-2 border-l-4 border-[#b98a2f] pl-3 py-1 mb-3 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">
-              <Sparkles className="h-4 w-4" /> Our story
-            </div>
-            <h2 className="font-display text-4xl font-extrabold tracking-tight uppercase break-words bp-md:text-6xl">
-              Crafted for <span className="text-[#b98a2f]">{site.area.split(",")[0]}</span>,<br />
-              <span className="text-[#241a12]">built to last.</span>
-            </h2>
-          </Up>
-          <div className="grid grid-cols-1 gap-12 bp-md:grid-cols-2">
-            <Up className="@container">
-              <div className="relative">
-                <ImageWithFallback
-                  src={site.heroImageUrl}
-                  alt={`${site.businessName} treatment room`}
-                  className="w-full h-80 object-cover rounded-none border-4 border-[#b98a2f]/20 shadow-[10px_10px_0_#b98a2f]"
-                />
-                <div className="absolute -bottom-6 -left-6 bg-[#b98a2f] px-6 py-4 rounded-none">
-                  <p className="font-display text-sm font-bold text-[#241a12] uppercase">
-                    Serving {site.area.split(",")[0]} since day one
-                  </p>
-                </div>
-              </div>
-              <p className="mt-6 text-base leading-relaxed text-[#334155]">{site.tagline}</p>
-              <p className="mt-4 text-base leading-relaxed text-[#334155]">
-                Every treatment is quoted honestly before we begin. We serve
-                {site.area} — message us on WhatsApp for availability and pricing.
+        {/* what we believe */ }
+        <section className="border-b border-dashed border-[#3b2417]/25 py-12 @md:py-14">
+          <div className="mb-10 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.35em]" style={{ color: APRICOT }}>
+                Our values
               </p>
-            </Up>
-            <Up delay={0.15}>
-              <div className="border border-[#cbd5e1] bg-[#f6efe6] p-10 rounded-none">
-                <h3 className="font-display text-2xl font-extrabold tracking-tight uppercase mb-4">
-                  Why local clients trust us
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    "Published prices — no 'DM for price' games",
-                    "Same-day booking on WhatsApp",
-                    "Honest consultations, no pressure",
-                    "7 years serving " + site.area.split(",")[0],
-                    "Knotless braids, silk presses and treatments",
-                    "Wash & blow-dry, kids cornrows, wig installs",
-                  ].map((feature, i) => (
-                    <li key={i} className="flex items-center gap-3 text-[#334155]">
-                      <Sparkles className="h-4 w-4 text-[#b98a2f]" />
-                      <span className="text-sm font-medium">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Up>
-          </div>
-        </section>
-
-        {/* ——— Hero as secondary banner ——— */}
-        <section id="top" className="relative bg-[#241a12] text-[#f6efe6] py-16">
-          <div className="relative mx-auto max-w-6xl px-5">
-            <Up>
-              <p className="mb-4 inline-flex items-center gap-2 border-l-4 border-[#b98a2f] pl-3 py-1.5 text-[11px] font-bold tracking-[0.22em] text-[#b98a2f] uppercase bg-[#b98a2f]/20">
-                <Clock className="h-4 w-4" /> {site.area} · {site.hours}
-              </p>
-            </Up>
-            <Up delay={0.08}>
-              <h1 className="font-display text-[min(2.5rem,calc(100cqw/10))] font-extrabold leading-[0.95] tracking-tight uppercase break-words">
-                Expert.<br />
-                <span className="text-[#b98a2f]">treatments done right.</span>
-              </h1>
-            </Up>
-            <Up delay={0.16}>
-              <p className="mt-6 max-w-xl mx-auto text-base leading-relaxed text-[#cbd5e1]">{site.tagline}</p>
-            </Up>
-            <Up delay={0.24} className="mt-10">
-              <div className="bg-white border border-[#b98a2f]/20 p-8 rounded-none">
-                <ImageWithFallback
-                  src={site.heroImageUrl}
-                  alt={site.businessName}
-                  className="w-full h-64 object-cover bp-md:h-80"
-                />
-                <div className="mt-4">
-                  <p className="text-[10px] font-bold tracking-[0.2em] text-[#b98a2f] uppercase">Enquire on WhatsApp</p>
-                  <p className="font-display text-sm font-bold text-[#f6efe6]">{site.area} · {site.hours}</p>
-                </div>
-              </div>
-            </Up>
-            <Up delay={0.32} className="mt-8 flex flex-wrap justify-center gap-4">
-              <a
-                href={bookLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 bg-[#b98a2f] px-8 py-4 rounded-full font-display text-sm font-bold tracking-[0.14em] text-[#241a12] uppercase transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#f6efe6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-              >
-                Book on WhatsApp
-                <ArrowRight className="h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-              <a
-                href={`tel:+${site.whatsapp.replace(/\D/g, "")}`}
-                className="inline-flex items-center gap-3 border-2 border-[#b98a2f]/30 px-8 py-4 rounded-full text-sm font-bold tracking-[0.14em] uppercase transition-all duration-300 hover:border-[#b98a2f] hover:text-[#b98a2f] bg-[#1e293b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                aria-label="Call Naledi's Braids & Beauty"
-              >
-                <Phone className="h-4.5 w-4.5" /> Call now
-              </a>
-            </Up>
-          </div>
-        </section>
-
-        {/* ——— Services — simple grid below hero ——— */}
-        <section id="services" className="mx-auto max-w-4xl px-5 py-20 bp-md:py-28">
-          <Up className="mb-12 @container">
-            <div className="inline-flex items-center gap-2 border-l-4 border-[#334155] pl-3 py-1 mb-3 text-[11px] font-bold tracking-[0.3em] text-[#334155] uppercase">
-              <Scissors className="h-4 w-4" /> The menu
-            </div>
-            <h2 className="font-display text-4xl font-extrabold tracking-tight uppercase break-words bp-md:text-6xl">
-              Services & <span className="text-[#b98a2f]">pricing</span>
-            </h2>
-          </Up>
-          <div className="mt-14 space-y-2">
-            {site.services.map((service, i) => (
-              <Up key={service.name} delay={i * 0.05}>
-                <a
-                  href={waLink(site.whatsapp, `Hi ${site.businessName}! I'd like to book: ${service.name} (${service.price})`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex flex-col gap-1 rounded-2xl px-4 py-4 transition-colors duration-300 hover:bg-[#f6efe6]/[0.04] bp-sm:flex-row bp-sm:items-baseline bp-sm:gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                  aria-label={`Book ${service.name} via WhatsApp`}
-                >
-                  <div className="min-w-0">
-                    <h3 className="font-serif text-2xl break-words transition-colors group-hover:text-[#8a5f1e]">{service.name}</h3>
-                    {service.description && (
-                      <p className="mt-0.5 text-xs font-medium tracking-wide text-[#241a12]/45">{service.description}</p>
-                    )}
-                  </div>
-                  <span className="mx-2 hidden flex-1 border-b border-dotted border-[#241a12]/30 bp-sm:block" aria-hidden />
-                  <span className="font-serif text-2xl text-[#b98a2f]">{service.price}</span>
-                </a>
-              </Up>
-            ))}
-          </div>
-        </section>
-
-        {/* ——— Gallery — simple grid ——— */}
-        <section id="gallery" className="mx-auto max-w-6xl px-5 py-20 bp-md:py-28">
-          <Up className="mb-12 @container">
-            <p className="mb-3 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">Recent work</p>
-            <h2 className="font-display text-4xl font-extrabold tracking-tight uppercase bp-md:text-6xl">Gallery</h2>
-          </Up>
-          <div className="grid grid-cols-2 gap-4 bp-sm:grid-cols-3 bp-md:gap-6">
-            {gallery.map((url, i) => (
-              <Up key={`${url}-${i}`} delay={i * 0.05}>
-                <div className="relative aspect-[3/4] w-full overflow-hidden rounded-none border-2 border-[#cbd5e1] bg-[#f6efe6]">
-                  <ImageWithFallback
-                    src={url}
-                    alt={`${site.businessName} work ${i + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </Up>
-            ))}
-          </div>
-        </section>
-
-        {/* ——— Contact ——— */}
-        <section id="visit" className="border-t border-[#cbd5e1] bg-[#ffffff]">
-          <div className="mx-auto max-w-6xl px-5 py-20 bp-md:py-28">
-            <Up className="@container">
-              <p className="mb-3 text-[11px] font-bold tracking-[0.3em] text-[#b98a2f] uppercase">Visit us</p>
-              <h2 className="font-display text-3xl font-extrabold tracking-tight uppercase break-words bp-md:text-4xl">
-                Based in {site.area.split(",")[0]}
+              <h2 className="mt-3 text-[clamp(1.9rem,4.4cqw,3.3rem)] font-semibold leading-tight">
+                What we believe
               </h2>
-            </Up>
-            <div className="mt-10 grid grid-cols-1 gap-6 bp-md:grid-cols-2">
-              <div className="border border-[#cbd5e1] bg-white p-8 rounded-none">
-                <p className="text-[11px] font-bold tracking-[0.24em] text-[#b98a2f] uppercase">Phone</p>
-                <a
-                  href={`tel:+${site.whatsapp.replace(/\D/g, "")}`}
-                  className="mt-2 flex items-center gap-3 transition-colors hover:text-[#b98a2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                  aria-label="Call Naledi's Braids & Beauty"
-                >
-                  <Phone className="h-5 w-5 shrink-0 text-[#b98a2f]" />
-                  <span className="font-display text-xl font-extrabold break-words">{displayPhone(site.whatsapp)}</span>
-                </a>
-              </div>
-              <div className="border border-[#cbd5e1] bg-white p-8 rounded-none">
-                <p className="text-[11px] font-bold tracking-[0.24em] text-[#b98a2f] uppercase">WhatsApp</p>
-                <a
-                  href={bookLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 flex items-center gap-3 bg-[#b98a2f] px-4 py-3 rounded-none font-display text-sm font-bold text-[#241a12] uppercase transition-all duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b98a2f]"
-                  aria-label={`Message ${site.businessName.split(" ")[0]} via WhatsApp`}
-                >
-                  Message {site.businessName.split(" ")[0]}
-                </a>
-              </div>
             </div>
+            {photos.some((p) => p.sample) && <SamplePill label="Sample story" className="text-[#3b2417]/70" />}
+          </div>
+          <div className="grid gap-6 @md:grid-cols-3">
+            {[
+              { icon: Leaf, t: "Healthy hair first", d: "We protect condition before chasing colour — always." },
+              { icon: Phone, t: "Every texture welcome", d: "Coils, curls, waves and straight hair all get specialist care." },
+              { icon: Sparkles, t: "Honest pricing", d: "Quoted before we start, explained if anything changes." },
+            ].map((v, i) => (
+              <div key={i} className="rounded-xl border border-[#3b2417]/15 bg-white p-6">
+                <v.icon className="h-5 w-5 shrink-0 mb-3" style={{ color: APRICOT }} aria-hidden />
+                <h3 className="text-lg font-semibold">{v.t}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#3b2417]/75">{v.d}</p>
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* ——— Footer ——— */}
-        <footer className="border-t border-[#cbd5e1] bg-[#ffffff] px-5 py-10 text-[#241a12]">
-          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 bp-md:flex-row">
-            <div className="flex flex-wrap items-center gap-3">
-              <LogoBlock site={site} className="rounded-full border border-[#b98a2f]/40 bg-[#241a12] font-display text-[#e8ce9a]" />
-              <span className="min-w-0 break-words font-serif text-lg">{site.businessName}</span>
+        {/* interlude photo */ }
+        {picture && (
+          <figure className="border-b border-dashed border-[#3b2417]/25 py-10">
+            <SmartImage src={picture.src} alt={picture.alt} className="aspect-[21/9] w-full rounded-xl border border-[#3b2417]/20" />
+            <figcaption className="mt-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#3b2417]/55">
+              {picture.alt} {picture.sample && <SamplePill label="Sample photo" />}
+            </figcaption>
+          </figure>
+        )}
+
+        {/* menu */ }
+        <section className="py-12 @md:py-16">
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.35em]" style={{ color: APRICOT }}>
+                Services
+              </p>
+              <h2 className="mt-3 text-[clamp(1.9rem,4.4cqw,3.3rem)] font-semibold leading-tight">
+                What we offer
+              </h2>
             </div>
-            <SocialRow site={site} iconClassName="text-[#64748b]/50" />
-            <p className="text-[11px] font-bold tracking-[0.18em] text-[#64748b] uppercase">
-              Powered by <span className="text-[#b98a2f]">MzansiSite</span>
-            </p>
+            <SamplePill label="Sample prices" />
           </div>
-        </footer>
-      </div>
-    </>
+          {site.services.length === 0 ? (
+            <button
+              type="button"
+              className="flex w-full items-center justify-center gap-3 border border-dashed border-[#3b2417]/30 px-6 py-12 font-sans text-sm text-[#3b2417]/60 transition-colors hover:border-[#e0703f] hover:text-[#e0703f]"
+            >
+              <PenLine className="h-4 w-4" aria-hidden /> No services yet — add your menu
+            </button>
+          ) : (
+            <ul className="space-y-4">
+              {site.services.map((s) => (
+                <li key={s.name} className="flex items-baseline justify-between gap-4 border-b border-[#3b2417]/10 pb-4 last:border-0 last:pb-0">
+                  <span className="font-bold">{s.name}</span>
+                  <span className="font-mono text-lg tabular-nums">{s.price || "—"}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        {/* visit */ }
+        <section className="border-t border-[#3b2417]/12 py-12 @md:py-16">
+          <div className="mb-10 flex items-center justify-between">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.35em]" style={{ color: APRICOT }}>
+                Visit
+              </p>
+              <h2 className="mt-3 text-[clamp(1.9rem,4.4cqw,3.3rem)] font-semibold leading-tight">
+                Come find us
+              </h2>
+            </div>
+          </div>
+          <div className="grid gap-5 @md:grid-cols-2">
+            <div className="rounded-xl border border-[#3b2417]/25 bg-white p-6">
+              <p className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#3b2417]/60">
+                <MapPin className="h-3.5 w-3.5" style={{ color: APRICOT }} /> Where
+              </p>
+              <p className="text-sm font-bold">{site.area || "Add your address"}</p>
+              <p className="text-sm text-[#3b2417]/60">{site.area || "Your area"}</p>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.area} ${site.area}`)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-extrabold underline decoration-[#e0703f] decoration-2 underline-offset-4"
+              >
+                Get directions <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+            </div>
+            <div className="rounded-xl border border-[#3b2417]/25 bg-white p-6">
+              <p className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#3b2417]/60">
+                <Clock className="h-3.5 w-3.5" style={{ color: APRICOT }} /> Hours
+              </p>
+              <p className="text-sm font-semibold">{site.hours || "Add opening hours"}</p>
+              {site.phone && (
+                <a href={telLink(site.phone)} className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold underline-offset-4 hover:underline">
+                  <Phone className="h-3.5 w-3.5" /> {site.phone}
+                </a>
+              )}
+              {site.email && (
+                <a href={mailLink(site.email)} className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold underline-offset-4 hover:underline">
+                  <Mail className="h-3.5 w-3.5" /> {site.email}
+                </a>
+              )}
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="border-t border-[#3b2417]/15 px-5 py-6 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-[#3b2417]/50 @md:px-10">
+        {name} · Design: Market · MzansiSite demo — sample content until edited
+      </footer>
+    </div>
   );
 }
