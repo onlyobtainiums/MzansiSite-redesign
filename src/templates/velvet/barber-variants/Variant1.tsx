@@ -45,7 +45,7 @@ export default function BarberVariant1({ site }: { site: SiteData }) {
     <div className="@container bg-[#131009] text-[#f2ead9]">
       <div className="font-velvet">
         {/* hero */ }
-        <header className="relative flex min-h-[520px] flex-col @md:min-h-[700px]">
+        <header className="relative flex min-h-[400px] flex-col @md:min-h-[700px]">
           {hero ? (
             <SmartImage src={hero.src} alt={hero.alt} eager className="absolute inset-0" imgClassName="opacity-60" />
           ) : (
@@ -53,9 +53,9 @@ export default function BarberVariant1({ site }: { site: SiteData }) {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-[#131009] via-[#131009]/35 to-[#131009]/70" />
 
-          <div className="relative flex items-center justify-between px-5 pt-5 @md:px-12 @md:pt-8">
-            <div className="flex items-center gap-2.5">
-              <BrandMark logo={site.logoUrl ?? null} name={name} className="h-8 w-8 text-[10px]" />
+          <div className="relative flex items-center justify-between px-5 pt-4 @md:px-12 @md:pt-8">
+            <div className="flex items-center gap-2">
+              <BrandMark logo={site.logoUrl ?? null} name={name} className="h-7 w-7 text-[9px]" />
               <div className="leading-tight">
                 <p className="text-[10px] uppercase tracking-[0.3em] text-[#f2ead9]/70">{name}</p>
                 <p className="text-[9px] uppercase tracking-[0.2em] text-[#f2ead9]/45">{site.area || "Your area"}</p>
@@ -68,24 +68,24 @@ export default function BarberVariant1({ site }: { site: SiteData }) {
             </nav>
           </div>
 
-          <div className="relative px-5 pb-10 @md:px-12 @md:pb-16">
-            <p className="mb-4 flex items-center gap-3 text-[10px] uppercase tracking-[0.35em]" style={{ color: BRASS }}>
+          <div className="relative px-5 pb-8 @md:px-12 @md:pb-16">
+            <p className="mb-3 flex items-center gap-3 text-[10px] uppercase tracking-[0.35em]" style={{ color: BRASS }}>
               <span className="h-px w-8" style={{ background: BRASS }} /> Barbershop · {site.area || "South Africa"}
             </p>
-            <h1 className="max-w-none text-[clamp(2rem,9cqw,5.6rem)] font-light leading-[1.02] tracking-[-0.02em] break-words">
+            <h1 className="max-w-none text-[clamp(1.75rem,8cqw,4.5rem)] font-light leading-[1.02] tracking-[-0.02em] break-words text-center @md:text-left">
               {name}
             </h1>
-            <p className="mt-4 max-w-md font-sans text-[14px] leading-relaxed text-[#f2ead9]/75">
+            <p className="mt-3 max-w-md font-sans text-[14px] leading-relaxed text-[#f2ead9]/75 text-center @md:text-left">
               {site.tagline || "A short line about your shop goes here."}
             </p>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-3 @md:justify-start">
               <WhatsAppActionForSite
                 site={site}
-                className="font-sans bg-[#c8a05c] px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#1a1409] transition-transform hover:-translate-y-0.5"
+                className="font-sans bg-[#c8a05c] px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#1a1409] transition-transform hover:-translate-y-0.5"
               />
               <a
                 href="#velvet-menu"
-                className="group inline-flex items-center gap-2 border border-[#f2ead9]/30 px-6 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.18em] text-[#f2ead9] transition-colors hover:border-[#c8a05c] hover:text-[#c8a05c]"
+                className="group inline-flex items-center gap-2 border border-[#f2ead9]/30 px-5 py-2.5 font-sans text-[12px] font-semibold uppercase tracking-[0.18em] text-[#f2ead9] transition-colors hover:border-[#c8a05c] hover:text-[#c8a05c]"
               >
                 View the menu <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
               </a>
