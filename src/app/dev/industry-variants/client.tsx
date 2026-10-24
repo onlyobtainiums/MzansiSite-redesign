@@ -107,10 +107,10 @@ export function VariantClient() {
   const VariantComponent = industry.components[variant];
   const isMobile = view === "mobile";
 
-  const site = getDemoSiteData(
-    { industry: industryKey },
-    { isDemo: true }
-  ) as SiteData;
+  const site = getDemoSiteData({
+    industry: industryKey,
+    isDemo: true,
+  }) as SiteData;
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-[#f8fafc] font-sans">
